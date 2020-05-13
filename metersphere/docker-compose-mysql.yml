@@ -1,0 +1,27 @@
+version: "2.1"
+services:
+  mysql:
+    image: registry.fit2cloud.com/fit2cloud2/mysql:5.7.25
+    container_name: mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    environment:
+      MYSQL_ROOT_PASSWORD: Password123@mysql
+    volumes:
+      - ${base_dir}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ${base_dir}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
+      - metersphere-mysql-data:/var/lib/mysql
+    networks:
+      - ms-network
+
+volumes:
+  metersphere-mysql-data:
+    driver_opts:
+      type: none
+      device: ${base_dir}/metersphere/data/mysql
+      o: bind

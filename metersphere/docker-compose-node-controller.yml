@@ -1,0 +1,17 @@
+version: "2.1"
+services:
+  metersphere-node-controller:
+    image: registry.fit2cloud.com/metersphere/metersphere-node-controller:${metersphere_image_tag}
+    container_name: metersphere-node-controller
+    environment:
+      HOST_HOSTNAME: $HOSTNAME
+    ports:
+      - 8082:8082
+    volumes:
+      - metersphere-conf:/opt/metersphere/conf
+      - jmeter-data:/jmeter
+      - metersphere-logs:/opt/metersphere/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    mem_limit: 1024m
+    networks:
+      - ms-network

@@ -1,0 +1,1 @@
+CREATE DATABASE `${mysql_dbname}` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
