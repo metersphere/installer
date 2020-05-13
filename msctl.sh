@@ -26,7 +26,8 @@ function generate_install_conf() {
       echo "== 发现安装配置文件，加载并合并配置"
       echo "== 最终配置为"
       install_conf=$(awk -F= '!a[$1]++' install.conf install.conf.default | grep -v -e \^\\s\*\#)
-      echo ${install_conf}
+      for i in ${install_conf};do
+         echo ${i}
    else
       install_conf=$(cat install.conf.default)
    fi
@@ -43,29 +44,28 @@ function install() {
       key=${i%%=*}
       value=${i##*=}
       if [[ -n $key && -n $value ]];then
-          echo "$key --- $value"
          sed -i -e "s#\${${key}}#${value}#g" ${base_dir}/metersphere/conf/* ${base_dir}/metersphere/bin/mysql/* ${base_dir}/metersphere/docker-compose*
       fi
    done
    echo "== 配置安装模式"
    case "${install_mode}" in
       allinone)
-         compose_files="${compose_files} -f dockser-compose-server.yaml -f dockser-compose-node-controller.yaml"
+         compose_files="${compose_files} -f dockser-compose-server.yml -f dockser-compose-node-controller.yml"
          ;;
       server)
-         compose_files="${compose_files} -f dockser-compose-server.yaml" 
+         compose_files="${compose_files} -f dockser-compose-server.yml" 
          ;;
       node-controller)
-         compose_files="${compose_files} -f dockser-compose-node-controller.yaml" 
+         compose_files="${compose_files} -f dockser-compose-node-controller.yml" 
          ;;
       *)
          echo "不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
    esac
    if [ "$external_mysql" = "false" ];then
-      compose_files="${compose_files} -f dockser-compose-mysql.yaml" 
+      compose_files="${compose_files} -f dockser-compose-mysql.yml" 
    fi
    if [ "$external_kafka" = "false" ];then
-      compose_files="${compose_files} -f dockser-compose-kafka.yaml" 
+      compose_files="${compose_files} -f dockser-compose-kafka.yml" 
    fi
    echo "== 启动 MeterSphere"
    cd ${base_dir}/metersphere && docker-compose ${compose_files} up -d
