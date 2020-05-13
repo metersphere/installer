@@ -9,9 +9,16 @@ services:
       - 8082:8082
     volumes:
       - metersphere-conf:/opt/metersphere/conf
-      - jmeter-data:/jmeter
+      - metersphere-jmeter-data:/jmeter
       - metersphere-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
     mem_limit: 1024m
     networks:
       - ms-network
+
+volumes:
+  metersphere-jmeter-data:
+    driver_opts:
+      type: none
+      device: ${base_dir}/metersphere/data/jmeter
+      o: bind
