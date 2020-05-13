@@ -28,6 +28,7 @@ function generate_install_conf() {
       install_conf=$(awk -F= '!a[$1]++' install.conf install.conf.default | grep -v -e \^\\s\*\#)
       for i in ${install_conf};do
          echo ${i}
+      done
    else
       install_conf=$(cat install.conf.default)
    fi
