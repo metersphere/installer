@@ -51,21 +51,26 @@ function install() {
    echo "== 配置安装模式"
    case "${install_mode}" in
       allinone)
+         mkdir -p ${base_dir}/metersphere/data/jmeter
          compose_files="${compose_files} -f docker-compose-server.yml -f docker-compose-node-controller.yml"
          ;;
       server)
          compose_files="${compose_files} -f docker-compose-server.yml" 
          ;;
       node-controller)
+         mkdir -p ${base_dir}/metersphere/data/jmeter
          compose_files="${compose_files} -f docker-compose-node-controller.yml" 
          ;;
       *)
          echo "不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
    esac
    if [ "$external_mysql" = "false" ];then
+      mkdir -p ${base_dir}/metersphere/data/mysql
       compose_files="${compose_files} -f docker-compose-mysql.yml" 
    fi
    if [ "$external_kafka" = "false" ];then
+      mkdir -p ${base_dir}/metersphere/data/kafka
+      mkdir -p ${base_dir}/metersphere/data/zookeeper
       compose_files="${compose_files} -f docker-compose-kafka.yml" 
    fi
    echo "== 启动 MeterSphere"
