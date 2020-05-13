@@ -51,7 +51,7 @@ function install() {
    echo "== 配置安装模式"
    case "${install_mode}" in
       allinone)
-         compose_files="${compose_files} -f dockser-compose-server.yml -f dockser-compose-node-controller.yml"
+         compose_files="${compose_files} -f dockser-compose-server.yml -f docker-compose-node-controller.yml"
          ;;
       server)
          compose_files="${compose_files} -f dockser-compose-server.yml" 
