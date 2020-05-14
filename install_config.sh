@@ -62,7 +62,7 @@ install_config() {
                 echo -n $(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
                 ;;
             kafka_port)
-                echo -n "9092"
+                echo -n "19092"
                 ;;
             kafka_log_topic)
                 echo -n "JMETER_LOGS"

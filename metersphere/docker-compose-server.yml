@@ -18,7 +18,7 @@ services:
       - mysql
 
   data-streaming:
-    image: "registry.fit2cloud.com/metersphere/data-streaming:1.0"
+    image: registry.fit2cloud.com/metersphere/metersphere-data-streaming:${metersphere_image_tag}
     container_name: data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME

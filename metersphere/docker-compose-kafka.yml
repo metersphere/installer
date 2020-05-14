@@ -15,16 +15,28 @@ services:
     image: 'registry.fit2cloud.com/metersphere/kafka:2'
     container_name: kafka
     ports:
-      - '${kafka_port}:9092'
+      - '${kafka_port}:${kafka_port}'
     volumes:
       - 'kafka-data:/bitnami'
     environment:
       KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
       ALLOW_PLAINTEXT_LISTENER: 'yes'
-      KAFKA_ADVERTISED_HOST_NAME: ${kafka_host}
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${kafka_host}:${kafka_port}
-      # KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_LISTENERS: INTERNAL://:9092,EXTERNAL://:${kafka_port}
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://${kafka_host}:${kafka_port}
     depends_on:
       - zookeeper
     networks:
       - ms-network
+volumes:
+  metersphere-zookeeper-data:
+    driver_opts:
+      type: none
+      device: ${base_dir}/metersphere/data/zookeeper
+      o: bind
+  metersphere-kafka-data:
+    driver_opts:
+      type: none
+      device: ${base_dir}/metersphere/data/kafka
+      o: bind
