@@ -13,5 +13,22 @@ services:
     mem_limit: 1024m
     networks:
       - ms-network
+#external_mysql=false      
     depends_on:
       - mysql
+
+  data-streaming:
+    image: "registry.fit2cloud.com/metersphere/data-streaming:1.0"
+    container_name: data-streaming
+    environment:
+      HOST_HOSTNAME: $HOSTNAME
+    ports:
+      - 7777:7777
+    volumes:
+      - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
+      - /opt/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
+    networks:
+      - ms-network
+#external_kafka=false      
+    depends_on:
+      - kafka

@@ -1,1 +1,30 @@
 version: "2.1"
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:3.6.1'
+    container_name: zookeeper
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper-data:/bitnami'
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    networks:
+      - ms-network
+  kafka:
+    image: 'bitnami/kafka:2.5.0'
+    container_name: kafka
+    ports:
+      - '${kafka_port}:9092'
+    volumes:
+      - 'kafka-data:/bitnami'
+    environment:
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_ADVERTISED_HOST_NAME: ${kafka_host}
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${kafka_host}:${kafka_port}
+      # KAFKA_ADVERTISED_PORT: 9092
+    depends_on:
+      - zookeeper
+    networks:
+      - ms-network
