@@ -6,6 +6,7 @@ target=$2
 args=$@
 
 compose_files="-f docker-compose-base.yml"
+images = 
 
 function usage() {
    echo "MeterSphere 部署安装脚本"
@@ -47,14 +48,14 @@ function install() {
       *)
          echo "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
    esac
-   # 使用外部数据库
+   # 是否使用外部数据库
    if [ $(install_config external_mysql) = "false" ];then
       mkdir -p $(install_config base_dir)/metersphere/data/mysql
       compose_files="${compose_files} -f docker-compose-mysql.yml"
    else
       sed -i -e "/#external_mysql=false/{N;N;d;}" $(install_config base_dir)/metersphere/docker-compose*
    fi
-   # 使用外部 Kafka
+   # 是否使用外部 Kafka
    if [ $(install_config external_kafka) = "false" ];then
       mkdir -p $(install_config base_dir)/metersphere/data/kafka
       mkdir -p $(install_config base_dir)/metersphere/data/zookeeper
@@ -62,6 +63,8 @@ function install() {
    else
       sed -i -e "/#external_kafka=false/{N;N;d;}" $(install_config base_dir)/metersphere/docker-compose*
    fi
+   # TODO 加载镜像
+
    echo "... 启动 MeterSphere"
    echo ${compose_files}
    cd $(install_config base_dir)/metersphere && docker-compose ${compose_files} up -d

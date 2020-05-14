@@ -6,7 +6,7 @@ services:
     ports:
       - '2181:2181'
     volumes:
-      - 'zookeeper-data:/bitnami'
+      - 'ms-zookeeper-data:/bitnami'
     environment:
       ALLOW_ANONYMOUS_LOGIN: 'yes'
     networks:
@@ -17,7 +17,7 @@ services:
     ports:
       - '${kafka_port}:${kafka_port}'
     volumes:
-      - 'kafka-data:/bitnami'
+      - 'ms-kafka-data:/bitnami'
     environment:
       KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
       ALLOW_PLAINTEXT_LISTENER: 'yes'
@@ -30,12 +30,12 @@ services:
     networks:
       - ms-network
 volumes:
-  metersphere-zookeeper-data:
+  ms-zookeeper-data:
     driver_opts:
       type: none
       device: ${base_dir}/metersphere/data/zookeeper
       o: bind
-  metersphere-kafka-data:
+  ms-kafka-data:
     driver_opts:
       type: none
       device: ${base_dir}/metersphere/data/kafka

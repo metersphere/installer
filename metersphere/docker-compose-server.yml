@@ -1,15 +1,15 @@
 version: "2.1"
 services:
-  metersphere-server:
+  ms-server:
     image: registry.fit2cloud.com/metersphere/metersphere-server:${metersphere_image_tag}
-    container_name: metersphere-server
+    container_name: ms-server
     environment:
       HOST_HOSTNAME: $HOSTNAME
     ports:
       - ${metersphere_server_port}:8081
     volumes:
-      - metersphere-conf:/opt/metersphere/conf
-      - metersphere-logs:/opt/metersphere/logs
+      - ms-conf:/opt/metersphere/conf
+      - ms-logs:/opt/metersphere/logs
     mem_limit: 1024m
     networks:
       - ms-network
@@ -17,16 +17,16 @@ services:
     depends_on:
       - mysql
 
-  metersphere-data-streaming:
+  ms-data-streaming:
     image: registry.fit2cloud.com/metersphere/metersphere-data-streaming:${metersphere_image_tag}
-    container_name: data-streaming
+    container_name: ms-data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME
     ports:
       - 7777:7777
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
-      - /opt/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
+      - ${base_dir}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
     networks:
       - ms-network
 #external_kafka=false      

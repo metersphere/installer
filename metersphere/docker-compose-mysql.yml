@@ -15,12 +15,12 @@ services:
     volumes:
       - ${base_dir}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
       - ${base_dir}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
-      - metersphere-mysql-data:/var/lib/mysql
+      - ms-mysql-data:/var/lib/mysql
     networks:
       - ms-network
 
 volumes:
-  metersphere-mysql-data:
+  ms-mysql-data:
     driver_opts:
       type: none
       device: ${base_dir}/metersphere/data/mysql

@@ -1,12 +1,12 @@
 version: "2.1"
 
 volumes:
-  metersphere-conf:
+  ms-conf:
     driver_opts:
       type: none
       device: ${base_dir}/metersphere/conf
       o: bind
-  metersphere-logs:
+  ms-logs:
     driver_opts:
       type: none
       device: ${base_dir}/metersphere/logs
