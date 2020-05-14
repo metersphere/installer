@@ -14,7 +14,6 @@ kafka_topic
 kafka_host
 kafka_port
 kafka_log_topic
-local_ip
 '''
 
 install_config() {
