@@ -6,7 +6,7 @@ target=$2
 args=$@
 
 compose_files="-f docker-compose-base.yml"
-images = 
+#images = 
 
 function usage() {
    echo "MeterSphere 部署安装脚本"
