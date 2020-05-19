@@ -1,34 +1,37 @@
 #!/bin/bash
 
-BASE_DIR=$(cd "$(dirname "$0")";pwd)
-source ${BASE_DIR}/install_config.sh
+CURRENT_DIR=$(cd "$(dirname "$0")";pwd)
+source ${CURRENT_DIR}/install_config.sh
 args=$@
 
 compose_files="-f docker-compose-base.yml"
 
 echo "== 开始安装 MeterSphere =="
+INSTALL_BASE=$(install_config base_dir)
 echo "... 拷贝资源至安装路径"
-cp -r ./metersphere $(install_config base_dir) && echo "... 拷贝资源至安装路径成功"
+cp -r ./metersphere ${INSTALL_BASE} && echo "... 拷贝资源至安装路径成功"
 echo "... 替换安装配置参数"
 for i in ${support_config};do
    key=${i}
    value=$(install_config $i)
    if [[ -n $key && -n $value ]];then
-      sed -i -e "s#\${${key}}#${value}#g" $(install_config base_dir)/metersphere/conf/* $(install_config base_dir)/metersphere/bin/mysql/* $(install_config base_dir)/metersphere/docker-compose*
+      sed -i -e "s#\${${key}}#${value}#g" ${INSTALL_BASE}/metersphere/conf/* ${INSTALL_BASE}/metersphere/bin/mysql/* ${INSTALL_BASE}/metersphere/docker-compose*
    fi
 done
+sed -i -e "s\BASE_DIR=.*\BASE_DIR=${INSTALL_BASE}\g" msctl
+cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
 echo "... 配置安装模式"
-install_mode=$(install_config install_mode)
-case ${install_mode} in
+INSTALL_MODE=$(install_config install_mode)
+case ${INSTALL_MODE} in
    allinone)
-      mkdir -p $(install_config base_dir)/metersphere/data/jmeter
+      mkdir -p ${INSTALL_BASE}/metersphere/data/jmeter
       compose_files="${compose_files} -f docker-compose-server.yml -f docker-compose-node-controller.yml"
       ;;
    server)
       compose_files="${compose_files} -f docker-compose-server.yml" 
       ;;
    node-controller)
-      mkdir -p $(install_config base_dir)/metersphere/data/jmeter
+      mkdir -p ${INSTALL_BASE}/metersphere/data/jmeter
       compose_files="${compose_files} -f docker-compose-node-controller.yml" 
       ;;
    *)
@@ -36,21 +39,29 @@ case ${install_mode} in
 esac
 # 是否使用外部数据库
 if [ $(install_config external_mysql) = "false" ];then
-   mkdir -p $(install_config base_dir)/metersphere/data/mysql
+   mkdir -p ${INSTALL_BASE}/metersphere/data/mysql
    compose_files="${compose_files} -f docker-compose-mysql.yml"
 else
-   sed -i -e "/#external_mysql=false/{N;N;d;}" $(install_config base_dir)/metersphere/docker-compose*
+   sed -i -e "/#external_mysql=false/{N;N;d;}" ${INSTALL_BASE}/metersphere/docker-compose*
 fi
 # 是否使用外部 Kafka
 if [ $(install_config external_kafka) = "false" ];then
-   mkdir -p $(install_config base_dir)/metersphere/data/kafka
-   mkdir -p $(install_config base_dir)/metersphere/data/zookeeper
+   mkdir -p ${INSTALL_BASE}/metersphere/data/kafka
+   mkdir -p ${INSTALL_BASE}/metersphere/data/zookeeper
    compose_files="${compose_files} -f docker-compose-kafka.yml" 
 else
-   sed -i -e "/#external_kafka=false/{N;N;d;}" $(install_config base_dir)/metersphere/docker-compose*
+   sed -i -e "/#external_kafka=false/{N;N;d;}" ${INSTALL_BASE}/metersphere/docker-compose*
 fi
-# TODO 加载镜像
-
+echo ${compose_files} > ${INSTALL_BASE}/metersphere/compose_files 
 echo "... 启动 MeterSphere"
-echo ${compose_files} > $(install_config base_dir)/metersphere/compose_files 
-cd $(install_config base_dir)/metersphere && docker-compose $(cat compose_files) up -d
+# 加载镜像
+if [[ -d images ]];then
+    for i in $(ls images);do
+        docker load -i images/$i
+    done
+else
+    cd ${INSTALL_BASE}/metersphere && docker-compose $(cat compose_files) pull
+    cd -
+fi
+
+cd ${INSTALL_BASE}/metersphere && docker-compose $(cat compose_files) up -d

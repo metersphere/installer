@@ -3,7 +3,7 @@ action=$1
 target=$2
 args=$@
 
-BASE_DIR=/opt/metersphere
+BASE_DIR=/opt/
 COMPOSE_FILES=$(cat ${BASE_DIR}/compose_files)
 
 function usage() {
