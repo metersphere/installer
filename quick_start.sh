@@ -13,10 +13,11 @@ ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 echo "Docker Compose Installation done"
 
 #Install Latest Stable MeterSphere Release
-#MSVERSION=$(curl -s https://github.com/metersphere/metersphere/releases/latest/download 2>&1 | grep -Po [0-9]+\.[0-9]+\.[0-9]+)
+#MSVERSION=$(curl -s https://github.com/metersphere/metersphere/releases/latest/download 2>&1 | grep -Po v[0-9]+\.[0-9]+\.[0-9]+)
 #curl -s https://api.github.com/repos/metersphere/metersphere/releases/latest | grep browser_download_url | grep online | cut -d '"' -f 4 | wget -qi -
 tar zxvf metersphere-release-${MSVERSION}.tar.gz
 cd metersphere-release-${MSVERSION}
 echo "metersphere_image_tag=${MSVERSION}" > install.conf
-./msctl.sh install
+sh install.sh
+msctl status
 echo -e "MeterSphere Installation Complete \n\nLogin to your MeterSphere instance:\n URL: http://$LOCAL_IP:8081\n Username: admin Password: fit2cloud"
