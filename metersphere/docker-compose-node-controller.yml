@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   ms-node-controller:
-    image: registry.fit2cloud.com/metersphere/metersphere-node-controller:${metersphere_image_tag}
+    image: ${metersphere_image_prefix}/metersphere-node-controller:${metersphere_image_tag}
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME

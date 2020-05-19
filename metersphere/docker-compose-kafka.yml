@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   zookeeper:
-    image: 'registry.fit2cloud.com/metersphere/zookeeper:3'
+    image: '${metersphere_image_prefix}/zookeeper:3'
     container_name: zookeeper
     ports:
       - '2181:2181'
@@ -12,7 +12,7 @@ services:
     networks:
       - ms-network
   kafka:
-    image: 'registry.fit2cloud.com/metersphere/kafka:2'
+    image: '${metersphere_image_prefix}/kafka:2'
     container_name: kafka
     ports:
       - '${kafka_port}:${kafka_port}'

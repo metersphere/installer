@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   ms-server:
-    image: registry.fit2cloud.com/metersphere/metersphere-server:${metersphere_image_tag}
+    image: ${metersphere_image_prefix}/metersphere-server:${metersphere_image_tag}
     container_name: ms-server
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -18,7 +18,7 @@ services:
       - mysql
 
   ms-data-streaming:
-    image: registry.fit2cloud.com/metersphere/metersphere-data-streaming:${metersphere_image_tag}
+    image: ${metersphere_image_prefix}/metersphere-data-streaming:${metersphere_image_tag}
     container_name: ms-data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME

@@ -1,6 +1,7 @@
 support_config='''
 base_dir
 metersphere_image_tag
+metersphere_image_prefix
 install_mode
 metersphere_server_port
 external_mysql
@@ -27,6 +28,9 @@ install_config() {
                 ;;
             metersphere_image_tag)
                 echo -n "release"
+                ;;
+            metersphere_image_prefix)
+                echo -n "registry.fit2cloud.com/metersphere"
                 ;;
             install_mode)
                 echo -n "allinone"
