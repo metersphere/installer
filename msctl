@@ -1,13 +1,10 @@
-# TODO
-## 增加单独的 install.sh 脚本
-## 安装完成后拷贝 msctl 到 bin 目录, 作为或许升级、重启等命令控制脚本
 #!/bin/bash
 action=$1
 target=$2
 args=$@
 
-compose_files="-f docker-compose-base.yml"
-#images = 
+BASE_DIR=/opt/metersphere
+COMPOSE_FILES=$(cat ${BASE_DIR}/compose_files)
 
 function usage() {
    echo "MeterSphere 控制脚本"
@@ -27,21 +24,27 @@ function usage() {
 
 function status() {
    echo
+   docker-compose -f ${COMPOSE_FILES} ps
 }
 function start() {
    echo
+   docker-compose -f ${COMPOSE_FILES} start ${target}
 }
 function stop() {
    echo
+   docker-compose -f ${COMPOSE_FILES} stop ${target}
 }
 function restart() {
    echo
+   docker-compose -f ${COMPOSE_FILES} restart ${target}
 }
 function uninstall() {
    echo
+   docker-compose -f ${COMPOSE_FILES} down 
 }
 function version() {
    echo
+   echo ${BASE_DIR}/version
 }
 
 function main() {

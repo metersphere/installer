@@ -2,8 +2,6 @@
 
 BASE_DIR=$(cd "$(dirname "$0")";pwd)
 source ${BASE_DIR}/install_config.sh
-action=$1
-target=$2
 args=$@
 
 compose_files="-f docker-compose-base.yml"
