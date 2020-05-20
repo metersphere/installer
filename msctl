@@ -24,23 +24,23 @@ function usage() {
 
 function status() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose -f ${COMPOSE_FILES} ps
+   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} ps
 }
 function start() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose -f ${COMPOSE_FILES} start ${target}
+   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} start ${target}
 }
 function stop() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose -f ${COMPOSE_FILES} stop ${target}
+   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} stop ${target}
 }
 function restart() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose -f ${COMPOSE_FILES} restart ${target}
+   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} restart ${target}
 }
 function uninstall() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose -f ${COMPOSE_FILES} down ${target}
+   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} down ${target}
 }
 function version() {
    echo
