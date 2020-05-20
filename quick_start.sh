@@ -21,3 +21,4 @@ echo "metersphere_image_tag=${MSVERSION}" > install.conf
 sh install.sh
 msctl status
 echo -e "MeterSphere Installation Complete \n\nLogin to your MeterSphere instance:\n URL: http://$LOCAL_IP:8081\n Username: admin Password: fit2cloud"
+echo -e "You can use command 'msctl status' to check the status of MeterSphere."

@@ -20,6 +20,7 @@ for i in ${support_config};do
 done
 sed -i -e "s\BASE_DIR=.*\BASE_DIR=${INSTALL_BASE}\g" msctl
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
+ln -s /usr/local/bin/msctl /usr/bin/msctl
 echo "... 配置安装模式"
 INSTALL_MODE=$(install_config install_mode)
 case ${INSTALL_MODE} in
