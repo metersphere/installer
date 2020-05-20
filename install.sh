@@ -53,6 +53,8 @@ else
    sed -i -e "/#external_kafka=false/{N;N;d;}" ${INSTALL_BASE}/metersphere/docker-compose*
 fi
 echo ${compose_files} > ${INSTALL_BASE}/metersphere/compose_files 
+MSTAG=$(install_config metersphere_image_tag)
+echo "MSTAG=${MSTAG}" > ${INSTALL_BASE}/metersphere/.env 
 echo "... 启动 MeterSphere"
 # 加载镜像
 if [[ -d images ]];then
