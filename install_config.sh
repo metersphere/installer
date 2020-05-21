@@ -30,7 +30,7 @@ install_config() {
                 echo -n "release"
                 ;;
             metersphere_image_prefix)
-                echo -n "registry.fit2cloud.com/metersphere"
+                echo -n "metersphere"
                 ;;
             install_mode)
                 echo -n "allinone"

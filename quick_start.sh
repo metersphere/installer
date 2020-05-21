@@ -26,6 +26,7 @@ fi
 tar zxvf metersphere-release-${MSVERSION}.tar.gz
 cd metersphere-release-${MSVERSION}
 echo "metersphere_image_tag=${MSVERSION}" > install.conf
+echo "metersphere_image_prefix=metersphere" >> install.conf
 sh install.sh
 msctl status
 echo -e "MeterSphere Installation Complete \n\nLogin to your MeterSphere instance:\n URL: http://$LOCAL_IP:8081\n Username: admin Password: fit2cloud"
