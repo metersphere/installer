@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   ms-node-controller:
-    image: ${MS_PREFIX}/metersphere-node-controller:${MS_TAG}
+    image: ${MS_PREFIX}/ms-node-controller:${MS_TAG}
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME

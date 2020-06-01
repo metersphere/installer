@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   ms-server:
-    image: ${MS_PREFIX}/metersphere-server:${MS_TAG}
+    image: ${MS_PREFIX}/metersphere:${MS_TAG}
     container_name: ms-server
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -27,7 +27,7 @@ services:
       - mysql
 
   ms-data-streaming:
-    image: ${MS_PREFIX}/metersphere-data-streaming:${MS_TAG}
+    image: ${MS_PREFIX}/ms-data-streaming:${MS_TAG}
     container_name: ms-data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME
