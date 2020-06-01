@@ -25,8 +25,8 @@ fi
 #curl -s https://api.github.com/repos/metersphere/metersphere/releases/latest | grep browser_download_url | grep online | cut -d '"' -f 4 | wget -qi -
 tar zxvf metersphere-release-${MSVERSION}.tar.gz
 cd metersphere-release-${MSVERSION}
-echo "metersphere_image_tag=${MSVERSION}" > install.conf
-echo "metersphere_image_prefix=metersphere" >> install.conf
+echo "MS_TAG=${MSVERSION}" > install.conf
+echo "MS_PREFIX=metersphere" >> install.conf
 sh install.sh
 msctl status
 echo -e "MeterSphere Installation Complete \n\nLogin to your MeterSphere instance:\n URL: http://$LOCAL_IP:8081\n Username: admin Password: fit2cloud"

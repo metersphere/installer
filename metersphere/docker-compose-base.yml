@@ -4,12 +4,12 @@ volumes:
   ms-conf:
     driver_opts:
       type: none
-      device: ${base_dir}/metersphere/conf
+      device: ${MS_BASE}/metersphere/conf
       o: bind
   ms-logs:
     driver_opts:
       type: none
-      device: ${base_dir}/metersphere/logs
+      device: ${MS_BASE}/metersphere/logs
       o: bind
 
 networks:

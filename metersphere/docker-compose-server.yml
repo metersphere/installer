@@ -1,24 +1,24 @@
 version: "2.1"
 services:
   ms-server:
-    image: ${metersphere_image_prefix}/metersphere-server:${MSTAG}
+    image: ${MS_PREFIX}/metersphere-server:${MS_TAG}
     container_name: ms-server
     environment:
       HOST_HOSTNAME: $HOSTNAME
     ports:
-      - ${metersphere_server_port}:8081
+      - ${MS_PORT}:8081
     volumes:
       - ms-conf:/opt/metersphere/conf
       - ms-logs:/opt/metersphere/logs
     mem_limit: 1024m
     networks:
       - ms-network
-#external_mysql=false      
+#MS_EXTERNAL_MYSQL=false      
     depends_on:
       - mysql
 
   ms-data-streaming:
-    image: ${metersphere_image_prefix}/metersphere-data-streaming:${MSTAG}
+    image: ${MS_PREFIX}/metersphere-data-streaming:${MS_TAG}
     container_name: ms-data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -26,9 +26,9 @@ services:
       - 7777:7777
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
-      - ${base_dir}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
+      - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
     networks:
       - ms-network
-#external_kafka=false      
+#MS_EXTERNAL_KAFKA=false      
     depends_on:
       - kafka

@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   mysql:
-    image: ${metersphere_image_prefix}/mysql:5.7.25
+    image: ${MS_PREFIX}/mysql:5.7.25
     container_name: mysql
     ports:
       - 3306:3306
@@ -13,8 +13,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Password123@mysql
     volumes:
-      - ${base_dir}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ${base_dir}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
+      - ${MS_BASE}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ${MS_BASE}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
       - ms-mysql-data:/var/lib/mysql
     networks:
       - ms-network
@@ -23,5 +23,5 @@ volumes:
   ms-mysql-data:
     driver_opts:
       type: none
-      device: ${base_dir}/metersphere/data/mysql
+      device: ${MS_BASE}/metersphere/data/mysql
       o: bind

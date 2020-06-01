@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   ms-node-controller:
-    image: ${metersphere_image_prefix}/metersphere-node-controller:${MSTAG}
+    image: ${MS_PREFIX}/metersphere-node-controller:${MS_TAG}
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -20,5 +20,5 @@ volumes:
   ms-jmeter-data:
     driver_opts:
       type: none
-      device: ${base_dir}/metersphere/data/jmeter
+      device: ${MS_BASE}/metersphere/data/jmeter
       o: bind

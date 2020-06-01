@@ -1,20 +1,20 @@
 support_config='''
-base_dir
-metersphere_image_tag
-metersphere_image_prefix
-install_mode
-metersphere_server_port
-external_mysql
-mysql_host
-mysql_port
-mysql_dbname
-mysql_username
-mysql_password
-external_kafka
-kafka_topic
-kafka_host
-kafka_port
-kafka_log_topic
+MS_BASE
+MS_TAG
+MS_PREFIX
+MS_MODE
+MS_PORT
+MS_EXTERNAL_MYSQL
+MS_MYSQL_HOST
+MS_MYSQL_PORT
+MS_MYSQL_DB
+MS_MYSQL_USER
+MS_MYSQL_PASSWORD
+MS_EXTERNAL_KAFKA
+MS_KAFKA_TOPIC
+MS_KAFKA_HOST
+MS_KAFKA_PORT
+MS_KAFKA_LOG_TOPIC
 '''
 
 install_config() {
@@ -23,52 +23,52 @@ install_config() {
     if [[ $val == __DEFAULT__ ]]
     then
         case $1 in
-            base_dir)
+            MS_BASE)
                 echo -n "/opt"
                 ;;
-            metersphere_image_tag)
+            MS_TAG)
                 echo -n "release"
                 ;;
-            metersphere_image_prefix)
+            MS_PREFIX)
                 echo -n "metersphere"
                 ;;
-            install_mode)
+            MS_MODE)
                 echo -n "allinone"
                 ;;
-            metersphere_server_port)
+            MS_PORT)
                 echo -n "8081"
                 ;;
-            external_mysql)
+            MS_EXTERNAL_MYSQL)
                 echo -n "false"
                 ;;
-            mysql_host)
+            MS_MYSQL_HOST)
                 echo -n "mysql"
                 ;;
-            mysql_port)
+            MS_MYSQL_PORT)
                 echo -n "3306"
                 ;;
-            mysql_dbname)
+            MS_MYSQL_DB)
                 echo -n "metersphere"
                 ;;
-            mysql_username)
+            MS_MYSQL_USER)
                 echo -n "root"
                 ;;
-            mysql_password)
+            MS_MYSQL_PASSWORD)
                 echo -n "Password123@mysql"
                 ;;
-            external_kafka)
+            MS_EXTERNAL_KAFKA)
                 echo -n "false"
                 ;;
-            kafka_topic)
+            MS_KAFKA_TOPIC)
                 echo -n "JMETER_METRICS"
                 ;;
-            kafka_host)
+            MS_KAFKA_HOST)
                 echo -n $(hostname -I|cut -d" " -f 1)
                 ;;
-            kafka_port)
+            MS_KAFKA_PORT)
                 echo -n "19092"
                 ;;
-            kafka_log_topic)
+            MS_KAFKA_LOG_TOPIC)
                 echo -n "JMETER_LOGS"
                 ;;
         esac

@@ -3,8 +3,8 @@ action=$1
 target=$2
 args=$@
 
-BASE_DIR=/opt/
-COMPOSE_FILES=$(cat ${BASE_DIR}/metersphere/compose_files)
+MS_BASE=/opt/
+COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files)
 
 function usage() {
    echo "MeterSphere 控制脚本"
@@ -24,27 +24,27 @@ function usage() {
 
 function status() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} ps
+   cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} ps
 }
 function start() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} start ${target}
+   cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} start ${target}
 }
 function stop() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} stop ${target}
+   cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} stop ${target}
 }
 function restart() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} restart ${target}
+   cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} restart ${target}
 }
 function uninstall() {
    echo
-   cd ${BASE_DIR}/metersphere; docker-compose ${COMPOSE_FILES} down ${target}
+   cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} down ${target}
 }
 function version() {
    echo
-   cat ${BASE_DIR}/metersphere/version
+   cat ${MS_BASE}/metersphere/version
 }
 
 function main() {

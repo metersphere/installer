@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   zookeeper:
-    image: '${metersphere_image_prefix}/zookeeper:3'
+    image: '${MS_PREFIX}/zookeeper:3'
     container_name: zookeeper
     ports:
       - '2181:2181'
@@ -12,10 +12,10 @@ services:
     networks:
       - ms-network
   kafka:
-    image: '${metersphere_image_prefix}/kafka:2'
+    image: '${MS_PREFIX}/kafka:2'
     container_name: kafka
     ports:
-      - '${kafka_port}:${kafka_port}'
+      - '${MS_KAFKA_PORT}:${MS_KAFKA_PORT}'
     volumes:
       - 'ms-kafka-data:/bitnami'
     environment:
@@ -23,8 +23,8 @@ services:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_CFG_LISTENERS: INTERNAL://:9092,EXTERNAL://:${kafka_port}
-      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://${kafka_host}:${kafka_port}
+      KAFKA_CFG_LISTENERS: INTERNAL://:9092,EXTERNAL://:${MS_KAFKA_PORT}
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
     depends_on:
       - zookeeper
     networks:
@@ -33,10 +33,10 @@ volumes:
   ms-zookeeper-data:
     driver_opts:
       type: none
-      device: ${base_dir}/metersphere/data/zookeeper
+      device: ${MS_BASE}/metersphere/data/zookeeper
       o: bind
   ms-kafka-data:
     driver_opts:
       type: none
-      device: ${base_dir}/metersphere/data/kafka
+      device: ${MS_BASE}/metersphere/data/kafka
       o: bind
