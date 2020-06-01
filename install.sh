@@ -5,7 +5,7 @@ args=$@
 
 compose_files="-f docker-compose-base.yml"
 set -a
-source install.conf
+source ${CURRENT_DIR}/install.conf
 set +a
 
 cp -r ./metersphere ${MS_BASE}
