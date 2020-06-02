@@ -18,6 +18,7 @@ function usage() {
    echo "  start     启动 MeterSphere 服务"
    echo "  stop      停止 MeterSphere 服务"
    echo "  restart   重启 MeterSphere 服务"
+   echo "  reload    重新加载 MeterSphere 服务"
    echo "  uninstall 卸载 MeterSphere 服务"
    echo "  version   查看 MeterSphere 版本信息"
 }
@@ -37,6 +38,10 @@ function stop() {
 function restart() {
    echo
    cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} restart ${target}
+}
+function reload() {
+   echo
+   cd ${MS_BASE}/metersphere; docker-compose ${COMPOSE_FILES} up -d
 }
 function uninstall() {
    echo
@@ -60,6 +65,9 @@ function main() {
          ;;
       restart)
          restart
+         ;;
+      reload)
+         reload
          ;;
       uninstall)
          uninstall
