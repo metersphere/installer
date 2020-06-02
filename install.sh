@@ -27,6 +27,7 @@ else
       cp docker/service/docker.service /etc/systemd/system/
       chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
+      service docker start
 
    else
       echo "... 在线安装 docker"
