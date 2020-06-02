@@ -53,7 +53,7 @@ echo ${compose_files} > ${MS_BASE}/metersphere/compose_files
 
 cd ${CURRENT_DIR}
 # 加载镜像
-if [[ -d $images ]];then
+if [[ -d images ]];then
    echo "... 加载镜像"
     for i in $(ls images);do
         docker load -i images/$i
