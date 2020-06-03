@@ -24,7 +24,8 @@ services:
       - ms-network
 #MS_EXTERNAL_MYSQL=false      
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   ms-data-streaming:
     image: ${MS_PREFIX}/ms-data-streaming:${MS_TAG}
