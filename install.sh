@@ -83,7 +83,7 @@ if [ ${MS_MODE} != "node-controller" ]; then
       compose_files="${compose_files} -f docker-compose-mysql.yml"
       sed -i -e "s#\${MS_MYSQL_DB}#${MS_MYSQL_DB}#g" ${MS_BASE}/metersphere/bin/mysql/init.sql
    else
-      sed -i -e "/#external_mysql=false/{N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
+      sed -i -e "/#MS_EXTERNAL_MYSQL=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
    fi
    # 是否使用外部 Kafka
    if [ ${MS_EXTERNAL_KAFKA} = "false" ]; then
@@ -91,7 +91,7 @@ if [ ${MS_MODE} != "node-controller" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/zookeeper
       compose_files="${compose_files} -f docker-compose-kafka.yml"
    else
-      sed -i -e "/#external_kafka=false/{N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
+      sed -i -e "/#MS_EXTERNAL_KAFKA=false/{N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
    fi
 fi
 echo ${compose_files} >${MS_BASE}/metersphere/compose_files
