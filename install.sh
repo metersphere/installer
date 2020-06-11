@@ -20,6 +20,7 @@ ln -s /usr/local/bin/msctl /usr/bin/msctl
 ##Install Latest Stable Docker Release
 if which docker; then
    echo "Docker already installed, skip installation"
+   service docker start
 else
    if [[ -d docker ]]; then
       echo "... 离线安装 docker"
