@@ -92,7 +92,7 @@ if [ ${MS_MODE} != "node-controller" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/zookeeper
       compose_files="${compose_files} -f docker-compose-kafka.yml"
    else
-      sed -i -e "/#MS_EXTERNAL_KAFKA=false/{N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
+      sed -i -e "/#MS_EXTERNAL_KAFKA=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
    fi
 fi
 echo ${compose_files} >${MS_BASE}/metersphere/compose_files

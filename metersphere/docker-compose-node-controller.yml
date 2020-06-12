@@ -13,6 +13,11 @@ services:
       JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:0.0.4
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "8082"]
+      interval: 6s
+      timeout: 3s
+      retries: 10
     volumes:
       - ms-conf:/opt/metersphere/conf
       - ms-jmeter-data:/jmeter

@@ -16,6 +16,11 @@ services:
       JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:0.0.4
     ports:
       - ${MS_PORT}:8081
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "8081"]
+      interval: 6s
+      timeout: 3s
+      retries: 10
     volumes:
       - ms-conf:/opt/metersphere/conf
       - ms-logs:/opt/metersphere/logs
@@ -42,6 +47,11 @@ services:
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
     ports:
       - 7777:7777
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "7777"]
+      interval: 6s
+      timeout: 3s
+      retries: 10
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
       - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
@@ -49,4 +59,5 @@ services:
       - ms-network
 #MS_EXTERNAL_KAFKA=false      
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
