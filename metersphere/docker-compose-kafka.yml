@@ -22,7 +22,7 @@ services:
     ports:
       - '${MS_KAFKA_PORT}:${MS_KAFKA_PORT}'
     healthcheck:
-      test: ["CMD", "kafka-topics", "--list", "--zookeeper", "zookeeper"]
+      test: ["CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper"]
       interval: 6s
       timeout: 3s
       retries: 10
