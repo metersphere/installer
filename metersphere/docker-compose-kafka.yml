@@ -26,6 +26,7 @@ services:
       interval: 6s
       timeout: 3s
       retries: 10
+    restart: on-failure
     volumes:
       - 'ms-kafka-data:/bitnami'
     environment:

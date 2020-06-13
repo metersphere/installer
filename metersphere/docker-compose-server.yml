@@ -52,6 +52,7 @@ services:
       interval: 6s
       timeout: 3s
       retries: 10
+    restart: on-failure
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
       - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
