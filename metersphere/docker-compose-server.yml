@@ -19,7 +19,7 @@ services:
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8081"]
       interval: 6s
-      timeout: 3s
+      timeout: 5s
       retries: 10
     volumes:
       - ms-conf:/opt/metersphere/conf
@@ -50,7 +50,7 @@ services:
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "7777"]
       interval: 6s
-      timeout: 3s
+      timeout: 5s
       retries: 10
     restart: on-failure
     volumes:
