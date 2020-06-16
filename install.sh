@@ -11,7 +11,9 @@ set -a
 source ${CURRENT_DIR}/install.conf
 set +a
 
-cp -r ./metersphere ${MS_BASE}
+mkdir -p ${MS_BASE}/metersphere
+cp -r ./metersphere ${MS_BASE}/
+
 sed -i -e "s\MS_BASE=.*\MS_BASE=${MS_BASE}\g" msctl
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
 ln -s /usr/local/bin/msctl /usr/bin/msctl
