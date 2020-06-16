@@ -5,6 +5,7 @@ args=$@
 
 MS_BASE=/opt/
 COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files)
+export COMPOSE_HTTP_TIMEOUT=180
 
 function usage() {
    echo "MeterSphere 控制脚本"

@@ -97,6 +97,7 @@ if [ ${MS_MODE} != "node-controller" ]; then
 fi
 echo ${compose_files} >${MS_BASE}/metersphere/compose_files
 
+export COMPOSE_HTTP_TIMEOUT=180
 cd ${CURRENT_DIR}
 # 加载镜像
 if [[ -d images ]]; then
