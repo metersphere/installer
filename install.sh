@@ -110,3 +110,7 @@ else
 fi
 
 cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) up -d
+
+msctl status
+echo -e "MeterSphere Installation Complete \n\nLogin to your MeterSphere instance:\n URL: http://\$LOCAL_IP:${MS_PORT}\n Username: admin Password: metersphere"
+echo -e "You can use command 'msctl status' to check the status of MeterSphere."
