@@ -109,6 +109,7 @@ if [[ -d images ]]; then
    done
 else
    cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull
+   docker pull ${MS_PREFIX}/jmeter-master:0.0.6
    cd -
 fi
 
