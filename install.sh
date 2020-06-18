@@ -3,6 +3,7 @@ CURRENT_DIR=$(
    cd "$(dirname "$0")"
    pwd
 )
+os=`uname -a`
 function log() {
    message="[MeterSphere Log]: $1 "
    echo -e "${message}" 2>&1 | tee -a ${CURRENT_DIR}/install.log
@@ -11,13 +12,17 @@ args=$@
 
 compose_files="-f docker-compose-base.yml"
 set -a
+if [[ $os =~ 'Darwin' ]];then
+    sed -i -e "s#MS_BASE=.*#MS_BASE=~#g" ${CURRENT_DIR}/install.conf
+    sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=$(ipconfig getifaddr en0)#g" ${CURRENT_DIR}/install.conf
+fi
 source ${CURRENT_DIR}/install.conf
 set +a
 
 mkdir -p ${MS_BASE}/metersphere
 cp -r ./metersphere ${MS_BASE}/
 
-sed -i -e "s\MS_BASE=.*\MS_BASE=${MS_BASE}\g" msctl
+sed -i -e "s#MS_BASE=.*#MS_BASE=${MS_BASE}#g" msctl
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
 ln -s /usr/local/bin/msctl /usr/bin/msctl 2>/dev/null
 
