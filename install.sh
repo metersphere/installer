@@ -1,9 +1,12 @@
 #!/bin/bash
-
 CURRENT_DIR=$(
    cd "$(dirname "$0")"
    pwd
 )
+function log() {
+   message="[MeterSphere Log]: $1 "
+   echo -e "${message}" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+}
 args=$@
 
 compose_files="-f docker-compose-base.yml"
@@ -16,47 +19,52 @@ cp -r ./metersphere ${MS_BASE}/
 
 sed -i -e "s\MS_BASE=.*\MS_BASE=${MS_BASE}\g" msctl
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
-ln -s /usr/local/bin/msctl /usr/bin/msctl
+ln -s /usr/local/bin/msctl /usr/bin/msctl 2>/dev/null
+
+echo -e "======================= 开始安装 =======================" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+
+echo "time: $(date)"
 
 #Install docker & docker-compose
 ##Install Latest Stable Docker Release
-if which docker; then
-   echo "Docker already installed, skip installation"
-   service docker start
+if which docker >/dev/null; then
+   log "检测到 Docker 已安装，跳过安装步骤"
+   log "启动 Docker "
+   service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
 else
    if [[ -d docker ]]; then
-      echo "... 离线安装 docker"
+      log "... 离线安装 docker"
       cp docker/bin/* /usr/bin/
       cp docker/service/docker.service /etc/systemd/system/
       chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
-      service docker start
+      log "... 启动 docker"
+      service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
 
    else
-      echo "... 在线安装 docker"
-      curl -fsSL https://get.docker.com -o get-docker.sh
-      sudo sh get-docker.sh
-      service docker start
-      echo "Docker Installation done"
+      log "... 在线安装 docker"
+      curl -fsSL https://get.docker.com -o get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      sudo sh get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      log "... 启动 docker"
+      service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
    fi
 
 fi
 
 ##Install Latest Stable Docker Compose Release
-if which docker-compose; then
-   echo "Docker Compose already installed, skip installation"
+if which docker-compose >/dev/null; then
+   log "检测到 Docker Compose 已安装，跳过安装步骤"
 else
    if [[ -d docker ]]; then
-      echo "... 离线安装 docker-compose"
+      log "... 离线安装 docker-compose"
       cp docker/bin/docker-compose /usr/bin/
       chmod +x /usr/bin/docker-compose
    else
-      echo "... 在线安装 docker-compose"
+      log "... 在线安装 docker-compose"
       COMPOSEVERSION=$(curl -s https://github.com/docker/compose/releases/latest/download 2>&1 | grep -Po [0-9]+\.[0-9]+\.[0-9]+)
-      curl -L "https://github.com/docker/compose/releases/download/$COMPOSEVERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      curl -L "https://github.com/docker/compose/releases/download/$COMPOSEVERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 2>&1 | tee -a ${CURRENT_DIR}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-      echo "Docker Compose Installation done"
    fi
 fi
 
@@ -76,7 +84,7 @@ node-controller)
    compose_files="${compose_files} -f docker-compose-node-controller.yml"
    ;;
 *)
-   echo "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
+   log "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
    ;;
 esac
 if [ ${MS_MODE} != "node-controller" ]; then
@@ -103,18 +111,22 @@ export COMPOSE_HTTP_TIMEOUT=180
 cd ${CURRENT_DIR}
 # 加载镜像
 if [[ -d images ]]; then
-   echo "... 加载镜像"
+   log "加载镜像"
    for i in $(ls images); do
-      docker load -i images/$i
+      docker load -i images/$i 2>&1 | tee -a ${CURRENT_DIR}/install.log
    done
 else
-   cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull
-   docker pull ${MS_PREFIX}/jmeter-master:0.0.6
+   log "拉取镜像"
+   cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   docker pull ${MS_PREFIX}/jmeter-master:0.0.6 2>&1 | tee -a ${CURRENT_DIR}/install.log
    cd -
 fi
 
-cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) up -d
+log "启动服务"
+cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) up -d 2>&1 | tee -a ${CURRENT_DIR}/install.log
 
-msctl status
-echo -e "MeterSphere Installation Complete \n\nLogin to your MeterSphere instance:\n URL: http://\$LOCAL_IP:${MS_PORT}\n Username: admin Password: metersphere"
-echo -e "You can use command 'msctl status' to check the status of MeterSphere."
+msctl status 2>&1 | tee -a ${CURRENT_DIR}/install.log
+
+echo -e "======================= 安装完成 =======================\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log-a ${CURRENT_DIR}/install.log
