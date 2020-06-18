@@ -1,59 +1,141 @@
+node .github/setup.js
 #!/bin/bash
-CURRENT_DIR=$(
+
+__current_dir=$(
    cd "$(dirname "$0")"
    pwd
 )
-os=`uname -a`
+args=$@
+__os=`uname -a`
+
 function log() {
    message="[MeterSphere Log]: $1 "
-   echo -e "${message}" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   echo -e "${message}" 2>&1 | tee -a ${__current_dir}/install.log
 }
-args=$@
-
-compose_files="-f docker-compose-base.yml"
 set -a
-if [[ $os =~ 'Darwin' ]];then
-    sed -i -e "s#MS_BASE=.*#MS_BASE=~#g" ${CURRENT_DIR}/install.conf
-    sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=$(ipconfig getifaddr en0)#g" ${CURRENT_DIR}/install.conf
+__local_ip=$(hostname -I|cut -d" " -f 1)
+source ${__current_dir}/install.conf
+
+export INSTALL_TYPE='install'
+if [ -f ~/.msrc ];then
+  source ~/.msrc > /dev/null
+  echo "存在已安装的 MeterSphere, 安装目录为 ${MS_BASE}/metersphere, 执行升级流程"
+  INSTALL_TYPE='upgrade'
+elif [ -f /usr/local/bin/msctl ];then
+  MS_BASE=$(cat /usr/local/bin/msctl | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
+  echo "存在已安装的 MeterSphere, 安装目录为 ${MS_BASE}/metersphere, 执行升级流程"
+  INSTALL_TYPE='upgrade'
+else
+  MS_BASE=$(cat ${__current_dir}/install.conf | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
+  echo "安装目录为 ${MS_BASE}/metersphere, 开始进行安装"
+  INSTALL_TYPE='install'
 fi
-source ${CURRENT_DIR}/install.conf
+if [ ${MS_EXTERNAL_KAFKA} = 'false' ];then
+   if [[ ${__os} =~ 'Darwin' ]];then
+      MS_BASE=${MS_BASE:-~}
+      __local_ip=$(ipconfig getifaddr en0)
+      sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+   fi
+   sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+fi
 set +a
 
-mkdir -p ${MS_BASE}/metersphere
-cp -r ./metersphere ${MS_BASE}/
+__current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
+__target_version=$(cat ${__current_dir}/metersphere/version)
+# 截取实际版本
+current_version=${__current_version%-*}
+current_version=${current_version:1}
+current_version_arr=(`echo $current_version | tr '.' ' '`)
 
-sed -i -e "s#MS_BASE=.*#MS_BASE=${MS_BASE}#g" msctl
+target_version=${__target_version%-*}
+target_version=${target_version:1}
+target_version_arr=(`echo $target_version | tr '.' ' '`)
+
+current_version=$(printf '1%02d%02d%02d' ${current_version_arr[0]} ${current_version_arr[1]} ${current_version_arr[2]})
+target_version=$(printf '1%02d%02d%02d' ${target_version_arr[0]} ${target_version_arr[1]} ${target_version_arr[2]})
+
+
+if [[ ${current_version} > ${target_version} ]]; then
+  echo -e "\e[31m不支持降级\e[0m"
+  return 2
+fi
+
+if [[ "${__current_version}" = "v1"* ]] || [[ "${__current_version}" = "v2"* ]]; then
+  if [[ "${__target_version}" = "v3"* ]]; then
+    echo -e "\e[31m不支持升级到此版本\e[0m"
+    return 2
+  fi
+fi
+
+if [[ ${__current_version} =~ "lts" ]];then
+   if [[ ! ${__target_version} =~ "lts" ]];then
+      log "从LTS版本升级到非LTS版本，此版本包含实验性功能请做好数据备份工作"
+      read -p "是否确认升级? [n/y]" __choice </dev/tty
+      case "$__choice" in
+         y|Y) echo "继续安装...";;
+         n|N) echo "退出安装..."&exit;;
+         *) echo "退出安装..."&exit;;
+      esac
+   fi
+else
+   if [[ $(cat ${__current_dir}/metersphere/version) =~ "lts" && ${INSTALL_TYPE} == "upgrade" ]];then
+      log "\e[31m从非LTS版本升级到LTS版本后，后续只能自动升级LTS版本，如升级非LTS版本，需手动升级！\e[0m"
+      read -p "是否确认升级? [n/y]" __choice </dev/tty
+      case "$__choice" in
+         y|Y) echo "继续安装...";;
+         n|N) echo "退出安装..."&exit;;
+         *) echo "退出安装..."&exit;;
+      esac
+   fi
+fi
+
+log "拷贝安装文件到目标目录"
+
+mkdir -p ${MS_BASE}/metersphere
+cp -f ./metersphere/version ${MS_BASE}/metersphere/version
+cp -rv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
+
+# 记录MeterSphere安装路径
+echo "MS_BASE=${MS_BASE}" > ~/.msrc
+# 安装 msctl 命令
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
 ln -s /usr/local/bin/msctl /usr/bin/msctl 2>/dev/null
 
-echo -e "======================= 开始安装 =======================" 2>&1 | tee -a ${CURRENT_DIR}/install.log
-
-echo "time: $(date)"
-
+log "======================= 开始安装 ======================="
 #Install docker & docker-compose
 ##Install Latest Stable Docker Release
 if which docker >/dev/null; then
    log "检测到 Docker 已安装，跳过安装步骤"
    log "启动 Docker "
-   service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   service docker start 2>&1 | tee -a ${__current_dir}/install.log
 else
    if [[ -d docker ]]; then
       log "... 离线安装 docker"
+      chmod +x docker/bin/*
       cp docker/bin/* /usr/bin/
       cp docker/service/docker.service /etc/systemd/system/
-      chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
       log "... 启动 docker"
-      service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
-
+      service docker start 2>&1 | tee -a ${__current_dir}/install.log
+      log "... 设置 docker 开机自启动"
+      systemctl enable docker 2>&1 | tee -a ${__current_dir}/install.log
    else
       log "... 在线安装 docker"
-      curl -fsSL https://get.docker.com -o get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
-      sudo sh get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      curl -fsSL https://resource.fit2cloud.com/get-docker-linux.sh -o get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
+      sudo sh get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
       log "... 启动 docker"
-      service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      service docker start 2>&1 | tee -a ${__current_dir}/install.log
+      log "... 设置 docker 开机自启动"
+      systemctl enable docker 2>&1 | tee -a ${__current_dir}/install.log
    fi
 
+fi
+
+# 检查docker服务是否正常运行
+docker ps 1>/dev/null 2>/dev/null
+if [ $? != 0 ];then
+   log "Docker 未正常启动，请先安装并启动 Docker 服务后再次执行本脚本"
+   exit
 fi
 
 ##Install Latest Stable Docker Compose Release
@@ -66,72 +148,66 @@ else
       chmod +x /usr/bin/docker-compose
    else
       log "... 在线安装 docker-compose"
-      COMPOSEVERSION=$(curl -s https://github.com/docker/compose/releases/latest/download 2>&1 | grep -Po [0-9]+\.[0-9]+\.[0-9]+)
-      curl -L "https://github.com/docker/compose/releases/download/$COMPOSEVERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      curl -L https://resource.fit2cloud.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s | tr A-Z a-z)-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
 fi
-
-cd ${MS_BASE}/metersphere
-env | grep MS_ >.env
-
-case ${MS_MODE} in
-allinone)
-   mkdir -p ${MS_BASE}/metersphere/data/jmeter
-   compose_files="${compose_files} -f docker-compose-server.yml -f docker-compose-node-controller.yml"
-   ;;
-server)
-   compose_files="${compose_files} -f docker-compose-server.yml"
-   ;;
-node-controller)
-   mkdir -p ${MS_BASE}/metersphere/data/jmeter
-   compose_files="${compose_files} -f docker-compose-node-controller.yml"
-   ;;
-*)
-   log "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
-   ;;
-esac
-if [ ${MS_MODE} != "node-controller" ]; then
-   # 是否使用外部数据库
-   if [ ${MS_EXTERNAL_MYSQL} = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/mysql
-      compose_files="${compose_files} -f docker-compose-mysql.yml"
-      sed -i -e "s#\${MS_MYSQL_DB}#${MS_MYSQL_DB}#g" ${MS_BASE}/metersphere/bin/mysql/init.sql
-   else
-      sed -i -e "/#MS_EXTERNAL_MYSQL=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
-   fi
-   # 是否使用外部 Kafka
-   if [ ${MS_EXTERNAL_KAFKA} = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/kafka
-      mkdir -p ${MS_BASE}/metersphere/data/zookeeper
-      compose_files="${compose_files} -f docker-compose-kafka.yml"
-   else
-      sed -i -e "/#MS_EXTERNAL_KAFKA=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
-   fi
+# 检查docker-compose是否正常
+docker-compose version 1>/dev/null 2>/dev/null
+if [ $? != 0 ];then
+   log "docker-compose 未正常安装，请先安装 docker-compose 后再次执行本脚本"
+   exit
 fi
-echo ${compose_files} >${MS_BASE}/metersphere/compose_files
 
+# 将配置信息存储到安装目录的环境变量配置文件中
+echo '' >> ${MS_BASE}/metersphere/.env
+cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
+# 通过加载环境变量的方式保留已修改的配置项，仅添加新增的配置项
+source ${__current_dir}/install.conf
+source ~/.msrc >/dev/null 2>&1
+__ms_image_tag=${MS_IMAGE_TAG}
+source ${MS_BASE}/metersphere/.env
+# 把原来kafka的配置合并成IP
+if [ ${MS_KAFKA_HOST} = 'kafka' ];then
+  MS_KAFKA_HOST=${__local_ip}
+fi
+export MS_IMAGE_TAG=${__ms_image_tag}
+env | grep MS_ > ${MS_BASE}/metersphere/.env
+ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf 2>/dev/null
+grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+msctl generate_compose_files
+msctl config 1>/dev/null 2>/dev/null
+if [ $? != 0 ];then
+   msctl config
+   log "docker-compose 版本与配置文件不兼容或配置文件存在问题，请重新安装最新版本的 docker-compose 或检查配置文件"
+   exit
+fi
+
+exec > >(tee -a ${__current_dir}/install.log) 2>&1
+set -e
 export COMPOSE_HTTP_TIMEOUT=180
-cd ${CURRENT_DIR}
+cd ${__current_dir}
 # 加载镜像
 if [[ -d images ]]; then
    log "加载镜像"
    for i in $(ls images); do
-      docker load -i images/$i 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      docker load -i images/$i
    done
 else
    log "拉取镜像"
-   cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull 2>&1 | tee -a ${CURRENT_DIR}/install.log
-   docker pull ${MS_PREFIX}/jmeter-master:0.0.6 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   msctl pull
+   curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms ${INSTALL_TYPE} ${MS_IMAGE_TAG}
    cd -
 fi
 
 log "启动服务"
-cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) up -d 2>&1 | tee -a ${CURRENT_DIR}/install.log
+msctl down -v
+msctl up -d --remove-orphans
 
-msctl status 2>&1 | tee -a ${CURRENT_DIR}/install.log
+msctl status
 
-echo -e "======================= 安装完成 =======================\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log
-echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${CURRENT_DIR}/install.log
-echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log-a ${CURRENT_DIR}/install.log
+echo -e "======================= 安装完成 =======================\n"
+
+echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere"
+echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
