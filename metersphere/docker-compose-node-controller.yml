@@ -10,7 +10,7 @@ services:
       KAFKA_TOPIC: ${MS_KAFKA_TOPIC}
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
-      JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:0.0.6
+      JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:0.0.7
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
     healthcheck:
