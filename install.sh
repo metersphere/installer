@@ -123,7 +123,7 @@ if [[ -d images ]]; then
 else
    log "拉取镜像"
    cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull 2>&1 | tee -a ${CURRENT_DIR}/install.log
-   docker pull ${MS_PREFIX}/jmeter-master:0.0.7 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   docker pull ${MS_PREFIX}/jmeter-master:${MS_JMETER_TAG} 2>&1 | tee -a ${CURRENT_DIR}/install.log
    cd -
 fi
 
