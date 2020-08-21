@@ -56,6 +56,12 @@ else
 
 fi
 
+docker ps 1>/dev/null 2>/dev/null
+if [ $? != 0 ];then
+   log "Docker 未正常启动，请先安装并启动 Docker 服务后再次执行本脚本"
+   exit
+fi
+
 ##Install Latest Stable Docker Compose Release
 if which docker-compose >/dev/null; then
    log "检测到 Docker Compose 已安装，跳过安装步骤"
@@ -71,6 +77,12 @@ else
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
+fi
+
+docker-compose version 1>/dev/null 2>/dev/null
+if [ $? != 0 ];then
+   log "docker-compose 未正常安装，请先安装 docker-compose 后再次执行本脚本"
+   exit
 fi
 
 cd ${MS_BASE}/metersphere
