@@ -13,7 +13,8 @@ services:
       KAFKA_TOPIC: ${MS_KAFKA_TOPIC}
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
-      JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:0.0.9
+      JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:${MS_JMETER_TAG}
+      SESSION_TIMEOUT: 7200
     ports:
       - ${MS_PORT}:8081
     healthcheck:
@@ -46,9 +47,10 @@ services:
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
     ports:
-      - 7777:7777
+      - 8084:8084
+      - 8085:8085
     healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "7777"]
+      test: ["CMD", "nc", "-zv", "localhost", "8084"]
       interval: 6s
       timeout: 10s
       retries: 20
