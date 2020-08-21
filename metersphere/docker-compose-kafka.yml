@@ -20,7 +20,7 @@ services:
     image: '${MS_PREFIX}/kafka:2'
     container_name: kafka
     ports:
-      - '${MS_KAFKA_PORT}:${MS_KAFKA_PORT}'
+      - '${MS_KAFKA_EXT_PORT}:${MS_KAFKA_EXT_PORT}'
     healthcheck:
       test: ["CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper"]
       interval: 6s
@@ -34,8 +34,8 @@ services:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_CFG_LISTENERS: INTERNAL://:9092,EXTERNAL://:${MS_KAFKA_PORT}
-      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
+      KAFKA_CFG_LISTENERS: INTERNAL://:9092,EXTERNAL://:${MS_KAFKA_EXT_PORT}
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
     depends_on:
       - zookeeper
     networks:
