@@ -49,7 +49,7 @@ else
    else
       log "... 在线安装 docker"
       curl -fsSL https://get.docker.com -o get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
-      sudo sh get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      sudo sh get-docker.sh --mirror Aliyun 2>&1 | tee -a ${CURRENT_DIR}/install.log
       log "... 启动 docker"
       service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
    fi
