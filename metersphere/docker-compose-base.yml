@@ -11,6 +11,11 @@ volumes:
       type: none
       device: ${MS_BASE}/metersphere/logs
       o: bind
+  ms-data:
+    driver_opts:
+      type: none
+      device: ${MS_BASE}/metersphere/data
+      o: bind
 
 networks:
   ms-network:
