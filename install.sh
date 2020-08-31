@@ -124,6 +124,12 @@ if [ ${MS_MODE} != "node-controller" ]; then
 fi
 echo ${compose_files} >${MS_BASE}/metersphere/compose_files
 
+cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) config 1>/dev/null 2>/dev/null
+if [ $? != 0 ];then
+   log "docker-compose 版本与配置文件不兼容，请重新安装最新版本的 docker-compose"
+   exit
+fi
+
 export COMPOSE_HTTP_TIMEOUT=180
 cd ${CURRENT_DIR}
 # 加载镜像
