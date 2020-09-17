@@ -20,6 +20,7 @@ function usage() {
    echo "  stop      停止 MeterSphere 服务"
    echo "  restart   重启 MeterSphere 服务"
    echo "  reload    重新加载 MeterSphere 服务"
+   echo "  upgrade   升级 MeterSphere 至最新版本"
    echo "  uninstall 卸载 MeterSphere 服务"
    echo "  version   查看 MeterSphere 版本信息"
 }
@@ -52,6 +53,24 @@ function version() {
    echo
    cat ${MS_BASE}/metersphere/version
 }
+function upgrade() {
+   os=`uname -a`
+   if [[ $os =~ 'Darwin' ]];then
+      MSVERSION=$(curl -s https://github.com/metersphere/metersphere/releases/latest |grep -Eo 'v[0-9]+.[0-9]+.[0-9]+')
+   else
+      MSVERSION=$(curl -s https://github.com/metersphere/metersphere/releases/latest/download 2>&1 | grep -Po 'v[0-9]+\.[0-9]+\.[0-9]+.*(?=")')
+   fi
+
+   wget --no-check-certificate https://github.com/metersphere/metersphere/releases/latest/download/metersphere-release-${MSVERSION}.tar.gz -O /tmp/metersphere-release-${MSVERSION}.tar.gz
+   cd /tmp;tar zxvf metersphere-release-${MSVERSION}.tar.gz
+   cd metersphere-release-${MSVERSION}
+
+   sed -i -e "s#MS_TAG=.*#MS_TAG=${MSVERSION}#g" install.conf
+   sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=registry.cn-qingdao.aliyuncs.com\/metersphere#g" install.conf
+   cat ${MS_BASE}/metersphere/.env >> install.conf
+   /bin/bash install.sh
+   rm -rf /tmp/metersphere-release-${MSVERSION}
+}
 
 function main() {
     case "${action}" in
@@ -69,6 +88,9 @@ function main() {
          ;;
       reload)
          reload
+         ;;
+      upgrade)
+         upgrade
          ;;
       uninstall)
          uninstall
