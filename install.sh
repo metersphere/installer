@@ -17,6 +17,9 @@ if [[ $os =~ 'Darwin' ]];then
     sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=$(ipconfig getifaddr en0)#g" ${CURRENT_DIR}/install.conf
 fi
 source ${CURRENT_DIR}/install.conf
+if [[ -f ${MS_BASE}/metersphere/.env ]];then
+   source ${MS_BASE}/metersphere/.env
+fi
 set +a
 
 mkdir -p ${MS_BASE}/metersphere
