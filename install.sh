@@ -18,6 +18,8 @@ if [[ $os =~ 'Darwin' ]];then
 fi
 source ${CURRENT_DIR}/install.conf
 if [[ -f ${MS_BASE}/metersphere/.env ]];then
+   echo MS_TAG=$MS_TAG >> ${MS_BASE}/metersphere/.env
+   echo MS_JMETER_TAG=$MS_JMETER_TAG >> ${MS_BASE}/metersphere/.env
    source ${MS_BASE}/metersphere/.env
 fi
 set +a
