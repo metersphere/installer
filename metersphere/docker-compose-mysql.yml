@@ -10,6 +10,8 @@ services:
       retries: 10
     environment:
       MYSQL_ROOT_PASSWORD: Password123@mysql
+    ports:
+      - 3307:3306
     volumes:
       - ${MS_BASE}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
       - ${MS_BASE}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
