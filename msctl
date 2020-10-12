@@ -65,9 +65,9 @@ function upgrade() {
    cd /tmp;tar zxvf metersphere-release-${MSVERSION}.tar.gz
    cd metersphere-release-${MSVERSION}
 
+   cat ${MS_BASE}/metersphere/.env >> install.conf
    sed -i -e "s#MS_TAG=.*#MS_TAG=${MSVERSION}#g" install.conf
    sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=registry.cn-qingdao.aliyuncs.com\/metersphere#g" install.conf
-   cat ${MS_BASE}/metersphere/.env >> install.conf
    /bin/bash install.sh
    rm -rf /tmp/metersphere-release-${MSVERSION}
 }
