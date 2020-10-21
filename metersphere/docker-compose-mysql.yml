@@ -4,7 +4,7 @@ services:
     image: ${MS_PREFIX}/mysql:5.7.25
     container_name: mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MS_MYSQL_PASSWORD}"]
       interval: 6s
       timeout: 5s
       retries: 10
