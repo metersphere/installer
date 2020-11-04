@@ -3,8 +3,6 @@ services:
   zookeeper:
     image: '${MS_PREFIX}/zookeeper:3'
     container_name: zookeeper
-    ports:
-      - '2181:2181'
     healthcheck:
       test: ["CMD", "zkCli.sh", "stat", "/"]
       interval: 6s
