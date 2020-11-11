@@ -14,7 +14,7 @@ services:
       retries: 10
     volumes:
       - ms-conf:/opt/metersphere/conf
-      - ms-jmeter-data:/jmeter
+      - ms-jmeter-data:/opt/node-data
       - ms-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
     mem_limit: 1024m
