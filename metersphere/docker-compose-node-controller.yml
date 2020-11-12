@@ -5,6 +5,7 @@ services:
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
+      JMETER_DATA_PATH: ${MS_BASE}/${MS_JMETER_DATA_PATH}
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
     healthcheck:
@@ -14,7 +15,7 @@ services:
       retries: 10
     volumes:
       - ms-conf:/opt/metersphere/conf
-      - ms-jmeter-data:/opt/node-data
+      - ms-jmeter-data:${MS_BASE}/${MS_JMETER_DATA_PATH}
       - ms-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
     mem_limit: 1024m
@@ -25,5 +26,5 @@ volumes:
   ms-jmeter-data:
     driver_opts:
       type: none
-      device: ${MS_BASE}/metersphere/data/jmeter
+      device: ${MS_BASE}/${MS_JMETER_DATA_PATH}
       o: bind
