@@ -151,6 +151,7 @@ else
 fi
 
 log "启动服务"
+cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) down -v 2>&1 | tee -a ${CURRENT_DIR}/install.log
 cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) up -d 2>&1 | tee -a ${CURRENT_DIR}/install.log
 
 msctl status 2>&1 | tee -a ${CURRENT_DIR}/install.log
