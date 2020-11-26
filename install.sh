@@ -17,6 +17,7 @@ if [[ $os =~ 'Darwin' ]];then
     sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=$(ipconfig getifaddr en0)#g" ${CURRENT_DIR}/install.conf
 fi
 source ${CURRENT_DIR}/install.conf
+MS_JMETER_TAG=$(cat install.conf | grep MS_JMETER_TAG | awk -F= 'NR==1{print $2}')
 if [[ -f ${MS_BASE}/metersphere/.env ]];then
    echo MS_TAG=$MS_TAG >> ${MS_BASE}/metersphere/.env
    echo MS_JMETER_TAG=$MS_JMETER_TAG >> ${MS_BASE}/metersphere/.env
