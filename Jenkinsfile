@@ -20,16 +20,16 @@ pipeline {
                 }
                 // Get some code from a GitHub repository
                 dir('ms-server') {
-                    git url: 'git@github.com:metersphere/metersphere.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: '${BRANCH}'
                 }
                 dir('ms-node-controller') {
-                    git url: 'git@github.com:metersphere/node-controller.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: '${BRANCH}'
                 }
                 dir('ms-data-streaming') {
-                    git url: 'git@github.com:metersphere/data-streaming.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: '${BRANCH}'
                 }
                 dir('jenkins-plugin') {
-                    git url: 'git@github.com:metersphere/jmeter-plugin.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jmeter-plugin.git', branch: '${BRANCH}'
                 }
             }
         }
