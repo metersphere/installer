@@ -100,17 +100,17 @@ pipeline {
 
                         #打包离线包
                         touch metersphere-release-${RELEASE}-offline.tar.gz
-                        tar czvf metersphere-release-${RELEASE}-offline.tar.gz . --transform "s/^\./metersphere-release-${RELEASE}-offline/" \
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \
+                        tar czvf metersphere-release-${RELEASE}-offline.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}-offline/" \\
+                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
                             --exclude .git
 
                         #打包在线包
                         touch metersphere-release-${RELEASE}.tar.gz
-                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\./metersphere-release-${RELEASE}/" \
-                            --exclude metersphere-release-${RELEASE}.tar.gz \
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \
-                            --exclude .git \
-                            --exclude images \
+                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude .git \\
+                            --exclude images \\
                             --exclude docker
                     '''
                 }
