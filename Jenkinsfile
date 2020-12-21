@@ -88,9 +88,9 @@ pipeline {
                         cd ..
 
                         #修改安装参数
-                        sed -i -e "s\MS_TAG=.*\MS_TAG=${RELEASE}\g" install.conf
-                        sed -i -e "s\MS_PREFIX=.*\MS_PREFIX=${IMAGE_FREFIX}\g" install.conf
-                        sed -i -e "s\MS_JMETER_TAG=.*\MS_JMETER_TAG=5.3-ms14\g" install.conf
+                        sed -i -e "s#MS_TAG=.*#MS_TAG=${RELEASE}#g" install.conf
+                        sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=${IMAGE_FREFIX}#g" install.conf
+                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.3-ms14#g" install.conf
 
                         #获取docker
                         wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker.zip
