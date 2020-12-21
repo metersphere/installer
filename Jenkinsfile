@@ -18,6 +18,7 @@ pipeline {
     }
     stages {
         stage('Preparation') {
+            when { tag "v*" }
             steps {
                 // Get some code from a GitHub repository
                 dir('ms-server') {
@@ -36,6 +37,7 @@ pipeline {
             }
         }
         stage('Tag Other Repos') {
+            when { tag "v*" }
             parallel {
                 stage('ms-server') {
                     steps {
