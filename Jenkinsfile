@@ -52,7 +52,7 @@ pipeline {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                     sh("git push -f origin --tags")
                 }
-                }
+            }
         }   
 
         stage('Package') {
@@ -70,7 +70,6 @@ pipeline {
                             waitUntil {
                                 def r = sh script: 'docker pull ${image}', returnStdout: true
                                 r == 0;
-                                }
                             }
                         }
                     }
@@ -119,7 +118,7 @@ pipeline {
 
         stage('Release') {
             withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
-                withEnv(["TOKEN=$TOKEN", "branch=$branch", "RELEASE=$RELEASE"]) {
+                withEnv(["TOKEN=$TOKEN", "branch=$BRANCH", "RELEASE=$RELEASE"]) {
                     sh script: '''
                         release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${branch}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere/releases)
                         id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
