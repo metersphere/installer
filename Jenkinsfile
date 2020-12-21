@@ -9,52 +9,63 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     parameters { 
-        string(name: 'IMAGE_FREFIX', defaultValue: 'registry.cn-qingdao.aliyuncs.com/metersphere', description: '构建后的 Docker 镜像带仓库名的前缀')
+        string(name: 'IMAGE_PREFIX', defaultValue: 'registry.cn-qingdao.aliyuncs.com/metersphere', description: '构建后的 Docker 镜像带仓库名的前缀')
+    }
+    environment {
+        BRANCH = 'v1.6'
+        RELEASE = 'v1.6.0-rc1'
+        IMAGE_PREFIX = "${params.IMAGE_PREFIX}"
     }
     stages {
         stage('Preparation') {
             steps {
-                script {
-                    def BRANCH = 'v1.6'
-                    def RELEASE = 'v1.6.0'
-                }
                 // Get some code from a GitHub repository
                 dir('ms-server') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH}"
                 }
                 dir('ms-node-controller') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH}"
                 }
                 dir('ms-data-streaming') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: "${BRANCH}"
                 }
-                dir('jenkins-plugin') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: '${BRANCH}'
-                }
+                sh '''
+                    git config --global user.email "wangzhen@fit2cloud.com"
+                    git config --global user.name "BugKing"
+                '''
             }
         }
-
         stage('Tag Other Repos') {
-            steps {
-                dir('ms-server') {
-                   sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                   sh("git push -f origin --tags")
+            parallel {
+                stage('ms-server') {
+                    steps {
+                        dir('ms-server') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin --tags")
+                        }
+                        build job:"../metersphere/${RELEASE}", quietPeriod:10
+                    }
                 }
-                dir('ms-node-controller') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin --tags")
+                stage('ms-node-controller') {
+                    steps {
+                        dir('ms-node-controller') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin --tags")
+                        }
+                        build job:"../node-controller/${RELEASE}", quietPeriod:10
+                    }
                 }
-                dir('ms-data-streaming') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin --tags")
-                }
-                dir('jenkins-plugin') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin --tags")
+                stage('ms-data-streaming') {
+                    steps {
+                        dir('ms-data-streaming') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin --tags")
+                        }
+                        build job:"../data-streaming/${RELEASE}", quietPeriod:10
+                    }
                 }
             }
         }   
-
         stage('Package') {
             steps {
                 dir('installer') {
@@ -64,11 +75,11 @@ pipeline {
                                     'zookeeper:3',
                                     'mysql:5.7.25',
                                     'metersphere:${RELEASE}',
-                                    'ms-node-controller:${RELEASE}',
-                                    'ms-data-streaming:${RELEASE}']
+                                    "ms-node-controller:${RELEASE}",
+                                    "ms-data-streaming:${RELEASE}"]
                         for (image in images) {
                             waitUntil {
-                                def r = sh script: 'docker pull ${image}', returnStdout: true
+                                def r = sh script: "docker pull ${IMAGE_PREFIX}/${image}", returnStatus: true
                                 r == 0;
                             }
                         }
@@ -76,25 +87,25 @@ pipeline {
                     sh '''
                         echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version
                         #保存镜像
-                        mkdir images && cd images
-                        docker save ${IMAGE_FREFIX}/metersphere:${RELEASE} -o metersphere.tar
-                        docker save ${IMAGE_FREFIX}/ms-node-controller:${RELEASE} -o ms-node-controller.tar
-                        docker save ${IMAGE_FREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
-                        docker save ${IMAGE_FREFIX}/jmeter-master:5.3-ms14 -o jmeter-master.tar
-                        docker save ${IMAGE_FREFIX}/kafka:2 -o kafka.tar
-                        docker save ${IMAGE_FREFIX}/zookeeper:3 -o zookeeper.tar
-                        docker save ${IMAGE_FREFIX}/mysql:5.7.25 -o mysql.tar
+                        rm -rf images && mkdir images && cd images
+                        docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} -o metersphere.tar
+                        docker save ${IMAGE_PREFIX}/ms-node-controller:${RELEASE} -o ms-node-controller.tar
+                        docker save ${IMAGE_PREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
+                        docker save ${IMAGE_PREFIX}/jmeter-master:5.3-ms14 -o jmeter-master.tar
+                        docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
+                        docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
+                        docker save ${IMAGE_PREFIX}/mysql:5.7.25 -o mysql.tar
                         cd ..
 
                         #修改安装参数
                         sed -i -e "s#MS_TAG=.*#MS_TAG=${RELEASE}#g" install.conf
-                        sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=${IMAGE_FREFIX}#g" install.conf
+                        sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=${IMAGE_PREFIX}#g" install.conf
                         sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.3-ms14#g" install.conf
 
                         #获取docker
                         wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker.zip
                         unzip docker.zip
-                        rm -rf docker.zip
+                        rm -rf docker.zip*
                         rm -rf __MACOSX
 
                         #打包离线包
@@ -117,6 +128,7 @@ pipeline {
         }
 
         stage('Release') {
+            when { tag "v*" }
             steps {
                 withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
                     withEnv(["TOKEN=$TOKEN", "branch=$BRANCH", "RELEASE=$RELEASE"]) {
