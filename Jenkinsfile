@@ -103,10 +103,12 @@ pipeline {
                         sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.3-ms14#g" install.conf
 
                         #获取docker
+                        rm -rf docker*
                         wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker.zip
                         unzip docker.zip
-                        rm -rf docker.zip*
                         rm -rf __MACOSX
+
+                        rm -rf metersphere-release*.tar.gz
 
                         #打包离线包
                         touch metersphere-release-${RELEASE}-offline.tar.gz
