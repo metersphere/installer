@@ -29,7 +29,7 @@ pipeline {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: '${BRANCH}'
                 }
                 dir('jenkins-plugin') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jmeter-plugin.git', branch: '${BRANCH}'
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: '${BRANCH}'
                 }
             }
         }
