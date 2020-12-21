@@ -74,7 +74,7 @@ pipeline {
                             }
                         }
                     }
-                    sh """
+                    sh '''
                         echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version
                         #保存镜像
                         mkdir images && cd images
@@ -112,7 +112,7 @@ pipeline {
                             --exclude .git \
                             --exclude images \
                             --exclude docker
-                    """
+                    '''
                 }
             }
         }
