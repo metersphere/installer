@@ -43,7 +43,7 @@ pipeline {
                     steps {
                         dir('ms-server') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin --tags")
+                            sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         build job:"../metersphere/${RELEASE}", quietPeriod:10
                     }
@@ -52,7 +52,7 @@ pipeline {
                     steps {
                         dir('ms-node-controller') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin --tags")
+                            sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         build job:"../node-controller/${RELEASE}", quietPeriod:10
                     }
@@ -61,7 +61,7 @@ pipeline {
                     steps {
                         dir('ms-data-streaming') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin --tags")
+                            sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         build job:"../data-streaming/${RELEASE}", quietPeriod:10
                     }
