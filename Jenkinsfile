@@ -13,7 +13,7 @@ pipeline {
     }
     environment {
         BRANCH = 'v1.6'
-        RELEASE = 'v1.6.0-rc1'
+        RELEASE = 'v1.6.0-rc2'
         IMAGE_PREFIX = "${params.IMAGE_PREFIX}"
     }
     stages {
