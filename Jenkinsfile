@@ -30,6 +30,9 @@ pipeline {
                 dir('ms-data-streaming') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: "${BRANCH}"
                 }
+                dir('jenkins-plugin') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH}"
+                }
                 sh '''
                     git config --global user.email "wangzhen@fit2cloud.com"
                     git config --global user.name "BugKing"
@@ -64,6 +67,15 @@ pipeline {
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         build job:"../data-streaming/${RELEASE}", quietPeriod:10
+                    }
+                }
+                stage('jenkins-plugin') {
+                    steps {
+                        dir('jenkins-plugin') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        build job:"../jenkins-plugin/${RELEASE}", quietPeriod:10
                     }
                 }
             }
@@ -143,6 +155,14 @@ pipeline {
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-release-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-release-${RELEASE}.tar.gz
+                            '''
+                        }
+                        dir('jenkins-plugin') {
+                            sh script: '''
+                                release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${branch}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/jenkins-plugin/releases)
+                                id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
+                                cd target
+                                curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-jenkins-plugin.hpi https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-jenkins-plugin-${RELEASE}.hpi
                             '''
                         }
                     }
