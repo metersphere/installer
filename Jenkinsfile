@@ -13,9 +13,7 @@ pipeline {
     }
     stages {
         stage('Preparation') {
-            when { tag "v*" }
             steps {
-                // Get some code from a GitHub repository
                 script {
                     def RELEASE = ""
                     if (env.TAG_NAME != '') {
@@ -23,7 +21,15 @@ pipeline {
                     } else {
                         RELEASE = env.BRANCH_NAME
                     }
+                    echo "RELEASE=${RELEASE}"
                 }
+            }
+        }
+        stage('Checkout') {
+            when { tag "v*" }
+            steps {
+                // Get some code from a GitHub repository
+
                 dir('ms-server') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH_NAME}"
                 }
