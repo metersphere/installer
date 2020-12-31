@@ -8,30 +8,33 @@ pipeline {
         quietPeriod(600)
         checkoutToSubdirectory('installer')
     }
-    parameters { 
-        string(name: 'IMAGE_PREFIX', defaultValue: 'registry.cn-qingdao.aliyuncs.com/metersphere', description: '构建后的 Docker 镜像带仓库名的前缀')
-    }
     environment {
-        BRANCH = 'v1.6'
-        RELEASE = 'v1.6.0'
-        IMAGE_PREFIX = "${params.IMAGE_PREFIX}"
+        IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
     }
     stages {
         stage('Preparation') {
             when { tag "v*" }
             steps {
                 // Get some code from a GitHub repository
+                script {
+                    def RELEASE = ""
+                    if (env.TAG_NAME != '') {
+                        RELEASE = env.TAG_NAME
+                    } else {
+                        RELEASE = env.BRANCH_NAME
+                    }
+                }
                 dir('ms-server') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH}"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH_NAME}"
                 }
                 dir('ms-node-controller') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH}"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH_NAME}"
                 }
                 dir('ms-data-streaming') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: "${BRANCH}"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: "${BRANCH_NAME}"
                 }
                 dir('jenkins-plugin') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH}"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
                 }
                 sh '''
                     git config --global user.email "wangzhen@fit2cloud.com"
@@ -81,6 +84,7 @@ pipeline {
             }
         }   
         stage('Package') {
+            when { tag "v*" }
             steps {
                 dir('installer') {
                     script {
@@ -151,7 +155,7 @@ pipeline {
                     withEnv(["TOKEN=$TOKEN", "branch=$BRANCH", "RELEASE=$RELEASE"]) {
                         dir('installer') {
                             sh script: '''
-                                release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${branch}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere/releases)
+                                release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere/releases)
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-release-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-release-${RELEASE}.tar.gz
@@ -162,6 +166,7 @@ pipeline {
             }
         }
         stage('Archive') {
+            when { tag "v*" }
             steps {
                 archiveArtifacts artifacts: 'installer/*.tar.gz,installer/quick_start.sh,installer/*.md5', followSymlinks: false
             }
