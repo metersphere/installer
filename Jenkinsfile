@@ -22,6 +22,7 @@ pipeline {
                     } else {
                         RELEASE = env.BRANCH_NAME
                     }
+                    env.RELEASE = "${RELEASE}"
                     echo "RELEASE=${RELEASE}"
                 }
             }
@@ -147,7 +148,7 @@ pipeline {
                                     'kafka:2',
                                     'zookeeper:3',
                                     'mysql:5.7.25',
-                                    'metersphere:${RELEASE}',
+                                    "metersphere:${RELEASE}",
                                     "ms-node-controller:${RELEASE}",
                                     "ms-data-streaming:${RELEASE}"]
                         for (image in images) {
