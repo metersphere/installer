@@ -9,13 +9,14 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
+        BRANCH_NAME = "v1.6"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
     }
     stages {
         stage('Preparation') {
             steps {
                 script {
-                    def RELEASE = ""
+                    RELEASE = ""
                     if (env.TAG_NAME != null) {
                         RELEASE = env.TAG_NAME
                     } else {
