@@ -208,7 +208,7 @@ pipeline {
             when { tag "v*" }
             steps {
                 withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
-                    withEnv(["TOKEN=$TOKEN", "branch=$BRANCH", "RELEASE=$RELEASE"]) {
+                    withEnv(["TOKEN=$TOKEN"]) {
                         dir('installer') {
                             sh script: '''
                                 release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere/releases)
