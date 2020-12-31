@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     def RELEASE = ""
-                    if (env.TAG_NAME != '') {
+                    if (env.TAG_NAME != null) {
                         RELEASE = env.TAG_NAME
                     } else {
                         RELEASE = env.BRANCH_NAME
