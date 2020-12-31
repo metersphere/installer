@@ -5,7 +5,7 @@ pipeline {
         }
     }
     options { 
-        quietPeriod(600)
+        quietPeriod(30)
         checkoutToSubdirectory('installer')
     }
     environment {
