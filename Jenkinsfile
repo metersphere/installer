@@ -58,7 +58,19 @@ pipeline {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
-                        build job:"../metersphere/${RELEASE}", quietPeriod:10
+                        script {
+                            for (int i=0;i<6;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../metersphere/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (NullPointerException e) {
+                                    println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
                     }
                 }
                 stage('ms-node-controller') {
@@ -67,7 +79,19 @@ pipeline {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
-                        build job:"../node-controller/${RELEASE}", quietPeriod:10
+                        script {
+                            for (int i=0;i<6;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../node-controller/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (NullPointerException e) {
+                                    println("Not building the job ../node-controller/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
                     }
                 }
                 stage('ms-data-streaming') {
@@ -76,7 +100,19 @@ pipeline {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
-                        build job:"../data-streaming/${RELEASE}", quietPeriod:10
+                        script {
+                            for (int i=0;i<6;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../data-streaming/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (NullPointerException e) {
+                                    println("Not building the job ../data-streaming/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
                     }
                 }
                 stage('jenkins-plugin') {
@@ -85,7 +121,19 @@ pipeline {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
-                        build job:"../jenkins-plugin/${RELEASE}", quietPeriod:10
+                        script {
+                            for (int i=0;i<6;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../jenkins-plugin/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (NullPointerException e) {
+                                    println("Not building the job ../jenkins-plugin/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
                     }
                 }
             }
