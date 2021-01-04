@@ -199,6 +199,8 @@ pipeline {
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker
+
+                        md5sum -b metersphere-release-${RELEASE}-offline.tar.gz | awk '{print $1}' > metersphere-release-${RELEASE}-offline.tar.gz.md5
                     '''
                 }
             }
@@ -225,6 +227,18 @@ pipeline {
             when { tag "v*" }
             steps {
                 archiveArtifacts artifacts: 'installer/*.tar.gz,installer/quick_start.sh,installer/*.md5', followSymlinks: false
+            }
+        }
+        stage('Upload') {
+            when { tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP"}
+            steps {
+                dir('installer') {
+                    echo "UPLOADING"
+                    withCredentials([usernamePassword(credentialsId: '', passwordVariable: 'SK', usernameVariable: 'AK')]) {
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-release-${RELEASE}-offline.tar.gz ./metersphere-release-${RELEASE}-offline.tar.gz")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-release-${RELEASE}-offline.tar.gz.md5 ./metersphere-release-${RELEASE}-offline.tar.gz.md5")
+                    }
+                }
             }
         }
     }
