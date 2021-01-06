@@ -66,7 +66,7 @@ pipeline {
                                     sleep 10
                                     build job:"../metersphere/${RELEASE}", quietPeriod:10
                                     break
-                                } catch (NullPointerException e) {
+                                } catch (Exception e) {
                                     println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
                                     continue
                                 }
