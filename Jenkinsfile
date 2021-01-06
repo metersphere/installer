@@ -67,6 +67,7 @@ pipeline {
                                     build job:"../metersphere/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
+                                    println(e)
                                     println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
                                     continue
                                 }
@@ -234,7 +235,7 @@ pipeline {
             steps {
                 dir('installer') {
                     echo "UPLOADING"
-                    withCredentials([usernamePassword(credentialsId: '', passwordVariable: 'SK', usernameVariable: 'AK')]) {
+                    withCredentials([usernamePassword(credentialsId: 'OSSKEY', passwordVariable: 'SK', usernameVariable: 'AK')]) {
                         sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-release-${RELEASE}-offline.tar.gz ./metersphere-release-${RELEASE}-offline.tar.gz")
                         sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-release-${RELEASE}-offline.tar.gz.md5 ./metersphere-release-${RELEASE}-offline.tar.gz.md5")
                     }
