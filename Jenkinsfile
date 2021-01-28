@@ -88,7 +88,7 @@ pipeline {
                                     sleep 10
                                     build job:"../node-controller/${RELEASE}", quietPeriod:10
                                     break
-                                } catch (NullPointerException e) {
+                                } catch (Exception e) {
                                     println("Not building the job ../node-controller/${RELEASE} as it doesn't exist")
                                     continue
                                 }
@@ -109,7 +109,7 @@ pipeline {
                                     sleep 10
                                     build job:"../data-streaming/${RELEASE}", quietPeriod:10
                                     break
-                                } catch (NullPointerException e) {
+                                } catch (Exception e) {
                                     println("Not building the job ../data-streaming/${RELEASE} as it doesn't exist")
                                     continue
                                 }
@@ -130,7 +130,7 @@ pipeline {
                                     sleep 10
                                     build job:"../jenkins-plugin/${RELEASE}", quietPeriod:10
                                     break
-                                } catch (NullPointerException e) {
+                                } catch (Exception e) {
                                     println("Not building the job ../jenkins-plugin/${RELEASE} as it doesn't exist")
                                     continue
                                 }
