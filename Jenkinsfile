@@ -9,7 +9,7 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
-        BRANCH_NAME = "v1.6"
+        BRANCH_NAME = "v1.7"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
     }
     stages {
