@@ -60,7 +60,7 @@ pipeline {
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         script {
-                            for (int i=0;i<6;i++) {
+                            for (int i=0;i<10;i++) {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
@@ -82,7 +82,7 @@ pipeline {
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         script {
-                            for (int i=0;i<6;i++) {
+                            for (int i=0;i<10;i++) {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
@@ -103,7 +103,7 @@ pipeline {
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         script {
-                            for (int i=0;i<6;i++) {
+                            for (int i=0;i<10;i++) {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
@@ -124,7 +124,7 @@ pipeline {
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
                         script {
-                            for (int i=0;i<6;i++) {
+                            for (int i=0;i<10;i++) {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
