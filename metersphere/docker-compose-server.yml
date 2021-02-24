@@ -8,14 +8,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MS_MYSQL_PASSWORD}
-      KAFKA_PARTITIONS: 1
+      KAFKA_PARTITIONS: 4
       KAFKA_REPLICAS: 1
       KAFKA_TOPIC: ${MS_KAFKA_TOPIC}
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_TEST_TOPIC: ${MS_KAFKA_TEST_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
       JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:${MS_JMETER_TAG}
-      SESSION_TIMEOUT: 7200
+      SESSION_TIMEOUT: 21600
     ports:
       - ${MS_PORT}:8081
     healthcheck:
@@ -43,7 +43,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MS_MYSQL_PASSWORD}
-      KAFKA_PARTITIONS: 1
+      KAFKA_PARTITIONS: 4
       KAFKA_REPLICAS: 1
       KAFKA_TOPIC: ${MS_KAFKA_TOPIC}
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
