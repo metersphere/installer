@@ -11,7 +11,7 @@ pipeline {
     environment {
         BRANCH_NAME = "v1.8"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
-        JMETER_TAG = "5.4.1-ms1-jdk11"
+        JMETER_TAG = "5.4.1-ms3-jdk8"
     }
     stages {
         stage('Preparation') {
