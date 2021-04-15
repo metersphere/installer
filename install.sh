@@ -127,6 +127,11 @@ if [ ${MS_MODE} != "node-controller" ]; then
    else
       sed -i -e "/#MS_EXTERNAL_KAFKA=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
    fi
+   # 是否使用外部 Prometheus
+   if [ ${MS_EXTERNAL_PROM} = "false" ]; then
+      mkdir -p ${MS_BASE}/metersphere/data/prometheus
+      compose_files="${compose_files} -f docker-compose-prometheus.yml"
+   fi
 fi
 echo ${compose_files} >${MS_BASE}/metersphere/compose_files
 
