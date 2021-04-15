@@ -40,6 +40,11 @@ services:
       - 9100
     ports:
       - 9100:9100
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "9100"]
+      interval: 6s
+      timeout: 5s
+      retries: 10      
     networks:
       - ms-network
 
