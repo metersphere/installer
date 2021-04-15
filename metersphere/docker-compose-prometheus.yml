@@ -19,7 +19,7 @@ services:
         ports:
           - "9090:9090"
         networks:
-          - monitor-net
+          - ms-network
 
 volumes:
   ms-prometheus-data:
