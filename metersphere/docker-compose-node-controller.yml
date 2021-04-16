@@ -5,9 +5,10 @@ services:
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
-      JMETER_DATA_PATH: ${MS_BASE}/${MS_JMETER_DATA_PATH}
+      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
+      - 9100:9100
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8082"]
       interval: 6s
@@ -15,7 +16,7 @@ services:
       retries: 10
     volumes:
       - ms-conf:/opt/metersphere/conf
-      - ms-jmeter-data:${MS_BASE}/${MS_JMETER_DATA_PATH}
+      - ms-data:/opt/metersphere/data
       - ms-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
     mem_limit: 1024m
@@ -36,21 +37,9 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
-    expose:
-      - 9100
-    ports:
-      - 9100:9100
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "9100"]
       interval: 6s
       timeout: 5s
       retries: 10      
-    networks:
-      - ms-network
-
-volumes:
-  ms-jmeter-data:
-    driver_opts:
-      type: none
-      device: ${MS_BASE}/${MS_JMETER_DATA_PATH}
-      o: bind
+    network_mode: service:ms-node-controller
