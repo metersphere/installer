@@ -150,7 +150,7 @@ pipeline {
                                     'zookeeper:3',
                                     'mysql:5.7.33',
                                     'prometheus:latest',
-                                    'node-exporter:latest'
+                                    'node-exporter:latest',
                                     "metersphere:${RELEASE}",
                                     "ms-node-controller:${RELEASE}",
                                     "ms-data-streaming:${RELEASE}"]
