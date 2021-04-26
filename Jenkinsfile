@@ -9,7 +9,7 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
-        BRANCH_NAME = "v1.8"
+        BRANCH_NAME = "v1.9"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
     }
     stages {
@@ -148,7 +148,9 @@ pipeline {
                         def images = ['jmeter-master:5.3-ms14',
                                     'kafka:2',
                                     'zookeeper:3',
-                                    'mysql:5.7.25',
+                                    'mysql:5.7.33',
+                                    'prometheus:latest',
+                                    'node-exporter:latest'
                                     "metersphere:${RELEASE}",
                                     "ms-node-controller:${RELEASE}",
                                     "ms-data-streaming:${RELEASE}"]
@@ -169,7 +171,9 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/jmeter-master:5.3-ms14 -o jmeter-master.tar
                         docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
                         docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
-                        docker save ${IMAGE_PREFIX}/mysql:5.7.25 -o mysql.tar
+                        docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
+                        docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
+                        docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
                         cd ..
 
                         #修改安装参数
