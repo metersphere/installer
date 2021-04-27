@@ -145,7 +145,7 @@ pipeline {
             steps {
                 dir('installer') {
                     script {
-                        def images = ['jmeter-master:5.3-ms14',
+                        def images = ['jmeter-master:5.4.1-ms3-jdk8',
                                     'kafka:2',
                                     'zookeeper:3',
                                     'mysql:5.7.33',
@@ -168,7 +168,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} -o metersphere.tar
                         docker save ${IMAGE_PREFIX}/ms-node-controller:${RELEASE} -o ms-node-controller.tar
                         docker save ${IMAGE_PREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
-                        docker save ${IMAGE_PREFIX}/jmeter-master:5.3-ms14 -o jmeter-master.tar
+                        docker save ${IMAGE_PREFIX}/jmeter-master:5.4.1-ms3-jdk8 -o jmeter-master.tar
                         docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
                         docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
                         docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
@@ -179,7 +179,7 @@ pipeline {
                         #修改安装参数
                         sed -i -e "s#MS_TAG=.*#MS_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=${IMAGE_PREFIX}#g" install.conf
-                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.3-ms14#g" install.conf
+                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.4.1-ms3-jdk8#g" install.conf
 
                         #获取docker
                         rm -rf docker*
