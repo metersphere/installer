@@ -26,7 +26,7 @@ fi
 set +a
 
 mkdir -p ${MS_BASE}/metersphere
-cp -r ./metersphere ${MS_BASE}/
+cp -ru --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
 sed -i -e "s#MS_BASE=.*#MS_BASE=${MS_BASE}#g" msctl
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
