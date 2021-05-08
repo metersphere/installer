@@ -134,6 +134,7 @@ if [ ${MS_MODE} != "node-controller" ]; then
    fi
 fi
 echo ${compose_files} >${MS_BASE}/metersphere/compose_files
+echo "127.0.0.1 $(hostname)" >> /etc/hosts
 
 cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) config 1>/dev/null 2>/dev/null
 if [ $? != 0 ];then
