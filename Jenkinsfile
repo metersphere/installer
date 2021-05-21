@@ -177,8 +177,8 @@ pipeline {
                         cd ..
 
                         #修改安装参数
-                        sed -i -e "s#MS_TAG=.*#MS_TAG=${RELEASE}#g" install.conf
-                        sed -i -e "s#MS_PREFIX=.*#MS_PREFIX=${IMAGE_PREFIX}#g" install.conf
+                        sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
+                        sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
                         sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.4.1-ms3-jdk8#g" install.conf
 
                         #获取docker

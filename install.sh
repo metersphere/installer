@@ -17,12 +17,6 @@ if [[ $os =~ 'Darwin' ]];then
     sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=$(ipconfig getifaddr en0)#g" ${CURRENT_DIR}/install.conf
 fi
 source ${CURRENT_DIR}/install.conf
-MS_JMETER_TAG=$(cat install.conf | grep MS_JMETER_TAG | awk -F= 'NR==1{print $2}')
-if [[ -f ${MS_BASE}/metersphere/.env ]];then
-   echo MS_TAG=$MS_TAG >> ${MS_BASE}/metersphere/.env
-   echo MS_JMETER_TAG=$MS_JMETER_TAG >> ${MS_BASE}/metersphere/.env
-   source ${MS_BASE}/metersphere/.env
-fi
 set +a
 
 mkdir -p ${MS_BASE}/metersphere
@@ -94,7 +88,7 @@ fi
 cd ${MS_BASE}/metersphere
 env | grep MS_ >.env
 
-case ${MS_MODE} in
+case ${MS_INSTALL_MODE} in
 allinone)
    mkdir -p ${MS_BASE}/metersphere/data/jmeter
    compose_files="${compose_files} -f docker-compose-server.yml -f docker-compose-node-controller.yml"
@@ -110,7 +104,7 @@ node-controller)
    log "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
    ;;
 esac
-if [ ${MS_MODE} != "node-controller" ]; then
+if [ ${MS_INSTALL_MODE} != "node-controller" ]; then
    # 是否使用外部数据库
    if [ ${MS_EXTERNAL_MYSQL} = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/mysql
@@ -153,7 +147,7 @@ if [[ -d images ]]; then
 else
    log "拉取镜像"
    cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull 2>&1 | tee -a ${CURRENT_DIR}/install.log
-   docker pull ${MS_PREFIX}/jmeter-master:${MS_JMETER_TAG} 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   docker pull ${MS_IMAGE_PREFIX}/jmeter-master:${MS_JMETER_TAG} 2>&1 | tee -a ${CURRENT_DIR}/install.log
    cd -
 fi
 
@@ -165,5 +159,5 @@ msctl status 2>&1 | tee -a ${CURRENT_DIR}/install.log
 
 echo -e "======================= 安装完成 =======================\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log
 
-echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${CURRENT_DIR}/install.log
 echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log-a ${CURRENT_DIR}/install.log

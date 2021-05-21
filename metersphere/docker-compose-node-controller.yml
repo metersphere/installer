@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   ms-node-controller:
-    image: ${MS_PREFIX}/ms-node-controller:${MS_TAG}
+    image: ${MS_IMAGE_PREFIX}/ms-node-controller:${MS_IMAGE_TAG}
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -24,7 +24,7 @@ services:
       - ms-network
   
   nodeexporter:
-    image: ${MS_PREFIX}/node-exporter:latest
+    image: ${MS_IMAGE_PREFIX}/node-exporter:latest
     container_name: nodeexporter
     user: root
     privileged: true

@@ -1,10 +1,9 @@
 version: "2.1"
 services:
   ms-server:
-    image: ${MS_PREFIX}/metersphere:${MS_TAG}
+    image: ${MS_IMAGE_PREFIX}/metersphere:${MS_IMAGE_TAG}
     container_name: ms-server
     environment:
-      HOST_HOSTNAME: $HOSTNAME
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MS_MYSQL_PASSWORD}
@@ -14,10 +13,10 @@ services:
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_TEST_TOPIC: ${MS_KAFKA_TEST_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
-      JMETER_IMAGE: ${MS_PREFIX}/jmeter-master:${MS_JMETER_TAG}
+      JMETER_IMAGE: ${MS_JMETER_IMAGE}
       SESSION_TIMEOUT: 21600
     ports:
-      - ${MS_PORT}:8081
+      - ${MS_SERVER_PORT}:8081
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8081"]
       interval: 6s
@@ -30,13 +29,9 @@ services:
 #    mem_limit: 1024m
     networks:
       - ms-network
-#MS_EXTERNAL_MYSQL=false      
-    depends_on:
-      mysql:
-        condition: service_healthy
 
   ms-data-streaming:
-    image: ${MS_PREFIX}/ms-data-streaming:${MS_TAG}
+    image: ${MS_IMAGE_PREFIX}/ms-data-streaming:${MS_IMAGE_TAG}
     container_name: ms-data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -63,7 +58,3 @@ services:
       - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
     networks:
       - ms-network
-#MS_EXTERNAL_KAFKA=false      
-    depends_on:
-      kafka:
-        condition: service_healthy

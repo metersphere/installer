@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   zookeeper:
-    image: '${MS_PREFIX}/zookeeper:3'
+    image: '${MS_IMAGE_PREFIX}/zookeeper:3'
     container_name: zookeeper
     healthcheck:
       test: ["CMD", "zkCli.sh", "stat", "/"]
@@ -15,7 +15,7 @@ services:
     networks:
       - ms-network
   kafka:
-    image: '${MS_PREFIX}/kafka:2'
+    image: '${MS_IMAGE_PREFIX}/kafka:2'
     container_name: kafka
     ports:
       - '${MS_KAFKA_EXT_PORT}:${MS_KAFKA_EXT_PORT}'
@@ -39,6 +39,11 @@ services:
       - zookeeper
     networks:
       - ms-network
+  ms-data-streaming:
+    depends_on:
+      kafka:
+        condition: service_healthy
+
 volumes:
   ms-zookeeper-data:
     driver_opts:
