@@ -148,7 +148,8 @@ pipeline {
                         #修改安装参数
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
-                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf                    
+                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
+                        echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version              
                         #打包在线包
                         touch metersphere-release-${RELEASE}.tar.gz
                         tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
@@ -183,7 +184,6 @@ pipeline {
                         }
                     }
                     sh '''
-                        echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version
                         #保存镜像
                         rm -rf images && mkdir images && cd images
                         docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} -o metersphere.tar
