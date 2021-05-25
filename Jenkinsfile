@@ -236,7 +236,6 @@ pipeline {
             }
         }
         stage('Archive') {
-            when { tag "v*" }
             steps {
                 archiveArtifacts artifacts: 'installer/*.tar.gz,installer/quick_start.sh,installer/*.md5', followSymlinks: false
             }
