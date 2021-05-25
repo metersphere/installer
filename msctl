@@ -5,7 +5,7 @@ args=$@
 
 source ~/.msrc > /dev/null
 MS_BASE=${MS_BASE:-/opt}
-COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files)
+COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files 2>/dev/null || echo "")
 source ${MS_BASE}/metersphere/install.conf
 export COMPOSE_HTTP_TIMEOUT=180
 
@@ -209,7 +209,7 @@ function main() {
       usage
       ;;
    generate_compose_files)
-      generage_compose_files
+      generate_compose_files
       ;;
    *)
       echo

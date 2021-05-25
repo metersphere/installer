@@ -96,7 +96,7 @@ EOF" | cat - ${MS_BASE}/metersphere/.env > temp && mv temp ${MS_BASE}/meterspher
 diff ${__current_dir}/install.conf ${MS_BASE}/metersphere/.env | patch ${MS_BASE}/metersphere/.env
 ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf
 grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
-msctl generage_compose_files
+msctl generate_compose_files
 msctl config 1>/dev/null 2>/dev/null
 if [ $? != 0 ];then
    log "docker-compose 版本与配置文件不兼容，请重新安装最新版本的 docker-compose"
