@@ -108,13 +108,16 @@ fi
 
 # 将配置信息存储到安装目录的环境变量配置文件中
 echo '' >> ${MS_BASE}/metersphere/.env
-eval "cat <<EOF
-# ADDED ON $(date)
-$(<install.conf)
-# END
-EOF" | cat - ${MS_BASE}/metersphere/.env > temp && mv temp ${MS_BASE}/metersphere/.env
-diff ${__current_dir}/install.conf ${MS_BASE}/metersphere/.env | patch ${MS_BASE}/metersphere/.env
-ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf
+/usr/bin/cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
+# 通过加载环境变量的方式保留已修改的配置项，仅添加新增的配置项
+source ${__current_dir}/install.conf
+__ms_image_tag=${MS_IMAGE_TAG}
+__ms_jmeter_image=${MS_JMETER_IMAGE}
+source ${MS_BASE}/metersphere/.env
+export MS_IMAGE_TAG=${__ms_image_tag}
+export MS_JMETER_IMAGE=${__ms_jmeter_image}
+env | grep MS_ > ${MS_BASE}/metersphere/.env
+ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf 2>/dev/null
 grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
 msctl generate_compose_files
 msctl config 1>/dev/null 2>/dev/null
