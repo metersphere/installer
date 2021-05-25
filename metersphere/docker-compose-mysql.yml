@@ -9,7 +9,7 @@ services:
       timeout: 5s
       retries: 10
     environment:
-      MS_MYSQL_DB: ${MS_MYSQL_DB}
+      MYSQL_DATABASE: ${MS_MYSQL_DB}
       MYSQL_ROOT_PASSWORD: Password123@mysql
     ports:
       - 3307:3306
