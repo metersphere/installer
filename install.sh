@@ -21,8 +21,28 @@ sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current
 source ${__current_dir}/install.conf
 set +a
 
+__current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
+if [[ ${__current_version} =~ "lts" ]];then
+   if [[ ! $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
+      log "不支持从LTS版本升级到非LTS版本"
+      exit 1
+   fi
+else
+   if [[ $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
+      log "\e[31m从非LTS版本升级到LTS版本后，后续将只能升级新的LTS版本，无法再自动升级到非LTS版本\e[0m"
+      read -p "是否确认升级? [n/y]" __choice
+      case "$__choice" in
+         y|Y) echo "继续安装...";;
+         n|N) echo "退出安装..."&exit;;
+         *) echo "退出安装..."&exit;;
+       esac
+   fi
+fi
+
+log "${MS_BASE}/metersphere 目录已存在，进行升级流程"
+
 mkdir -p ${MS_BASE}/metersphere
-cp -ru --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
+cp -ruv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
 # 记录MeterSphere安装路径
 echo "MS_BASE=${MS_BASE}" > ~/.msrc\
