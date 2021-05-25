@@ -11,6 +11,7 @@ pipeline {
     environment {
         BRANCH_NAME = "v1.9"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
+        JMETER_TAG = "5.4.1-ms4-jdk8"
     }
     stages {
         stage('Preparation') {
@@ -139,13 +140,29 @@ pipeline {
                     }
                 }
             }
-        }   
-        stage('Package') {
+        }
+        stage('Package Online-install') {
+            steps {
+                dir('installer') {
+                    sh '''
+                    #打包在线包
+                        touch metersphere-release-${RELEASE}.tar.gz
+                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude .git \\
+                            --exclude images \\
+                            --exclude docker
+                    '''
+                }
+            }
+        }
+        stage('Package Offline-install') {
             when { tag "v*" }
             steps {
                 dir('installer') {
                     script {
-                        def images = ['jmeter-master:5.4.1-ms3-jdk8',
+                        def images = ['jmeter-master:${JMETER_TAG}',
                                     'kafka:2',
                                     'zookeeper:3',
                                     'mysql:5.7.33',
@@ -168,7 +185,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} -o metersphere.tar
                         docker save ${IMAGE_PREFIX}/ms-node-controller:${RELEASE} -o ms-node-controller.tar
                         docker save ${IMAGE_PREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
-                        docker save ${IMAGE_PREFIX}/jmeter-master:5.4.1-ms3-jdk8 -o jmeter-master.tar
+                        docker save ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} -o jmeter-master.tar
                         docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
                         docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
                         docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
@@ -179,7 +196,7 @@ pipeline {
                         #修改安装参数
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
-                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=5.4.1-ms3-jdk8#g" install.conf
+                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
 
                         #获取docker
                         rm -rf docker*
@@ -195,15 +212,6 @@ pipeline {
                         tar czvf metersphere-release-${RELEASE}-offline.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}-offline/" \\
                             --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
                             --exclude .git
-
-                        #打包在线包
-                        touch metersphere-release-${RELEASE}.tar.gz
-                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
-                            --exclude metersphere-release-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
-                            --exclude .git \\
-                            --exclude images \\
-                            --exclude docker
 
                         md5sum -b metersphere-release-${RELEASE}-offline.tar.gz | awk '{print $1}' > metersphere-release-${RELEASE}-offline.tar.gz.md5
                     '''

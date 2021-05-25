@@ -1,41 +1,42 @@
 #!/bin/bash
-CURRENT_DIR=$(
+__current_dir=$(
    cd "$(dirname "$0")"
    pwd
 )
-os=`uname -a`
+args=$@
+__os=`uname -a`
+
 function log() {
    message="[MeterSphere Log]: $1 "
-   echo -e "${message}" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   echo -e "${message}" 2>&1 | tee -a ${__current_dir}/install.log
 }
-args=$@
-
-compose_files="-f docker-compose-base.yml"
 set -a
-if [[ $os =~ 'Darwin' ]];then
-    sed -i -e "s#MS_BASE=.*#MS_BASE=~#g" ${CURRENT_DIR}/install.conf
-    sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=$(ipconfig getifaddr en0)#g" ${CURRENT_DIR}/install.conf
+__local_ip=$(hostname -I|cut -d" " -f 1)
+if [[ ${__os} =~ 'Darwin' ]];then
+    sed -i -e "s#MS_BASE=.*#MS_BASE=~#g" ${__current_dir}/install.conf
+    __local_ip=$(ipconfig getifaddr en0)
+   sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 fi
-source ${CURRENT_DIR}/install.conf
+sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+source ${__current_dir}/install.conf
 set +a
 
 mkdir -p ${MS_BASE}/metersphere
 cp -ru --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
-sed -i -e "s#MS_BASE=.*#MS_BASE=${MS_BASE}#g" msctl
+# 记录MeterSphere安装路径
+echo "MS_BASE=${MS_BASE}" > ~/.msrc\
+# 安装 msctl 命令
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
 ln -s /usr/local/bin/msctl /usr/bin/msctl 2>/dev/null
 
-echo -e "======================= 开始安装 =======================" 2>&1 | tee -a ${CURRENT_DIR}/install.log
-
-echo "time: $(date)"
-
+log "======================= 开始安装 ======================="
 #Install docker & docker-compose
 ##Install Latest Stable Docker Release
 if which docker >/dev/null; then
    log "检测到 Docker 已安装，跳过安装步骤"
    log "启动 Docker "
-   service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   service docker start 2>&1 | tee -a ${__current_dir}/install.log
 else
    if [[ -d docker ]]; then
       log "... 离线安装 docker"
@@ -44,18 +45,19 @@ else
       chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
       log "... 启动 docker"
-      service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      service docker start 2>&1 | tee -a ${__current_dir}/install.log
 
    else
       log "... 在线安装 docker"
-      curl -fsSL https://get.docker.com -o get-docker.sh 2>&1 | tee -a ${CURRENT_DIR}/install.log
-      sudo sh get-docker.sh --mirror Aliyun 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      curl -fsSL https://get.docker.com -o get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
+      sudo sh get-docker.sh --mirror Aliyun 2>&1 | tee -a ${__current_dir}/install.log
       log "... 启动 docker"
-      service docker start 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      service docker start 2>&1 | tee -a ${__current_dir}/install.log
    fi
 
 fi
 
+# 检查docker服务是否正常运行
 docker ps 1>/dev/null 2>/dev/null
 if [ $? != 0 ];then
    log "Docker 未正常启动，请先安装并启动 Docker 服务后再次执行本脚本"
@@ -72,92 +74,57 @@ else
       chmod +x /usr/bin/docker-compose
    else
       log "... 在线安装 docker-compose"
-      COMPOSEVERSION=$(curl -s https://github.com/docker/compose/releases/latest/download 2>&1 | grep -Po [0-9]+\.[0-9]+\.[0-9]+)
-      curl -L "https://github.com/docker/compose/releases/download/$COMPOSEVERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
 fi
-
+# 检查docker-compose是否正常
 docker-compose version 1>/dev/null 2>/dev/null
 if [ $? != 0 ];then
    log "docker-compose 未正常安装，请先安装 docker-compose 后再次执行本脚本"
    exit
 fi
 
-cd ${MS_BASE}/metersphere
-env | grep MS_ >.env
-
-case ${MS_INSTALL_MODE} in
-allinone)
-   mkdir -p ${MS_BASE}/metersphere/data/jmeter
-   compose_files="${compose_files} -f docker-compose-server.yml -f docker-compose-node-controller.yml"
-   ;;
-server)
-   compose_files="${compose_files} -f docker-compose-server.yml"
-   ;;
-node-controller)
-   mkdir -p ${MS_BASE}/metersphere/data/jmeter
-   compose_files="${compose_files} -f docker-compose-node-controller.yml"
-   ;;
-*)
-   log "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
-   ;;
-esac
-if [ ${MS_INSTALL_MODE} != "node-controller" ]; then
-   # 是否使用外部数据库
-   if [ ${MS_EXTERNAL_MYSQL} = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/mysql
-      compose_files="${compose_files} -f docker-compose-mysql.yml"
-      sed -i -e "s#\${MS_MYSQL_DB}#${MS_MYSQL_DB}#g" ${MS_BASE}/metersphere/bin/mysql/init.sql
-   else
-      sed -i -e "/#MS_EXTERNAL_MYSQL=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
-   fi
-   # 是否使用外部 Kafka
-   if [ ${MS_EXTERNAL_KAFKA} = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/kafka
-      mkdir -p ${MS_BASE}/metersphere/data/zookeeper
-      compose_files="${compose_files} -f docker-compose-kafka.yml"
-   else
-      sed -i -e "/#MS_EXTERNAL_KAFKA=false/{N;N;N;d;}" ${MS_BASE}/metersphere/docker-compose*
-   fi
-   # 是否使用外部 Prometheus
-   if [ ${MS_EXTERNAL_PROM} = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/prometheus
-      compose_files="${compose_files} -f docker-compose-prometheus.yml"
-   fi
-fi
-echo ${compose_files} >${MS_BASE}/metersphere/compose_files
-echo "127.0.0.1 $(hostname)" >> /etc/hosts
-
-cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) config 1>/dev/null 2>/dev/null
+# 将配置信息存储到安装目录的环境变量配置文件中
+echo '' >> ${MS_BASE}/metersphere/.env
+eval "cat <<EOF
+# ADDED ON $(date)
+$(<install.conf)
+# END
+EOF" | cat - ${MS_BASE}/metersphere/.env > temp && mv temp ${MS_BASE}/metersphere/.env
+diff ${__current_dir}/install.conf ${MS_BASE}/metersphere/.env | patch ${MS_BASE}/metersphere/.env
+ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf
+grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
+msctl generage_compose_files
+msctl config 1>/dev/null 2>/dev/null
 if [ $? != 0 ];then
    log "docker-compose 版本与配置文件不兼容，请重新安装最新版本的 docker-compose"
    exit
 fi
 
 export COMPOSE_HTTP_TIMEOUT=180
-cd ${CURRENT_DIR}
+cd ${__current_dir}
 # 加载镜像
 if [[ -d images ]]; then
    log "加载镜像"
    for i in $(ls images); do
-      docker load -i images/$i 2>&1 | tee -a ${CURRENT_DIR}/install.log
+      docker load -i images/$i 2>&1 | tee -a ${__current_dir}/install.log
    done
 else
    log "拉取镜像"
-   cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) pull 2>&1 | tee -a ${CURRENT_DIR}/install.log
-   docker pull ${MS_IMAGE_PREFIX}/jmeter-master:${MS_JMETER_TAG} 2>&1 | tee -a ${CURRENT_DIR}/install.log
+   msctl pull 2>&1 | tee -a ${__current_dir}/install.log
+   docker pull ${MS_JMETER_IMAGE} 2>&1 | tee -a ${__current_dir}/install.log
    cd -
 fi
 
 log "启动服务"
-cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) down -v 2>&1 | tee -a ${CURRENT_DIR}/install.log
-cd ${MS_BASE}/metersphere && docker-compose $(cat compose_files) up -d 2>&1 | tee -a ${CURRENT_DIR}/install.log
+msctl down -v 2>&1 | tee -a ${__current_dir}/install.log
+msctl up -d 2>&1 | tee -a ${__current_dir}/install.log
 
-msctl status 2>&1 | tee -a ${CURRENT_DIR}/install.log
+msctl status 2>&1 | tee -a ${__current_dir}/install.log
 
-echo -e "======================= 安装完成 =======================\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log
+echo -e "======================= 安装完成 =======================\n" 2>&1 | tee -a ${__current_dir}/install.log
 
-echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${CURRENT_DIR}/install.log
-echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n" 2>&1 | tee -a ${CURRENT_DIR}/install.log-a ${CURRENT_DIR}/install.log
+echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${__current_dir}/install.log
+echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n" 2>&1 | tee -a ${__current_dir}/install.log-a ${__current_dir}/install.log
