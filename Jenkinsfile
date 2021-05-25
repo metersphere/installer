@@ -145,7 +145,11 @@ pipeline {
             steps {
                 dir('installer') {
                     sh '''
-                    #打包在线包
+                        #修改安装参数
+                        sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
+                        sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
+                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf                    
+                        #打包在线包
                         touch metersphere-release-${RELEASE}.tar.gz
                         tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
@@ -192,11 +196,6 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
                         cd ..
-
-                        #修改安装参数
-                        sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
-                        sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
-                        sed -i -e "s#MS_JMETER_TAG=.*#MS_JMETER_TAG=\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
 
                         #获取docker
                         rm -rf docker*
