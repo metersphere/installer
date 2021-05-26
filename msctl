@@ -65,6 +65,7 @@ function generate_compose_files() {
       fi
    fi
    echo ${compose_files} >${MS_BASE}/metersphere/compose_files
+   chmod +rw -R ${MS_BASE}/metersphere
 }
 
 function status() {
@@ -192,6 +193,7 @@ function main() {
       restart
       ;;
    reload)
+      generate_compose_files
       reload
       ;;
    upgrade)
