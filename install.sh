@@ -39,7 +39,7 @@ else
    fi
 fi
 
-log "${MS_BASE}/metersphere 目录已存在，进行升级流程"
+log "拷贝安装文件到目标目录"
 
 mkdir -p ${MS_BASE}/metersphere
 cp -ruv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
