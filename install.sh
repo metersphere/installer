@@ -42,6 +42,7 @@ fi
 log "拷贝安装文件到目标目录"
 
 mkdir -p ${MS_BASE}/metersphere
+/usr/bin/cp -f ./metersphere/version ${MS_BASE}/metersphere/version
 cp -ruv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
 # 记录MeterSphere安装路径
