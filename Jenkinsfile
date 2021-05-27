@@ -145,6 +145,7 @@ pipeline {
             steps {
                 dir('installer') {
                     sh '''
+                        rm -rf metersphere-release*.tar.gz
                         #修改安装参数
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
@@ -220,8 +221,6 @@ pipeline {
                         unzip docker.zip
                         rm -rf __MACOSX
                         rm -rf docker.zip
-
-                        rm -rf metersphere-release*.tar.gz
 
                         #打包离线包
                         touch metersphere-release-${RELEASE}-offline.tar.gz
