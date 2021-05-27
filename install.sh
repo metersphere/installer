@@ -46,7 +46,7 @@ mkdir -p ${MS_BASE}/metersphere
 cp -ruv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
 # 记录MeterSphere安装路径
-echo "MS_BASE=${MS_BASE}" > ~/.msrc\
+echo "MS_BASE=${MS_BASE}" > ~/.msrc
 # 安装 msctl 命令
 cp msctl /usr/local/bin && chmod +x /usr/local/bin/msctl
 ln -s /usr/local/bin/msctl /usr/bin/msctl 2>/dev/null
