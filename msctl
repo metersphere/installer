@@ -112,7 +112,7 @@ function upgrade() {
       MS_VERSION=$(cat ${MS_BASE}/metersphere/version)
       export MS_VERSION=${MS_VERSION%-*}
       echo -e "\e[32m 检测当前版本为\e[1;33m${MS_VERSION} \e[0m"
-      python3 - <<EOF
+      python - <<EOF
 # -*- coding: UTF-8 -*-
 import os
 import json
