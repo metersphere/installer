@@ -12,11 +12,14 @@ function log() {
 }
 set -a
 __local_ip=$(hostname -I|cut -d" " -f 1)
+ORIGINAL_MS_BASE=$(cat /usr/local/bin/msctl | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
+MS_BASE=${ORIGINAL_MS_BASE:-/opt}
 if [[ ${__os} =~ 'Darwin' ]];then
-    sed -i -e "s#MS_BASE=.*#MS_BASE=~#g" ${__current_dir}/install.conf
-    __local_ip=$(ipconfig getifaddr en0)
+   MS_BASE=${ORIGINAL_MS_BASE:-~}
+   __local_ip=$(ipconfig getifaddr en0)
    sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 fi
+sed -i -e "s#MS_BASE=.*#MS_BASE=${MS_BASE}#g" ${__current_dir}/install.conf
 sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 source ${__current_dir}/install.conf
 set +a
