@@ -12,16 +12,23 @@ function log() {
 }
 set -a
 __local_ip=$(hostname -I|cut -d" " -f 1)
-ORIGINAL_MS_BASE=$(cat /usr/local/bin/msctl | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
-MS_BASE=${ORIGINAL_MS_BASE:-/opt}
+source ${__current_dir}/install.conf
+if [ -f ~/.msrc ];then
+  source ~/.msrc > /dev/null
+  echo "存在已安装的 MeterSphere, 安装目录为 ${MS_BASE}/metersphere, 执行升级流程"
+elif [ -f /usr/local/bin/msctl ];then
+  MS_BASE=$(cat /usr/local/bin/msctl | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
+  echo "存在已安装的 MeterSphere, 安装目录为 ${MS_BASE}/metersphere, 执行升级流程"
+else
+  MS_BASE=$(cat ${__current_dir}/install.conf | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
+  echo "安装目录为 ${MS_BASE}/metersphere, 开始进行安装"
+fi
 if [[ ${__os} =~ 'Darwin' ]];then
-   MS_BASE=${ORIGINAL_MS_BASE:-~}
+   MS_BASE=${MS_BASE:-~}
    __local_ip=$(ipconfig getifaddr en0)
    sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 fi
-sed -i -e "s#MS_BASE=.*#MS_BASE=${MS_BASE}#g" ${__current_dir}/install.conf
 sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
-source ${__current_dir}/install.conf
 set +a
 
 __current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
@@ -46,7 +53,7 @@ log "拷贝安装文件到目标目录"
 
 mkdir -p ${MS_BASE}/metersphere
 /usr/bin/cp -f ./metersphere/version ${MS_BASE}/metersphere/version
-cp -ruv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
+/usr/bin/cp -rv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
 # 记录MeterSphere安装路径
 echo "MS_BASE=${MS_BASE}" > ~/.msrc
