@@ -141,7 +141,7 @@ pipeline {
                 }
             }
         }
-        stage('Package Online-install') {
+        stage('Modify install conf') {
             steps {
                 dir('installer') {
                     sh '''
@@ -150,7 +150,15 @@ pipeline {
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
                         sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
-                        echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version              
+                        echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version                   
+                    '''
+                }
+            }
+        }
+        stage('Package Online-install') {
+            steps {
+                dir('installer') {
+                    sh '''          
                         #打包在线包
                         touch metersphere-release-${RELEASE}.tar.gz
                         tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
