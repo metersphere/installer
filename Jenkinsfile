@@ -237,6 +237,7 @@ pipeline {
                             --exclude .git
 
                         md5sum -b metersphere-release-${RELEASE}-offline.tar.gz | awk '{print $1}' > metersphere-release-${RELEASE}-offline.tar.gz.md5
+                        rm -rf images
                     '''
                 }
             }
