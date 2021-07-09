@@ -248,7 +248,7 @@ pipeline {
             }
         }
         stage('Upload') {
-            when { tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP"}
+            when { anyOf { tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP"}}
             steps {
                 dir('installer') {
                     echo "UPLOADING"
