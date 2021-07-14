@@ -17,7 +17,7 @@ services:
         expose:
           - 9090
         ports:
-          - "9090:9090"
+          - ${MS_PROMETHEUS_PORT}:9090
         healthcheck:
           test: ["CMD", "nc", "-zv", "localhost", "9090"]
           interval: 6s

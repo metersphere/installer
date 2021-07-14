@@ -8,7 +8,7 @@ services:
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
-      - 9100:9100
+      - ${MS_NODEEXPORTER_PORT}:9100
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8082"]
       interval: 6s
