@@ -122,6 +122,7 @@ echo '' >> ${MS_BASE}/metersphere/.env
 /usr/bin/cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
 # 通过加载环境变量的方式保留已修改的配置项，仅添加新增的配置项
 source ${__current_dir}/install.conf
+source ~/.msrc >/dev/null 2>&1
 __ms_image_tag=${MS_IMAGE_TAG}
 __ms_jmeter_image=${MS_JMETER_IMAGE}
 source ${MS_BASE}/metersphere/.env
