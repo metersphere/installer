@@ -164,7 +164,7 @@ pipeline {
                         tar czvf metersphere-online-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker
