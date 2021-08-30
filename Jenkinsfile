@@ -173,7 +173,7 @@ pipeline {
                         tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker
@@ -246,7 +246,7 @@ pipeline {
                         tar czvf metersphere-offline-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-offline-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git
 
                         md5sum -b metersphere-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-offline-installer-${RELEASE}.tar.gz.md5
