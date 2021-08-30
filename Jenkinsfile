@@ -160,16 +160,11 @@ pipeline {
                 dir('installer') {
                     sh '''          
                         #打包在线包
-<<<<<<< HEAD
-                        touch metersphere-release-${RELEASE}.tar.gz
-                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
-                            --exclude metersphere-release-${RELEASE}.tar.gz \\
-=======
                         touch metersphere-online-installer-${RELEASE}.tar.gz
                         tar czvf metersphere-online-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker
@@ -178,8 +173,7 @@ pipeline {
                         tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
->>>>>>> 1084e43 (refactor: 修改打包时名称规范)
-                            --exclude metersphere-release-${RELEASE}-offline.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker
@@ -197,10 +191,7 @@ pipeline {
                                 release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere/releases)
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
-<<<<<<< HEAD
-=======
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-online-installer-${RELEASE}.tar.gz
->>>>>>> 1084e43 (refactor: 修改打包时名称规范)
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-release-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-release-${RELEASE}.tar.gz
                             '''
                         }
