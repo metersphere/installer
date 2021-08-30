@@ -145,7 +145,7 @@ pipeline {
             steps {
                 dir('installer') {
                     sh '''
-                        rm -rf metersphere-release*.tar.gz
+                        rm -rf metersphere-*.tar.gz
                         #修改安装参数
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
@@ -249,7 +249,7 @@ pipeline {
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git
 
-                        md5sum -b metersphere-release-${RELEASE}-offline.tar.gz | awk '{print $1}' > metersphere-release-${RELEASE}-offline.tar.gz.md5
+                        md5sum -b metersphere-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-offline-installer-${RELEASE}.tar.gz.md5
                         rm -rf images
                     '''
                 }
@@ -266,8 +266,8 @@ pipeline {
                 dir('installer') {
                     echo "UPLOADING"
                     withCredentials([usernamePassword(credentialsId: 'OSSKEY', passwordVariable: 'SK', usernameVariable: 'AK')]) {
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-release-${RELEASE}-offline.tar.gz ./metersphere-release-${RELEASE}-offline.tar.gz")
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-release-${RELEASE}-offline.tar.gz.md5 ./metersphere-release-${RELEASE}-offline.tar.gz.md5")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-offline-installer-${RELEASE}.tar.gz ./metersphere-offline-installer-${RELEASE}.tar.gz")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-offline-installer-${RELEASE}.tar.gz.md5")
                     }
                 }
             }
