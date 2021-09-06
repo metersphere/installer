@@ -165,10 +165,12 @@ EOF
       echo -e "\e[32m通过离线包升级到\e[1;33m${MS_LATEST_VERSION}\e[0m"
    fi
 
-   if [ ! -f "/tmp/metersphere-*-installer-${MS_LATEST_VERSION}.tar.gz" ]; then
-      echo -e "\e[31m未找到升级包\e[1;33m/tmp/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz\e[31m，请检查！\e[0m"
-      echo -e "参考下载地址：\e[4;7mwget -T60 -t1 --no-check-certificate https://github.com/metersphere/metersphere/releases/download/${MS_LATEST_VERSION}/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz -O /tmp/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz\e[0m"
-      return 2
+   if [ ! -f "/tmp/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz" ]; then
+      if [ ! -f "/tmp/metersphere-offline-installer-${MS_LATEST_VERSION}.tar.gz" ]; then
+         echo -e "\e[31m未找到升级包\e[1;33m/tmp/metersphere-*-installer-${MS_LATEST_VERSION}.tar.gz\e[31m，请检查！\e[0m"
+         echo -e "参考下载地址：\e[4;7mwget -T60 -t1 --no-check-certificate https://github.com/metersphere/metersphere/releases/download/${MS_LATEST_VERSION}/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz -O /tmp/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz\e[0m"
+         return 2
+      fi
    fi
 
    cd /tmp
