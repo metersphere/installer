@@ -30,16 +30,16 @@ function usage() {
 
 function generate_compose_files() {
    compose_files="-f docker-compose-base.yml"
+   mkdir -p ${MS_BASE}/metersphere/data/jmeter
+   mkdir -p ${MS_BASE}/metersphere/data/body
    case ${MS_INSTALL_MODE} in
    allinone)
-      mkdir -p ${MS_BASE}/metersphere/data/jmeter
       compose_files="${compose_files} -f docker-compose-server.yml -f docker-compose-node-controller.yml"
       ;;
    server)
       compose_files="${compose_files} -f docker-compose-server.yml"
       ;;
    node-controller)
-      mkdir -p ${MS_BASE}/metersphere/data/jmeter
       compose_files="${compose_files} -f docker-compose-node-controller.yml"
       ;;
    *)
