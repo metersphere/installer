@@ -52,8 +52,8 @@ fi
 log "拷贝安装文件到目标目录"
 
 mkdir -p ${MS_BASE}/metersphere
-/usr/bin/cp -f ./metersphere/version ${MS_BASE}/metersphere/version
-/usr/bin/cp -rv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
+cp -f ./metersphere/version ${MS_BASE}/metersphere/version
+cp -rv --suffix=.$(date +%Y%m%d-%H%M) ./metersphere ${MS_BASE}/
 
 # 记录MeterSphere安装路径
 echo "MS_BASE=${MS_BASE}" > ~/.msrc
@@ -119,7 +119,7 @@ fi
 
 # 将配置信息存储到安装目录的环境变量配置文件中
 echo '' >> ${MS_BASE}/metersphere/.env
-/usr/bin/cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
+cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
 # 通过加载环境变量的方式保留已修改的配置项，仅添加新增的配置项
 source ${__current_dir}/install.conf
 source ~/.msrc >/dev/null 2>&1
@@ -134,7 +134,8 @@ grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname
 msctl generate_compose_files
 msctl config 1>/dev/null 2>/dev/null
 if [ $? != 0 ];then
-   log "docker-compose 版本与配置文件不兼容，请重新安装最新版本的 docker-compose"
+   msctl config
+   log "docker-compose 版本与配置文件不兼容或配置文件存在问题，请重新安装最新版本的 docker-compose 或检查配置文件"
    exit
 fi
 

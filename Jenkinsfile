@@ -11,7 +11,7 @@ pipeline {
     environment {
         BRANCH_NAME = "master"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
-        JMETER_TAG = "5.4.1-ms8-jdk8"
+        JMETER_TAG = "5.4.1-ms9-jdk8"
     }
     stages {
         stage('Preparation') {
@@ -163,7 +163,17 @@ pipeline {
                         touch metersphere-online-installer-${RELEASE}.tar.gz
                         tar czvf metersphere-online-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-online-installer-${RELEASE}-offline.tar.gz \\
+                            --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
+                            --exclude .git \\
+                            --exclude images \\
+                            --exclude docker
+                        #打包旧名称格式在线包
+                        touch metersphere-release-${RELEASE}.tar.gz
+                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
+                            --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker
@@ -182,6 +192,7 @@ pipeline {
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-online-installer-${RELEASE}.tar.gz
+                                curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-release-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-release-${RELEASE}.tar.gz
                             '''
                         }
                     }
@@ -233,7 +244,9 @@ pipeline {
                         #打包离线包
                         touch metersphere-offline-installer-${RELEASE}.tar.gz
                         tar czvf metersphere-offline-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-offline-installer-${RELEASE}/" \\
+                            --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git
 
                         md5sum -b metersphere-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-offline-installer-${RELEASE}.tar.gz.md5
