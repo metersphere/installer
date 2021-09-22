@@ -9,7 +9,7 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
-        BRANCH_NAME = "dev"
+        BRANCH_NAME = "master"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
         JMETER_TAG = "5.4.1-ms10-jdk8"
     }
