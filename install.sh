@@ -23,12 +23,14 @@ else
   MS_BASE=$(cat ${__current_dir}/install.conf | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
   echo "安装目录为 ${MS_BASE}/metersphere, 开始进行安装"
 fi
-if [[ ${__os} =~ 'Darwin' ]];then
-   MS_BASE=${MS_BASE:-~}
-   __local_ip=$(ipconfig getifaddr en0)
-   sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+if [ ${MS_EXTERNAL_KAFKA} = 'false' ];then
+   if [[ ${__os} =~ 'Darwin' ]];then
+      MS_BASE=${MS_BASE:-~}
+      __local_ip=$(ipconfig getifaddr en0)
+      sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+   fi
+   sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 fi
-sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 set +a
 
 __current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
