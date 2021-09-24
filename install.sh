@@ -146,9 +146,13 @@ cd ${__current_dir}
 # 加载镜像
 if [[ -d images ]]; then
    log "加载镜像"
+   if [ $MS_INSTALL_MODE == allinone ]; then
    for i in $(ls images); do
       docker load -i images/$i 2>&1 | tee -a ${__current_dir}/install.log
    done
+   else
+     docker load -i images/ms-node-controller.tar 2>&1 && docker load -i images/node-exporter.tar 2>&1
+   fi
 else
    log "拉取镜像"
    msctl pull 2>&1 | tee -a ${__current_dir}/install.log
