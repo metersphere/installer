@@ -63,6 +63,10 @@ function generate_compose_files() {
          mkdir -p ${MS_BASE}/metersphere/data/prometheus
          compose_files="${compose_files} -f docker-compose-prometheus.yml"
       fi
+      # 是否使用外部node-exporter
+      if [ ${MS_EXTERNAL_NODE_EXPORTER} = "false" ]; then
+          compose_files="${compose_files} -f docker-compose-node-exporter.yml"
+      fi
    fi
    echo ${compose_files} >${MS_BASE}/metersphere/compose_files
    chmod +rw -R ${MS_BASE}/metersphere

@@ -22,23 +22,24 @@ services:
     networks:
       - ms-network
   
-  nodeexporter:
-    image: ${MS_IMAGE_PREFIX}/node-exporter:latest
-    container_name: nodeexporter
-    user: root
-    privileged: true
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "9100"]
-      interval: 6s
-      timeout: 5s
-      retries: 10      
-    network_mode: service:ms-node-controller
+#  nodeexporter:
+#    image: ${MS_IMAGE_PREFIX}/node-exporter:latest
+#    container_name: nodeexporter
+#    user: root
+#    privileged: true
+#    volumes:
+#      - /proc:/host/proc:ro
+#      - /sys:/host/sys:ro
+#      - /:/rootfs:ro
+#    command:
+#      - '--path.procfs=/host/proc'
+#      - '--path.sysfs=/host/sys'
+#      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+#    restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD", "nc", "-zv", "localhost", "9100"]
+#      interval: 6s
+#      timeout: 5s
+#      retries: 10      
+#    network_mode: service:ms-node-controller
+#
