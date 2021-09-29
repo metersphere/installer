@@ -5,6 +5,7 @@ services:
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
+      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
       - ${MS_NODEEXPORTER_PORT}:9100
