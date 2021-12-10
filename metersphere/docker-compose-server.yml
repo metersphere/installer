@@ -15,6 +15,7 @@ services:
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
       JMETER_IMAGE: ${MS_JMETER_IMAGE}
       SESSION_TIMEOUT: 21600
+      FORMAT_MASSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     ports:
       - ${MS_SERVER_PORT}:8081
     healthcheck:
@@ -44,6 +45,7 @@ services:
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_TEST_TOPIC: ${MS_KAFKA_TEST_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
+      FORMAT_MASSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8084"]
       interval: 6s
