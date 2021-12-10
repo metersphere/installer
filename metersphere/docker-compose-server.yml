@@ -19,6 +19,7 @@ services:
       TCP_MOCK_PORT: ${MS_TCP_MOCK_PORT}
       SESSION_TIMEOUT: 21600
       JAVA_OPTIONS: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/metersphere/logs/metersphere/"
+      FORMAT_MASSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     ports:
       - ${MS_SERVER_PORT}:8081
       - ${MS_TCP_MOCK_PORT}:${MS_TCP_MOCK_PORT}
@@ -51,6 +52,7 @@ services:
       KAFKA_REPORT_TOPIC: ${MS_KAFKA_REPORT_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
       JAVA_OPTIONS: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/metersphere/logs/data-streaming/"
+      FORMAT_MASSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8084"]
       interval: 6s
