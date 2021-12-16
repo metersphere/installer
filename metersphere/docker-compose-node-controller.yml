@@ -5,7 +5,7 @@ services:
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
-      FORMAT_MASSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
       - ${MS_NODEEXPORTER_PORT}:9100
