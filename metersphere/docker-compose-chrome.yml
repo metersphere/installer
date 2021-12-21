@@ -1,6 +1,6 @@
 version: "2.1"
 services:
-    prometheus:
+    chrome:
         image: ${MS_IMAGE_PREFIX}/standalone-chrome:4.1.1
         container_name: ms-chrome
         expose:
