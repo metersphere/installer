@@ -10,7 +10,7 @@ services:
       retries: 10
     environment:
       MYSQL_DATABASE: ${MS_MYSQL_DB}
-      MYSQL_ROOT_PASSWORD: Password123@mysql
+      MYSQL_ROOT_PASSWORD: ${MS_MYSQL_PASSWORD}
     ports:
       - 3307:3306
     volumes:
