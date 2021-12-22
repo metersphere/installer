@@ -70,6 +70,7 @@ function generate_compose_files() {
    fi
    echo ${compose_files} >${MS_BASE}/metersphere/compose_files
    chmod +rw -R ${MS_BASE}/metersphere
+   COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files 2>/dev/null || echo "")
 }
 
 function status() {
