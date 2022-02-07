@@ -4,7 +4,7 @@ services:
     image: ${MS_IMAGE_PREFIX}/redis:6.2.6
     container_name: redis
     healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "6379"]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 6s
       timeout: 5s
       retries: 10
