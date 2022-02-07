@@ -13,7 +13,7 @@ services:
     volumes:
       - ${MS_BASE}/metersphere/conf/redis.conf:/etc/redis/redis.conf
       - ms-redis-data:/data
-    command: redis-server /etc/redis/redis.conf
+    command: redis-server /etc/redis/redis.conf --requirepass ${MS_REDIS_PASSWORD}
     networks:
       - ms-network
   ms-server:
