@@ -63,6 +63,11 @@ function generate_compose_files() {
          mkdir -p ${MS_BASE}/metersphere/data/prometheus
          compose_files="${compose_files} -f docker-compose-prometheus.yml"
       fi
+      # 是否使用外部 Redis
+      if [ ${MS_EXTERNAL_REDIS} = "false" ]; then
+         mkdir -p ${MS_BASE}/metersphere/data/redis
+         compose_files="${compose_files} -f docker-compose-redis.yml"
+      fi
       # 是否创建 Chrome 容器
       if [ ${MS_CHROME_ENABLED} = "true" ]; then
          compose_files="${compose_files} -f docker-compose-chrome.yml"

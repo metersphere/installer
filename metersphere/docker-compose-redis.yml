@@ -1,0 +1,29 @@
+version: "2.1"
+services:
+  redis:
+    image: ${MS_IMAGE_PREFIX}/redis:6.2.6
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "6379"]
+      interval: 6s
+      timeout: 5s
+      retries: 10
+    ports:
+      - ${MS_REDIS_PORT}:6379
+    volumes:
+      - ${MS_BASE}/metersphere/conf/redis.conf:/etc/redis/redis.conf
+      - ms-redis-data:/data
+    command: redis-server /etc/redis/redis.conf
+    networks:
+      - ms-network
+  ms-server:
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  ms-redis-data:
+    driver_opts:
+      type: none
+      device: ${MS_BASE}/metersphere/data/redis
+      o: bind
