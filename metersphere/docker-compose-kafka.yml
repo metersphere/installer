@@ -12,6 +12,7 @@ services:
       - 'ms-zookeeper-data:/bitnami'
     environment:
       ALLOW_ANONYMOUS_LOGIN: 'yes'
+    restart: always
     networks:
       - ms-network
   kafka:
@@ -24,7 +25,7 @@ services:
       interval: 6s
       timeout: 10s
       retries: 20
-    restart: on-failure
+    restart: always
     volumes:
       - 'ms-kafka-data:/bitnami'
     environment:

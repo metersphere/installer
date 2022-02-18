@@ -20,6 +20,7 @@ services:
       - ms-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
     mem_limit: 1024m
+    restart: always
     networks:
       - ms-network
   
@@ -36,7 +37,7 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "9100"]
       interval: 6s
