@@ -96,7 +96,8 @@ function stop() {
 function restart() {
    echo
    cd ${MS_BASE}/metersphere
-   docker-compose ${COMPOSE_FILES} restart ${target}
+   docker-compose ${COMPOSE_FILES} stop  ${target}
+   docker-compose ${COMPOSE_FILES} start ${target}
 }
 function reload() {
    echo

@@ -1,30 +1,30 @@
 version: "2.1"
 services:
-    prometheus:
-        image: ${MS_IMAGE_PREFIX}/prometheus:latest
-        container_name: ms-prometheus
-        volumes:
-          - ms-prometheus-conf:/etc/prometheus/
-          - ms-prometheus-data:/prometheus
-        command:
-          - '--config.file=/etc/prometheus/prometheus.yml'
-          - '--storage.tsdb.path=/prometheus'
-          - '--web.console.libraries=/etc/prometheus/console_libraries'
-          - '--web.console.templates=/etc/prometheus/consoles'
-          - '--storage.tsdb.retention=200h'
-          - '--web.enable-lifecycle'
-        restart: unless-stopped
-        expose:
-          - 9090
-        ports:
-          - ${MS_PROMETHEUS_PORT}:9090
-        healthcheck:
-          test: ["CMD", "nc", "-zv", "localhost", "9090"]
-          interval: 6s
-          timeout: 5s
-          retries: 10          
-        networks:
-          - ms-network
+  prometheus:
+    image: ${MS_IMAGE_PREFIX}/prometheus:latest
+    container_name: ms-prometheus
+    volumes:
+      - ms-prometheus-conf:/etc/prometheus/
+      - ms-prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention=200h'
+      - '--web.enable-lifecycle'
+    restart: always
+    expose:
+      - 9090
+    ports:
+      - ${MS_PROMETHEUS_PORT}:9090
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "9090" ]
+      interval: 6s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ms-network
 
 volumes:
   ms-prometheus-data:

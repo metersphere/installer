@@ -16,6 +16,7 @@ services:
     command: redis-server /etc/redis/redis.conf --requirepass ${MS_REDIS_PASSWORD}
     networks:
       - ms-network
+    restart: always
   ms-server:
     depends_on:
       redis:
