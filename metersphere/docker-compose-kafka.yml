@@ -21,7 +21,7 @@ services:
     ports:
       - '${MS_KAFKA_EXT_PORT}:${MS_KAFKA_EXT_PORT}'
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper"]
+      test: ["CMD", "kafka-consumer-groups.sh", "--bootstrap-server", "localhost:9092", "--list"]
       interval: 6s
       timeout: 10s
       retries: 20
