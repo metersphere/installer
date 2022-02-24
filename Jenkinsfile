@@ -208,6 +208,7 @@ pipeline {
                                     'kafka:2',
                                     'zookeeper:3',
                                     'mysql:5.7.33',
+                                    'redis:6.2.6',
                                     'prometheus:latest',
                                     'standalone-chrome:4.1.1',
                                     'node-exporter:latest',
@@ -231,6 +232,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
                         docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
                         docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
+                        docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
                         docker save ${IMAGE_PREFIX}/standalone-chrome:4.1.1 -o standalone-chrome.tar
