@@ -29,7 +29,7 @@ if [ ${MS_EXTERNAL_KAFKA} = 'false' ];then
       __local_ip=$(ipconfig getifaddr en0)
       sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
    fi
-   sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+   sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 fi
 set +a
 
