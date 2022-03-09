@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'metersphere'
+            label params.label == "" ? "metersphere" : params.label
         }
     }
     options { 
