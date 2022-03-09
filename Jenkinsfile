@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label '${label}'
+            label '${label:-metersphere}'
         }
     }
     options { 
