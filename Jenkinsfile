@@ -19,7 +19,7 @@ pipeline {
                 script {
                     RELEASE = ""
                     if (env.TAG_NAME != null) {
-                        RELEASE = env.TAG_NAME
+                        RELEASE = env.TAG_NAME.replace("-arm64", "")
                     } else {
                         RELEASE = env.BRANCH_NAME
                     }
@@ -29,7 +29,7 @@ pipeline {
             }
         }
         stage('Checkout') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 // Get some code from a GitHub repository
 
@@ -52,7 +52,7 @@ pipeline {
             }
         }
         stage('Tag Other Repos') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
                 stage('ms-server') {
                     steps {
@@ -142,6 +142,12 @@ pipeline {
             }
         }
         stage('Modify install conf') {
+            when {
+                anyOf {
+                    tag "v*";
+                    tag "dev"
+                }
+            }
             steps {
                 dir('installer') {
                     sh '''
@@ -156,6 +162,12 @@ pipeline {
             }
         }
         stage('Package Online-install') {
+            when {
+                anyOf {
+                    tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP";
+                    tag "dev"
+                }
+            }
             steps {
                 dir('installer') {
                     sh '''          
@@ -182,7 +194,7 @@ pipeline {
             }
         }
         stage('Release') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
                     withEnv(["TOKEN=$TOKEN"]) {
@@ -237,13 +249,31 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
                         docker save ${IMAGE_PREFIX}/standalone-chrome:4.1.1 -o standalone-chrome.tar
                         cd ..
-
+                    '''
+                    script {
+                        // 区分不同架构
+                        RELEASE = ""
+                        ARCH = ""
+                        if (env.TAG_NAME != null) {
+                            RELEASE = env.TAG_NAME
+                            if (RELEASE.endsWith("-arm64")) {
+                                ARCH = "-arm64"
+                            }
+                        } else {
+                            RELEASE = env.BRANCH_NAME
+                        }
+                        env.RELEASE = "${RELEASE}"
+                        env.ARCH = "${ARCH}"
+                        echo "RELEASE=${RELEASE}"
+                        echo "ARCH=${ARCH}"
+                    }
+                    sh '''
                         #获取docker
                         rm -rf docker*
-                        wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker.zip
-                        unzip docker.zip
+                        wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker${ARCH}.zip
+                        unzip docker${ARCH}.zip
                         rm -rf __MACOSX
-                        rm -rf docker.zip
+                        rm -rf docker${ARCH}.zip
 
                         #打包离线包
                         touch metersphere-offline-installer-${RELEASE}.tar.gz
@@ -265,7 +295,14 @@ pipeline {
             }
         }
         stage('Upload') {
-            when { anyOf { tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP"}}
+            when {
+                anyOf {
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-arm64\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-arm64-lts\$", comparator: "REGEXP"
+                }
+            }
             steps {
                 dir('installer') {
                     echo "UPLOADING"
