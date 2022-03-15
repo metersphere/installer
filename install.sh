@@ -128,6 +128,10 @@ source ~/.msrc >/dev/null 2>&1
 __ms_image_tag=${MS_IMAGE_TAG}
 __ms_jmeter_image=${MS_JMETER_IMAGE}
 source ${MS_BASE}/metersphere/.env
+# 把原来kafka的配置合并成IP
+if [ ${MS_KAFKA_HOST} = 'kafka' ];then
+  MS_KAFKA_HOST=${__local_ip}
+fi
 export MS_IMAGE_TAG=${__ms_image_tag}
 export MS_JMETER_IMAGE=${__ms_jmeter_image}
 env | grep MS_ > ${MS_BASE}/metersphere/.env
