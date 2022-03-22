@@ -221,7 +221,7 @@ pipeline {
                                     'zookeeper:3',
                                     'mysql:5.7.33',
                                     'prometheus:latest',
-                                    'standalone-chrome:4.1.1',
+                                    'seleniarm-grid-all:4.1.2-20220227',
                                     'node-exporter:latest',
                                     "metersphere:${RELEASE}",
                                     "ms-node-controller:${RELEASE}",
@@ -245,7 +245,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
-                        docker save ${IMAGE_PREFIX}/standalone-chrome:4.1.1 -o standalone-chrome.tar
+                        docker save ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.2-20220227 -o seleniarm-grid-all.tar
                         cd ..
                     '''
                     script {

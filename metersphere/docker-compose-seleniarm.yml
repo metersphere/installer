@@ -1,0 +1,25 @@
+version: "2.1"
+services:
+  grid-local:
+    image: ${MS_IMAGE_PREFIX}/seleniarm-grid-all:4.1.2-20220227
+    container_name: grid-local
+    shm_size: 4gb
+    environment:
+      - SE_EVENT_BUS_HOST=127.0.0.1
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_HUB_PORT=4444
+      - SE_NODE_MAX_SESSIONS=300
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - browser=chrome
+    ports:
+      - "4444:4444"
+      - "6900:5900"
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "4444" ]
+      interval: 6s
+      timeout: 5s
+      retries: 10
+    restart: always
+    networks:
+      - ms-network

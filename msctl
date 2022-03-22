@@ -68,9 +68,9 @@ function generate_compose_files() {
          mkdir -p ${MS_BASE}/metersphere/data/redis
          compose_files="${compose_files} -f docker-compose-redis.yml"
       fi
-      # 是否创建 Chrome 容器
-      if [ ${MS_CHROME_ENABLED} = "true" ]; then
-         compose_files="${compose_files} -f docker-compose-chrome.yml"
+      # 是否创建 seleniarm 容器
+      if [ ${MS_SELENIARM_ENABLED} = "true" ]; then
+         compose_files="${compose_files} -f docker-compose-seleniarm.yml"
       fi
    fi
    echo ${compose_files} >${MS_BASE}/metersphere/compose_files
