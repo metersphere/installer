@@ -14,7 +14,7 @@ services:
       - browser=chrome
     ports:
       - "4444:4444"
-      - "6900:5900"
+      - "7900:7900"
     healthcheck:
       test: [ "CMD", "nc", "-zv", "localhost", "4444" ]
       interval: 6s
