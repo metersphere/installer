@@ -16,7 +16,7 @@ services:
       - "4444:4444"
       - "7900:7900"
     healthcheck:
-      test: [ "CMD", "nc", "-zv", "localhost", "4444" ]
+      test: [ "CMD", "curl", "-f", "localhost", "4444" ]
       interval: 6s
       timeout: 5s
       retries: 10
