@@ -289,11 +289,6 @@ pipeline {
                 }
             }
         }
-        stage('Archive') {
-            steps {
-                archiveArtifacts artifacts: 'installer/*.tar.gz,installer/quick_start.sh,installer/*.md5', followSymlinks: false
-            }
-        }
         stage('Upload') {
             when {
                 anyOf {
