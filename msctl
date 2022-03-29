@@ -50,6 +50,7 @@ function generate_compose_files() {
       # 是否使用外部数据库
       if [ ${MS_EXTERNAL_MYSQL} = "false" ]; then
          mkdir -p ${MS_BASE}/metersphere/data/mysql
+         chmod 655 ${MS_BASE}/metersphere/conf/my.cnf
          compose_files="${compose_files} -f docker-compose-mysql.yml"
       fi
       # 是否使用外部 Kafka
