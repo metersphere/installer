@@ -4,7 +4,7 @@ services:
     image: '${MS_IMAGE_PREFIX}/zookeeper:3'
     container_name: zookeeper
     healthcheck:
-      test: ["CMD", "zkCli.sh", "stat", "/"]
+      test: ["CMD", "zkServer.sh", "version"]
       interval: 6s
       timeout: 10s
       retries: 20
@@ -12,19 +12,20 @@ services:
       - 'ms-zookeeper-data:/bitnami'
     environment:
       ALLOW_ANONYMOUS_LOGIN: 'yes'
+    restart: always
     networks:
       - ms-network
   kafka:
     image: '${MS_IMAGE_PREFIX}/kafka:2'
     container_name: kafka
     ports:
-      - '${MS_KAFKA_EXT_PORT}:${MS_KAFKA_EXT_PORT}'
+      - '${MS_KAFKA_PORT}:${MS_KAFKA_PORT}'
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper"]
+      test: ["CMD", "kafka-consumer-groups.sh", "--bootstrap-server", "localhost:9093", "--list"]
       interval: 6s
       timeout: 10s
       retries: 20
-    restart: on-failure
+    restart: always
     volumes:
       - 'ms-kafka-data:/bitnami'
     environment:
@@ -32,8 +33,8 @@ services:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_CFG_LISTENERS: INTERNAL://:9092,EXTERNAL://:${MS_KAFKA_EXT_PORT}
-      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
+      KAFKA_CFG_LISTENERS: INTERNAL://:9093,EXTERNAL://:${MS_KAFKA_PORT}
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka:9093,EXTERNAL://${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
       KAFKA_CFG_LOG_RETENTION_HOURS: 64
       KAFKA_CFG_MAX_REQUEST_SIZE: 52428800
       KAFKA_CFG_MESSAGE_MAX_BYTES: 52428800

@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'metersphere'
+            label params.label == "" ? "metersphere" : params.label
         }
     }
     options { 
@@ -9,9 +9,9 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
-        BRANCH_NAME = "master"
+        BRANCH_NAME = "v1.19"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
-        JMETER_TAG = "5.4.2-ms1-jdk8"
+        JMETER_TAG = "5.4.3-ms4-jdk8"
     }
     stages {
         stage('Preparation') {
@@ -19,7 +19,7 @@ pipeline {
                 script {
                     RELEASE = ""
                     if (env.TAG_NAME != null) {
-                        RELEASE = env.TAG_NAME
+                        RELEASE = env.TAG_NAME.replace("-arm64", "")
                     } else {
                         RELEASE = env.BRANCH_NAME
                     }
@@ -29,7 +29,7 @@ pipeline {
             }
         }
         stage('Checkout') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 // Get some code from a GitHub repository
 
@@ -52,7 +52,7 @@ pipeline {
             }
         }
         stage('Tag Other Repos') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
                 stage('ms-server') {
                     steps {
@@ -142,6 +142,12 @@ pipeline {
             }
         }
         stage('Modify install conf') {
+            when {
+                anyOf {
+                    tag "v*";
+                    tag "dev"
+                }
+            }
             steps {
                 dir('installer') {
                     sh '''
@@ -156,6 +162,12 @@ pipeline {
             }
         }
         stage('Package Online-install') {
+            when {
+                anyOf {
+                    tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP";
+                    tag "dev"
+                }
+            }
             steps {
                 dir('installer') {
                     sh '''          
@@ -182,7 +194,7 @@ pipeline {
             }
         }
         stage('Release') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
                     withEnv(["TOKEN=$TOKEN"]) {
@@ -208,6 +220,7 @@ pipeline {
                                     'kafka:2',
                                     'zookeeper:3',
                                     'mysql:5.7.33',
+                                    'redis:6.2.6',
                                     'prometheus:latest',
                                     'standalone-chrome:4.1.1',
                                     'node-exporter:latest',
@@ -231,17 +244,36 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
                         docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
                         docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
+                        docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
                         docker save ${IMAGE_PREFIX}/standalone-chrome:4.1.1 -o standalone-chrome.tar
                         cd ..
-
+                    '''
+                    script {
+                        // 区分不同架构
+                        RELEASE = ""
+                        ARCH = ""
+                        if (env.TAG_NAME != null) {
+                            RELEASE = env.TAG_NAME
+                            if (RELEASE.endsWith("-arm64")) {
+                                ARCH = "-arm64"
+                            }
+                        } else {
+                            RELEASE = env.BRANCH_NAME
+                        }
+                        env.RELEASE = "${RELEASE}"
+                        env.ARCH = "${ARCH}"
+                        echo "RELEASE=${RELEASE}"
+                        echo "ARCH=${ARCH}"
+                    }
+                    sh '''
                         #获取docker
                         rm -rf docker*
-                        wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker.zip
-                        unzip docker.zip
+                        wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker${ARCH}.zip
+                        unzip docker${ARCH}.zip
                         rm -rf __MACOSX
-                        rm -rf docker.zip
+                        rm -rf docker${ARCH}.zip
 
                         #打包离线包
                         touch metersphere-offline-installer-${RELEASE}.tar.gz
@@ -257,13 +289,15 @@ pipeline {
                 }
             }
         }
-        stage('Archive') {
-            steps {
-                archiveArtifacts artifacts: 'installer/*.tar.gz,installer/quick_start.sh,installer/*.md5', followSymlinks: false
-            }
-        }
         stage('Upload') {
-            when { anyOf { tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP"}}
+            when {
+                anyOf {
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-arm64\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-arm64-lts\$", comparator: "REGEXP"
+                }
+            }
             steps {
                 dir('installer') {
                     echo "UPLOADING"
@@ -278,7 +312,7 @@ pipeline {
     post('Notification') {
         always {
             withCredentials([string(credentialsId: 'wechat-bot-webhook', variable: 'WEBHOOK')]) {
-                qyWechatNotification failSend: true, mentionedId: '', mentionedMobile: '', webhookUrl: "$WEBHOOK"
+                qyWechatNotification failNotify: true, mentionedId: '', mentionedMobile: '', webhookUrl: "$WEBHOOK"
             }
         }
     }

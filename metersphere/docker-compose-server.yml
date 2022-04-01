@@ -13,12 +13,16 @@ services:
       KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
       KAFKA_TEST_TOPIC: ${MS_KAFKA_TEST_TOPIC}
       KAFKA_REPORT_TOPIC: ${MS_KAFKA_REPORT_TOPIC}
-      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_EXT_HOST}:${MS_KAFKA_EXT_PORT}
+      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
       JMETER_IMAGE: ${MS_JMETER_IMAGE}
       K8S_NODE-CONTROLLER-IMAGE: ${MS_IMAGE_PREFIX}/ms-node-controller:${MS_IMAGE_TAG}
       TCP_MOCK_PORT: ${MS_TCP_MOCK_PORT}
       SESSION_TIMEOUT: 21600
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      SPRING_SESSION_STORE-TYPE: redis
+      SPRING_REDIS_HOST: ${MS_REDIS_HOST}
+      SPRING_REDIS_PORT: ${MS_REDIS_PORT}
+      SPRING_REDIS_PASSWORD: ${MS_REDIS_PASSWORD}
     ports:
       - ${MS_SERVER_PORT}:8081
       - ${MS_TCP_MOCK_PORT}:${MS_TCP_MOCK_PORT}
@@ -27,6 +31,7 @@ services:
       interval: 6s
       timeout: 10s
       retries: 20
+    restart: always
     volumes:
       - ms-conf:/opt/metersphere/conf
       - ms-logs:/opt/metersphere/logs
@@ -56,7 +61,7 @@ services:
       interval: 6s
       timeout: 10s
       retries: 20
-    restart: on-failure
+    restart: always
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
       - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming

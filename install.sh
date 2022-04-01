@@ -29,7 +29,7 @@ if [ ${MS_EXTERNAL_KAFKA} = 'false' ];then
       __local_ip=$(ipconfig getifaddr en0)
       sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
    fi
-   sed -i -e "s#MS_KAFKA_EXT_HOST=.*#MS_KAFKA_EXT_HOST=${__local_ip}#g" ${__current_dir}/install.conf
+   sed -i -e "s#MS_KAFKA_HOST=.*#MS_KAFKA_HOST=${__local_ip}#g" ${__current_dir}/install.conf
 fi
 set +a
 
@@ -107,7 +107,7 @@ else
       chmod +x /usr/bin/docker-compose
    else
       log "... 在线安装 docker-compose"
-      curl -L https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
+      curl -L https://get.daocloud.io/docker/compose/releases/download/v2.2.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
@@ -128,6 +128,10 @@ source ~/.msrc >/dev/null 2>&1
 __ms_image_tag=${MS_IMAGE_TAG}
 __ms_jmeter_image=${MS_JMETER_IMAGE}
 source ${MS_BASE}/metersphere/.env
+# 把原来kafka的配置合并成IP
+if [ ${MS_KAFKA_HOST} = 'kafka' ];then
+  MS_KAFKA_HOST=${__local_ip}
+fi
 export MS_IMAGE_TAG=${__ms_image_tag}
 export MS_JMETER_IMAGE=${__ms_jmeter_image}
 env | grep MS_ > ${MS_BASE}/metersphere/.env
