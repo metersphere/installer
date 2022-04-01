@@ -2,7 +2,7 @@ version: "2.1"
 services:
   grid-local:
     image: ${MS_IMAGE_PREFIX}/seleniarm-grid-all:4.1.2-20220227
-    container_name: grid-local
+    container_name: local-selenium-grid
     shm_size: 4gb
     environment:
       - SE_EVENT_BUS_HOST=127.0.0.1
