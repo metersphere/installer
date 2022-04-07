@@ -167,7 +167,7 @@ EOF
       fi
       sleep 5s
       # wget -nv -T 60 -t 1 --no-check-certificate https://github.com/metersphere/metersphere/releases/download/${MS_LATEST_VERSION}/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz -O /tmp/metersphere-online-installer-${MS_LATEST_VERSION}.tar.gz
-      git_urls=('github.com' 'hub.fastgit.org')
+      git_urls=('github.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
 
       for git_url in ${git_urls[*]}
       do
@@ -190,7 +190,7 @@ EOF
          fi
       done
 
-      if [ 'x${server_url}' == 'x' ];then
+      if [ "x${server_url}" == "x" ];then
          echo "没有找到稳定的下载服务器，请稍候重试"
          exit 1
       fi
