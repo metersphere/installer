@@ -4,7 +4,7 @@
 
 os=`uname -a`
 
-git_urls=('github.com' 'hub.fastgit.org')
+git_urls=('github.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
 
 for git_url in ${git_urls[*]}
 do
