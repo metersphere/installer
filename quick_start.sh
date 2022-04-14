@@ -2,6 +2,7 @@
 
 #Install Latest Stable MeterSphere Release
 
+MSVERSION='v1.20.0-lts'
 os=`uname -a`
 
 git_urls=('github.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
@@ -35,15 +36,9 @@ fi
 
 echo "使用下载服务器 ${server_url}"
 
-# 支持MacOS
-if [[ $os =~ 'Darwin' ]];then
-    MSVERSION=$(curl -s https://${server_url}/metersphere/metersphere/releases/latest |grep -Eo 'v[0-9]+.[0-9]+.[0-9]+')
-else
-	MSVERSION=$(curl -s https://${server_url}/metersphere/metersphere/releases/latest/download 2>&1 | grep -Po 'v[0-9]+\.[0-9]+\.[0-9]+.*(?=")')
-fi
+DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-online-installer-${MSVERSION}.tar.gz"
 
-wget --no-check-certificate https://${server_url}/metersphere/metersphere/releases/latest/download/metersphere-online-installer-${MSVERSION}.tar.gz
-#curl -s https://api.github.com/repos/metersphere/metersphere/releases/latest | grep browser_download_url | grep online | cut -d '"' -f 4 | wget -qi -
+wget --no-check-certificate ${DOWNLOAD_URL}
 tar zxvf metersphere-online-installer-${MSVERSION}.tar.gz
 cd metersphere-online-installer-${MSVERSION}
 
