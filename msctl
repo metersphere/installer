@@ -170,10 +170,11 @@ latest_release=""
 release_pattern=""
 
 # 判断是否是LTS版本
-if "lts" in os.environ.get("MS_VERSION"):
-    release_pattern="v\d+\.\d+\.\d+-lts$"
+current_version=os.environ.get("MS_VERSION")
+if current_version.endswith("-lts") or current_version.startswith("v1."):
+  release_pattern="v\d+\.\d+\.\d+-lts$"
 else:
-    release_pattern="v\d+\.\d+\.\d+$"
+  release_pattern="v\d+\.\d+\.\d+$"
 
 def get_releases(page):
   # 根据是否是LTS版本获取对应的最新版本号
