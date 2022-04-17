@@ -2,6 +2,42 @@
 
 #Install Latest Stable MeterSphere Release
 
+python - <<EOF
+# -*- coding: UTF-8 -*-
+import os
+import json
+import re
+
+latest_release=""
+release_pattern="v\d+\.\d+\.\d+-lts$"
+
+def get_releases(page):
+  # 根据是否是LTS版本获取对应的最新版本号
+  try:
+      releases=os.popen("curl -s https://api.github.com/repos/metersphere/metersphere/releases?page=%d" % (page)).read()
+      releases=[ x["name"] for x in json.loads(releases) if x["prerelease"] == False ]
+  except Exception as e:
+      print(str(e))
+      print("获取Release信息失败，请检查服务器到GitHub的网络连接是否正常")
+      exit(1)
+  else:
+      for release in releases:
+          if re.search(release_pattern,release) != None:
+            return release
+
+page = 1
+while (page <= 10):
+  latest_release = get_releases(page)
+  if (latest_release != "" and latest_release != None):
+    break
+  page += 1
+
+# 记录最新版本号
+os.popen("echo "+latest_release+" > /tmp/ms_latest_release")
+
+EOF
+
+MSVERSION=$(cat /tmp/ms_latest_release)
 os=`uname -a`
 
 git_urls=('github.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
@@ -35,15 +71,9 @@ fi
 
 echo "使用下载服务器 ${server_url}"
 
-# 支持MacOS
-if [[ $os =~ 'Darwin' ]];then
-    MSVERSION=$(curl -s https://${server_url}/metersphere/metersphere/releases/latest |grep -Eo 'v[0-9]+.[0-9]+.[0-9]+')
-else
-	MSVERSION=$(curl -s https://${server_url}/metersphere/metersphere/releases/latest/download 2>&1 | grep -Po 'v[0-9]+\.[0-9]+\.[0-9]+.*(?=")')
-fi
+DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-online-installer-${MSVERSION}.tar.gz"
 
-wget --no-check-certificate https://${server_url}/metersphere/metersphere/releases/latest/download/metersphere-online-installer-${MSVERSION}.tar.gz
-#curl -s https://api.github.com/repos/metersphere/metersphere/releases/latest | grep browser_download_url | grep online | cut -d '"' -f 4 | wget -qi -
+wget --no-check-certificate ${DOWNLOAD_URL}
 tar zxvf metersphere-online-installer-${MSVERSION}.tar.gz
 cd metersphere-online-installer-${MSVERSION}
 
