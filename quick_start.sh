@@ -2,7 +2,42 @@
 
 #Install Latest Stable MeterSphere Release
 
-MSVERSION='v1.20.0-lts'
+python - <<EOF
+# -*- coding: UTF-8 -*-
+import os
+import json
+import re
+
+latest_release=""
+release_pattern="v\d+\.\d+\.\d+-lts$"
+
+def get_releases(page):
+  # 根据是否是LTS版本获取对应的最新版本号
+  try:
+      releases=os.popen("curl -s https://api.github.com/repos/metersphere/metersphere/releases?page=%d" % (page)).read()
+      releases=[ x["name"] for x in json.loads(releases) if x["prerelease"] == False ]
+  except Exception as e:
+      print(str(e))
+      print("获取Release信息失败，请检查服务器到GitHub的网络连接是否正常")
+      exit(1)
+  else:
+      for release in releases:
+          if re.search(release_pattern,release) != None:
+            return release
+
+page = 1
+while (page <= 10):
+  latest_release = get_releases(page)
+  if (latest_release != "" and latest_release != None):
+    break
+  page += 1
+
+# 记录最新版本号
+os.popen("echo "+latest_release+" > /tmp/ms_latest_release")
+
+EOF
+
+MSVERSION=$(cat /tmp/ms_latest_release)
 os=`uname -a`
 
 git_urls=('github.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
