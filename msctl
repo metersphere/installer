@@ -56,7 +56,6 @@ function generate_compose_files() {
     # 是否使用外部 Kafka
     if [ ${MS_EXTERNAL_KAFKA} = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/kafka
-      mkdir -p ${MS_BASE}/metersphere/data/zookeeper
       compose_files="${compose_files} -f docker-compose-kafka.yml"
     fi
     # 是否使用外部 Prometheus

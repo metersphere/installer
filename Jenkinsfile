@@ -217,8 +217,7 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['jmeter-master:${JMETER_TAG}',
-                                    'kafka:2',
-                                    'zookeeper:3',
+                                    'kafka:3',
                                     'mysql:5.7.33',
                                     'redis:6.2.6',
                                     'prometheus:latest',
@@ -242,7 +241,6 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
                         docker save ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} -o jmeter-master.tar
                         docker save ${IMAGE_PREFIX}/kafka:2 -o kafka.tar
-                        docker save ${IMAGE_PREFIX}/zookeeper:3 -o zookeeper.tar
                         docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
                         docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
