@@ -217,8 +217,8 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['jmeter-master:${JMETER_TAG}',
-                                    'kafka:3',
-                                    'mysql:5.7.33',
+                                    'kafka:3.1',
+                                    'mysql:8.0.28',
                                     'redis:6.2.6',
                                     'prometheus:latest',
                                     'seleniarm-grid-all:4.1.2-20220227',
@@ -240,8 +240,8 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/ms-node-controller:${RELEASE} -o ms-node-controller.tar
                         docker save ${IMAGE_PREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
                         docker save ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} -o jmeter-master.tar
-                        docker save ${IMAGE_PREFIX}/kafka:3 -o kafka.tar
-                        docker save ${IMAGE_PREFIX}/mysql:5.7.33 -o mysql.tar
+                        docker save ${IMAGE_PREFIX}/kafka:3.1 -o kafka.tar
+                        docker save ${IMAGE_PREFIX}/mysql:8.0.28 -o mysql.tar
                         docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
