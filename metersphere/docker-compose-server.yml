@@ -24,7 +24,7 @@ services:
       SPRING_REDIS_PORT: ${MS_REDIS_PORT}
       SPRING_REDIS_PASSWORD: ${MS_REDIS_PASSWORD}
     ports:
-      - ${MS_SERVER_PORT}:8081
+      - ${MS_SERVER_PORT}:8443
       - ${MS_TCP_MOCK_PORT}:${MS_TCP_MOCK_PORT}
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8081"]
