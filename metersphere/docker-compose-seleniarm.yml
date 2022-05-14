@@ -5,6 +5,7 @@ services:
     container_name: local-selenium-grid
     shm_size: 4gb
     environment:
+      - TZ=Asia/Shanghai
       - SE_EVENT_BUS_HOST=127.0.0.1
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
