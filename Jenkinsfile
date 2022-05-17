@@ -36,6 +36,12 @@ pipeline {
                 dir('ms-server') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH_NAME}"
                 }
+                dir('xpack-backend') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/xpack-backend.git', branch: "${BRANCH_NAME}"
+                }
+                dir('xpack-frontend') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/xpack-frontend.git', branch: "${BRANCH_NAME}"
+                }
                 dir('ms-node-controller') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH_NAME}"
                 }
@@ -54,6 +60,22 @@ pipeline {
         stage('Tag Other Repos') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
+                stage('xpack-backend') {
+                    steps {
+                        dir('xpack-backend') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                    }
+                }        
+                stage('xpack-frontend') {
+                    steps {
+                        dir('xpack-frontend') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                    }
+                }                
                 stage('ms-server') {
                     steps {
                         dir('ms-server') {
