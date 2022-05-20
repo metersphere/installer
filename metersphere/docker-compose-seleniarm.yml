@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   local-selenium-grid:
-    image: ${MS_IMAGE_PREFIX}/seleniarm-grid-all:4.1.2-20220227
+    image: ${MS_IMAGE_PREFIX}/seleniarm-grid-all:4.1.4-20220519
     container_name: local-selenium-grid
     shm_size: 4gb
     environment:
