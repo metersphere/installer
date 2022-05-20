@@ -244,7 +244,7 @@ pipeline {
                                     'mysql:5.7.33',
                                     'redis:6.2.6',
                                     'prometheus:latest',
-                                    'seleniarm-grid-all:4.1.2-20220227',
+                                    'seleniarm-grid-all:4.1.4-20220519',
                                     'node-exporter:latest',
                                     "metersphere:${RELEASE}",
                                     "ms-node-controller:${RELEASE}",
@@ -269,7 +269,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
-                        docker save ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.2-20220227 -o seleniarm-grid-all.tar
+                        docker save ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.4-20220519 -o seleniarm-grid-all.tar
                         cd ..
                     '''
                     script {
