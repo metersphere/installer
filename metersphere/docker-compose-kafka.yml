@@ -21,7 +21,7 @@ services:
     ports:
       - '${MS_KAFKA_PORT}:${MS_KAFKA_PORT}'
     healthcheck:
-      test: ["CMD", "kafka-consumer-groups.sh", "--bootstrap-server", "localhost:9093", "--list"]
+      test: ["CMD", "bash", "-c", "< /dev/tcp/localhost/9093"]
       interval: 6s
       timeout: 10s
       retries: 20
