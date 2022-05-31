@@ -51,6 +51,9 @@ pipeline {
                 dir('jenkins-plugin') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
                 }
+                dir('ms-jmeter-core') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "${BRANCH_NAME}"
+                }
                 sh '''
                     git config --global user.email "wangzhen@fit2cloud.com"
                     git config --global user.name "BugKing"
@@ -158,6 +161,14 @@ pipeline {
                                     continue
                                 }
                             }
+                        }
+                    }
+                }
+                stage('ms-jmeter-core') {
+                    steps {
+                        dir('ms-jmeter-core') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
                         }
                     }
                 }
