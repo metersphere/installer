@@ -41,7 +41,7 @@ if [[ ${__current_version} =~ "lts" ]];then
    fi
 else
    if [[ $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
-      log "\e[31m从非LTS版本升级到LTS版本后，后续将只能升级新的LTS版本，无法再自动升级到非LTS版本\e[0m"
+      log "\e[31m从非LTS版本升级到LTS版本后，后续只能自动升级LTS版本，如升级非LTS版本，需手动升级！\e[0m"
       read -p "是否确认升级? [n/y]" __choice </dev/tty
       case "$__choice" in
          y|Y) echo "继续安装...";;
