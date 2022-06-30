@@ -308,11 +308,12 @@ pipeline {
 
                         #打包离线包
                         touch metersphere-offline-installer-${RELEASE}.tar.gz
-                        tar czvf metersphere-offline-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-offline-installer-${RELEASE}/" \\
+                        tar --transform "s/^\\./metersphere-offline-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
-                            --exclude .git
+                            --exclude .git \\
+                            -czvf metersphere-offline-installer-${RELEASE}.tar.gz .
 
                         md5sum -b metersphere-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-offline-installer-${RELEASE}.tar.gz.md5
                         rm -rf images
