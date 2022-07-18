@@ -11,7 +11,7 @@ pipeline {
     environment {
         BRANCH_NAME = "v2.0"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
-        JMETER_TAG = "5.4.3-ms7-jdk11"
+        JMETER_TAG = "5.5-ms1-jdk11"
     }
     stages {
         stage('Preparation') {
@@ -52,7 +52,7 @@ pipeline {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
                 }
                 dir('ms-jmeter-core') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "master"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "jmeter-5.5"
                 }
                 sh '''
                     git config --global user.email "wangzhen@fit2cloud.com"
