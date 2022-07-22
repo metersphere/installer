@@ -52,7 +52,7 @@ pipeline {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
                 }
                 dir('ms-jmeter-core') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "jmeter-5.5"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "${BRANCH_NAME}"
                 }
                 sh '''
                     git config --global user.email "wangzhen@fit2cloud.com"
