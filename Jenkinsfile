@@ -62,23 +62,7 @@ pipeline {
         }
         stage('Tag Other Repos') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
-            parallel {
-                stage('xpack-backend') {
-                    steps {
-                        dir('xpack-backend') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
-                    }
-                }        
-                stage('xpack-frontend') {
-                    steps {
-                        dir('xpack-frontend') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
-                    }
-                }
+            steps {
                 stage('ms-jmeter-core') {
                     steps {
                         dir('ms-jmeter-core') {
@@ -97,6 +81,24 @@ pipeline {
                                     continue
                                 }
                             }
+                        }
+                    }
+                }
+            }
+            parallel {
+                stage('xpack-backend') {
+                    steps {
+                        dir('xpack-backend') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                    }
+                }        
+                stage('xpack-frontend') {
+                    steps {
+                        dir('xpack-frontend') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
                         }
                     }
                 }
