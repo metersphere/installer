@@ -256,6 +256,15 @@ pipeline {
                         }
                     }
                 }
+                withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
+                    withEnv(["TOKEN=$TOKEN"]) {
+                        dir('ms-jmeter-core') {
+                            sh script: '''
+                                curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/ms-jmeter-core/releases
+                            '''
+                        }
+                    }
+                }
             }
         }        
         stage('Package Offline-install') {
