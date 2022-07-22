@@ -60,7 +60,7 @@ pipeline {
                 '''
             }
         }
-        stage('Tag Other Repos') {
+        stage('MS jmeter core') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 dir('ms-jmeter-core') {
@@ -81,6 +81,9 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('Tag Other Repos') {
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
                 stage('xpack-backend') {
                     steps {
