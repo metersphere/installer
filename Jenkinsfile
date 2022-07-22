@@ -78,7 +78,28 @@ pipeline {
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
                     }
-                }                
+                }
+                stage('ms-jmeter-core') {
+                    steps {
+                        dir('ms-jmeter-core') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../ms-jmeter-core/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../ms-jmeter-core/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
                 stage('ms-server') {
                     steps {
                         dir('ms-server') {
@@ -161,14 +182,6 @@ pipeline {
                                     continue
                                 }
                             }
-                        }
-                    }
-                }
-                stage('ms-jmeter-core') {
-                    steps {
-                        dir('ms-jmeter-core') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
                         }
                     }
                 }
