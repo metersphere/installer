@@ -55,7 +55,7 @@ pipeline {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "${BRANCH_NAME}"
                 }
                 sh '''
-                    git config --global user.email "wangzhen@fit2cloud.com"
+                    git config --global user.email "metersphere@fit2cloud.com"
                     git config --global user.name "metersphere-bot"
                 '''
             }
