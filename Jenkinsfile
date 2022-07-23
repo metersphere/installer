@@ -56,7 +56,7 @@ pipeline {
                 }
                 sh '''
                     git config --global user.email "wangzhen@fit2cloud.com"
-                    git config --global user.name "BugKing"
+                    git config --global user.name "metersphere-bot"
                 '''
             }
         }
