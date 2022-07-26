@@ -36,8 +36,13 @@ set +a
 __current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
 if [[ ${__current_version} =~ "lts" ]];then
    if [[ ! $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
-      log "不支持从LTS版本升级到非LTS版本"
-      exit 1
+      log "从LTS版本升级到非LTS版本，此版本包括实验性功能请做好数据备份工作"
+      read -p "是否确认升级? [n/y]" __choice </dev/tty
+      case "$__choice" in
+         y|Y) echo "继续安装...";;
+         n|N) echo "退出安装..."&exit;;
+         *) echo "退出安装..."&exit;;
+      esac
    fi
 else
    if [[ $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
