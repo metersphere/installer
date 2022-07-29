@@ -9,7 +9,6 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
-        BRANCH_NAME = "v2.0"
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
         JMETER_TAG = "5.5-ms1-jdk11"
     }
@@ -25,6 +24,7 @@ pipeline {
                     }
                     env.RELEASE = "${RELEASE}"
                     echo "RELEASE=${RELEASE}"
+                    echo "BRANCH=${BRANCH_NAME}"
                 }
             }
         }
