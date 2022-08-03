@@ -25,6 +25,7 @@ pipeline {
         stage('Preparation') {
             steps {
                 script {
+                    env.BRANCH_NAME = params.branch
                     RELEASE = ""
                     if (env.TAG_NAME != null) {
                         RELEASE = env.TAG_NAME.replace("-arm64", "")
