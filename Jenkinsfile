@@ -1,21 +1,15 @@
- properties([ [ $class: 'ThrottleJobProperty',
-                categories: ['metersphere'], 
-                limitOneJobWithMatchingParams: false,
-                maxConcurrentPerNode: 1,
-                maxConcurrentTotal: 1,
-                paramsToUseForLimit: '',
-                throttleEnabled: true,
-                throttleOption: 'category' ] ])
-
 pipeline {
     agent {
         node {
             label params.label == "" ? "metersphere" : params.label
         }
     }
-    options { 
-        quietPeriod(30)
+    options {
+        ansiColor('xterm')
         checkoutToSubdirectory('installer')
+    }
+    triggers {
+        pollSCM('0 * * * *')
     }
     environment {
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
@@ -43,19 +37,22 @@ pipeline {
             steps {
                 // Get some code from a GitHub repository
 
-                dir('ms-server') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH_NAME}"
+                dir('metersphere') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-next.git', branch: "${BRANCH_NAME}"
                 }
-                dir('xpack-backend') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/xpack-backend.git', branch: "${BRANCH_NAME}"
+                dir('metersphere-xpack') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-xpack.git', branch: "${BRANCH_NAME}"
                 }
-                dir('xpack-frontend') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/xpack-frontend.git', branch: "${BRANCH_NAME}"
+                dir('ui-test') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ui-test.git', branch: "${BRANCH_NAME}"
                 }
-                dir('ms-node-controller') {
+                dir('workstation') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/workstation.git', branch: "${BRANCH_NAME}"
+                }
+                dir('node-controller') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH_NAME}"
                 }
-                dir('ms-data-streaming') {
+                dir('data-streaming') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: "${BRANCH_NAME}"
                 }
                 dir('jenkins-plugin') {
@@ -92,31 +89,55 @@ pipeline {
                 }
             }
         }
-        stage('Tag Other Repos') {
+        stage('MS Domain SDK XPack') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
-            parallel {
-                stage('xpack-backend') {
-                    steps {
-                        dir('xpack-backend') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
+            steps {
+                dir('metersphere') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                script {
+                    REVISION = ""
+                    if (env.BRANCH_NAME.startsWith("v") ) {
+                        REVISION = env.BRANCH_NAME.substring(1)
+                    } else {
+                        REVISION = env.BRANCH_NAME
                     }
-                }        
-                stage('xpack-frontend') {
-                    steps {
-                        dir('xpack-frontend') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
+                    env.REVISION = "${REVISION}"
+                    echo "REVISION=${REVISION}"
+                }
+                dir('metersphere') {
+                    sh '''
+                        ./mvnw install -N -Drevision=${REVISION}
+                        ./mvnw clean install -Drevision=${REVISION} -pl framework/sdk-parent/domain,framework/sdk-parent/sdk,framework/sdk-parent/xpack-interface
+                    '''
+                }
+                dir('metersphere-xpack') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                script {
+                    for (int i=0;i<10;i++) {
+                        try {
+                            echo "Waiting for scanning new created Job"
+                            sleep 10
+                            build job:"../metersphere-xpack/${RELEASE}", quietPeriod:10
+                            break
+                        } catch (Exception e) {
+                            println(e)
+                            println("Not building the job ../metersphere-xpack/${RELEASE} as it doesn't exist")
+                            continue
                         }
                     }
                 }
-                stage('ms-server') {
+            }
+        }
+
+        stage('Tag Other Repos') {
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
+            parallel {
+                stage('metersphere') {
                     steps {
-                        dir('ms-server') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -127,6 +148,48 @@ pipeline {
                                 } catch (Exception e) {
                                     println(e)
                                     println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('ui-test') {
+                    steps {
+                        dir('ui-test') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../ui-test/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../ui-test/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('workstation') {
+                    steps {
+                        dir('ui-test') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../workstation/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../workstation/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
