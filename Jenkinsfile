@@ -79,10 +79,10 @@ pipeline {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"../ms-jmeter-core/${RELEASE}", quietPeriod:10
+                            build job:"ms-jmeter-core/${RELEASE}", quietPeriod:10
                             break
                         } catch (Exception e) {
-                            println("Not building the job ../ms-jmeter-core/${RELEASE} as it doesn't exist")
+                            println("Not building the job ms-jmeter-core/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -121,11 +121,11 @@ pipeline {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"../metersphere-xpack/${RELEASE}", quietPeriod:10
+                            build job:"metersphere-xpack/${RELEASE}", quietPeriod:10
                             break
                         } catch (Exception e) {
                             println(e)
-                            println("Not building the job ../metersphere-xpack/${RELEASE} as it doesn't exist")
+                            println("Not building the job metersphere-xpack/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -143,11 +143,11 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../metersphere/${RELEASE}", quietPeriod:10
+                                    build job:"metersphere/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
                                     println(e)
-                                    println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
+                                    println("Not building the job metersphere/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -165,10 +165,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../ui-test/${RELEASE}", quietPeriod:10
+                                    build job:"ui-test/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../ui-test/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ui-test/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -186,10 +186,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../workstation/${RELEASE}", quietPeriod:10
+                                    build job:"workstation/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../workstation/${RELEASE} as it doesn't exist")
+                                    println("Not building the job workstation/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -207,10 +207,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../node-controller/${RELEASE}", quietPeriod:10
+                                    build job:"node-controller/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../node-controller/${RELEASE} as it doesn't exist")
+                                    println("Not building the job node-controller/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -228,10 +228,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../data-streaming/${RELEASE}", quietPeriod:10
+                                    build job:"data-streaming/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../data-streaming/${RELEASE} as it doesn't exist")
+                                    println("Not building the job data-streaming/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -249,10 +249,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../jenkins-plugin/${RELEASE}", quietPeriod:10
+                                    build job:"jenkins-plugin/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../jenkins-plugin/${RELEASE} as it doesn't exist")
+                                    println("Not building the job jenkins-plugin/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
