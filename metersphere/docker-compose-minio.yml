@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+  minio:
+    image: ${MS_IMAGE_PREFIX}/minio:latest
+    container_name: minio
+    hostname: "minio"
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: Password123@minio
+    volumes:
+      - ms-minio-data:/data
+      - ${MS_BASE}/metersphere/conf/minio:/root/.minio
+    networks:
+      - ms-network
+    command: server --console-address ':9001' /data
+    privileged: true
+    restart: always
+
+volumes:
+  ms-minio-data:
+    driver_opts:
+      type: none
+      device: ${MS_BASE}/metersphere/data/minio
+      o: bind

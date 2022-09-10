@@ -8,9 +8,6 @@ pipeline {
         ansiColor('xterm')
         checkoutToSubdirectory('installer')
     }
-    triggers {
-        pollSCM('0 * * * *')
-    }
     environment {
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
         JMETER_TAG = "5.5-ms2-jdk11"
@@ -19,14 +16,15 @@ pipeline {
         stage('Preparation') {
             steps {
                 script {
-                    env.BRANCH_NAME = params.branch
-                    RELEASE = ""
-                    if (env.TAG_NAME != null) {
-                        RELEASE = env.TAG_NAME.replace("-arm64", "")
-                    } else {
-                        RELEASE = env.BRANCH_NAME
+                    if (params.branch != null) {
+                        env.BRANCH_NAME = params.branch
                     }
-                    env.RELEASE = "${RELEASE}"
+                    if (params.release != null) {
+                        env.RELEASE = params.release.replace("-arm64", "")
+                    } else {
+                        env.RELEASE = env.BRANCH_NAME
+                    }
+
                     echo "RELEASE=${RELEASE}"
                     echo "BRANCH=${BRANCH_NAME}"
                 }
@@ -92,25 +90,19 @@ pipeline {
         stage('MS Domain SDK XPack') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
-                dir('metersphere') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
                 script {
                     REVISION = ""
-                    if (env.BRANCH_NAME.startsWith("v") ) {
-                        REVISION = env.BRANCH_NAME.substring(1)
+                    if (env.RELEASE.startsWith("v") ) {
+                        REVISION = env.RELEASE.substring(1)
                     } else {
-                        REVISION = env.BRANCH_NAME
+                        REVISION = env.RELEASE
                     }
                     env.REVISION = "${REVISION}"
                     echo "REVISION=${REVISION}"
                 }
                 dir('metersphere') {
-                    sh '''
-                        ./mvnw install -N -Drevision=${REVISION}
-                        ./mvnw clean install -Drevision=${REVISION} -pl framework/sdk-parent/domain,framework/sdk-parent/sdk,framework/sdk-parent/xpack-interface
-                    '''
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
                 }
                 dir('metersphere-xpack') {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
@@ -154,51 +146,51 @@ pipeline {
                         }
                     }
                 }
-                stage('ui-test') {
+//                 stage('ui-test') {
+//                     steps {
+//                         dir('ui-test') {
+//                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+//                             sh("git push -f origin refs/tags/${RELEASE}")
+//                         }
+//                         script {
+//                             for (int i=0;i<10;i++) {
+//                                 try {
+//                                     echo "Waiting for scanning new created Job"
+//                                     sleep 10
+//                                     build job:"ui-test/${RELEASE}", quietPeriod:10
+//                                     break
+//                                 } catch (Exception e) {
+//                                     println("Not building the job ui-test/${RELEASE} as it doesn't exist")
+//                                     continue
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//                 stage('workstation') {
+//                     steps {
+//                         dir('ui-test') {
+//                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+//                             sh("git push -f origin refs/tags/${RELEASE}")
+//                         }
+//                         script {
+//                             for (int i=0;i<10;i++) {
+//                                 try {
+//                                     echo "Waiting for scanning new created Job"
+//                                     sleep 10
+//                                     build job:"workstation/${RELEASE}", quietPeriod:10
+//                                     break
+//                                 } catch (Exception e) {
+//                                     println("Not building the job workstation/${RELEASE} as it doesn't exist")
+//                                     continue
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+                stage('node-controller') {
                     steps {
-                        dir('ui-test') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
-                        script {
-                            for (int i=0;i<10;i++) {
-                                try {
-                                    echo "Waiting for scanning new created Job"
-                                    sleep 10
-                                    build job:"ui-test/${RELEASE}", quietPeriod:10
-                                    break
-                                } catch (Exception e) {
-                                    println("Not building the job ui-test/${RELEASE} as it doesn't exist")
-                                    continue
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('workstation') {
-                    steps {
-                        dir('ui-test') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
-                        script {
-                            for (int i=0;i<10;i++) {
-                                try {
-                                    echo "Waiting for scanning new created Job"
-                                    sleep 10
-                                    build job:"workstation/${RELEASE}", quietPeriod:10
-                                    break
-                                } catch (Exception e) {
-                                    println("Not building the job workstation/${RELEASE} as it doesn't exist")
-                                    continue
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('ms-node-controller') {
-                    steps {
-                        dir('ms-node-controller') {
+                        dir('node-controller') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
@@ -217,9 +209,9 @@ pipeline {
                         }
                     }
                 }
-                stage('ms-data-streaming') {
+                stage('data-streaming') {
                     steps {
-                        dir('ms-data-streaming') {
+                        dir('data-streaming') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
@@ -264,8 +256,9 @@ pipeline {
         stage('Modify install conf') {
             when {
                 anyOf {
-                    tag "v*";
+                    tag pattern: "^v.*", comparator: "REGEXP"
                     tag "dev"
+                    tag "main"
                 }
             }
             steps {
@@ -286,6 +279,7 @@ pipeline {
                 anyOf {
                     tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP";
                     tag "dev"
+                    tag "main"
                 }
             }
             steps {
@@ -293,22 +287,24 @@ pipeline {
                     sh '''          
                         #打包在线包
                         touch metersphere-online-installer-${RELEASE}.tar.gz
-                        tar czvf metersphere-online-installer-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
+                        tar --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
-                            --exclude docker
+                            --exclude docker \\
+                            -czvf metersphere-online-installer-${RELEASE}.tar.gz .
                         #打包旧名称格式在线包
                         touch metersphere-release-${RELEASE}.tar.gz
-                        tar czvf metersphere-release-${RELEASE}.tar.gz . --transform "s/^\\./metersphere-release-${RELEASE}/" \\
+                        tar --transform "s/^\\./metersphere-release-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
-                            --exclude docker
+                            --exclude docker \\
+                            -czvf metersphere-release-${RELEASE}.tar.gz .
                     '''
                 }
             }
@@ -341,7 +337,7 @@ pipeline {
             }
         }        
         stage('Package Offline-install') {
-            when { tag "v*" }
+            when { tag pattern: "^v.*", comparator: "REGEXP" }
             steps {
                 dir('installer') {
                     script {
@@ -349,12 +345,20 @@ pipeline {
                                     'kafka:3.2.0',
                                     'mysql:8.0.30',
                                     'redis:6.2.6',
+                                    'minio:latest',
                                     'prometheus:latest',
                                     'seleniarm-grid-all:4.1.4-20220519',
                                     'node-exporter:latest',
-                                    "metersphere:${RELEASE}",
-                                    "ms-node-controller:${RELEASE}",
-                                    "ms-data-streaming:${RELEASE}"]
+                                    "api-test:${RELEASE}",
+                                    "performance-test:${RELEASE}",
+                                    "project-management:${RELEASE}",
+                                    "report-stat:${RELEASE}",
+                                    "system-setting:${RELEASE}",
+                                    "test-track:${RELEASE}",
+//                                     "ui-test:${RELEASE}",
+//                                     "workstation:${RELEASE}",
+                                    "node-controller:${RELEASE}",
+                                    "data-streaming:${RELEASE}"]
                         for (image in images) {
                             waitUntil {
                                 def r = sh script: "docker pull ${IMAGE_PREFIX}/${image}", returnStatus: true
@@ -365,13 +369,21 @@ pipeline {
                     sh '''
                         #保存镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} -o metersphere.tar
-                        docker save ${IMAGE_PREFIX}/ms-node-controller:${RELEASE} -o ms-node-controller.tar
-                        docker save ${IMAGE_PREFIX}/ms-data-streaming:${RELEASE} -o ms-data-streaming.tar
+                        docker save ${IMAGE_PREFIX}/api-test:${RELEASE} -o api-test.tar
+                        docker save ${IMAGE_PREFIX}/performance-test:${RELEASE} -o performance-test.tar
+                        docker save ${IMAGE_PREFIX}/project-management:${RELEASE} -o project-management.tar
+                        docker save ${IMAGE_PREFIX}/report-stat:${RELEASE} -o report-stat.tar
+                        docker save ${IMAGE_PREFIX}/system-setting:${RELEASE} -o system-setting.tar
+                        docker save ${IMAGE_PREFIX}/test-track:${RELEASE} -o test-track.tar
+                        # docker save ${IMAGE_PREFIX}/ui-test:${RELEASE} -o ui-test.tar
+                        # docker save ${IMAGE_PREFIX}/workstation:${RELEASE} -o workstation.tar
+                        docker save ${IMAGE_PREFIX}/node-controller:${RELEASE} -o node-controller.tar
+                        docker save ${IMAGE_PREFIX}/data-streaming:${RELEASE} -o data-streaming.tar
                         docker save ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} -o jmeter-master.tar
                         docker save ${IMAGE_PREFIX}/kafka:3.2.0 -o kafka.tar
                         docker save ${IMAGE_PREFIX}/mysql:8.0.30 -o mysql.tar
                         docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
+                        docker save ${IMAGE_PREFIX}/minio:latest -o minio.tar
                         docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
                         docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
                         docker save ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.4-20220519 -o seleniarm-grid-all.tar

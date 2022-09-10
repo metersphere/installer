@@ -1,0 +1,22 @@
+version: "2.1"
+services:
+  eureka:
+    image: ${MS_IMAGE_PREFIX}/eureka:${MS_IMAGE_TAG}
+    container_name: eureka
+    expose:
+      - 8761
+    ports:
+      - '8761:8761'
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "8761" ]
+      interval: 6s
+      timeout: 10s
+      retries: 20
+    restart: always
+    volumes:
+      - ms-conf:/opt/metersphere/conf
+      - ms-logs:/opt/metersphere/logs
+      - ms-data:/opt/metersphere/data
+    #    mem_limit: 1024m
+    networks:
+      - ms-network
