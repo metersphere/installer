@@ -7,12 +7,16 @@ services:
     ports:
       - '9000:9000'
       - '9001:9001'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9001" ]
+      interval: 6s
+      timeout: 10s
+      retries: 50
     environment:
-      MINIO_ACCESS_KEY: admin
-      MINIO_SECRET_KEY: Password123@minio
+      MINIO_ACCESS_KEY: ${MS_MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MS_MINIO_SECRET_KEY}
     volumes:
       - ms-minio-data:/data
-      - ${MS_BASE}/metersphere/conf/minio:/root/.minio
     networks:
       - ms-network
     command: server --console-address ':9001' /data

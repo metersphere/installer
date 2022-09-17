@@ -7,7 +7,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MS_MYSQL_PASSWORD}"]
       interval: 6s
       timeout: 5s
-      retries: 10
+      retries: 50
     environment:
       MYSQL_DATABASE: ${MS_MYSQL_DB}
       MYSQL_ROOT_PASSWORD: ${MS_MYSQL_PASSWORD}
@@ -20,7 +20,7 @@ services:
     networks:
       - ms-network
     restart: always
-  ms-server:
+  system-setting:
     depends_on:
       mysql:
         condition: service_healthy

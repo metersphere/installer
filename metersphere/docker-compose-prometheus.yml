@@ -21,7 +21,7 @@ services:
       test: [ "CMD", "nc", "-zv", "localhost", "9090" ]
       interval: 6s
       timeout: 5s
-      retries: 10
+      retries: 50
     networks:
       - ms-network
 

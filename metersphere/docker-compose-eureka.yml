@@ -5,13 +5,13 @@ services:
     container_name: eureka
     expose:
       - 8761
-    ports:
-      - '8761:8761'
+#    ports:
+#      - '8761:8761' # 默认不开启
     healthcheck:
       test: [ "CMD", "nc", "-zv", "localhost", "8761" ]
       interval: 6s
       timeout: 10s
-      retries: 20
+      retries: 50
     restart: always
     volumes:
       - ms-conf:/opt/metersphere/conf

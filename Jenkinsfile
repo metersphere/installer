@@ -5,7 +5,6 @@ pipeline {
         }
     }
     options {
-        ansiColor('xterm')
         checkoutToSubdirectory('installer')
     }
     environment {
@@ -68,6 +67,10 @@ pipeline {
         stage('MS jmeter core') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
+                dir('metersphere') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
                 dir('ms-jmeter-core') {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                     sh("git push -f origin refs/tags/${RELEASE}")
@@ -77,10 +80,10 @@ pipeline {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"ms-jmeter-core/${RELEASE}", quietPeriod:10
+                            build job:"../ms-jmeter-core/${RELEASE}", quietPeriod:10
                             break
                         } catch (Exception e) {
-                            println("Not building the job ms-jmeter-core/${RELEASE} as it doesn't exist")
+                            println("Not building the job ../ms-jmeter-core/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -100,10 +103,6 @@ pipeline {
                     env.REVISION = "${REVISION}"
                     echo "REVISION=${REVISION}"
                 }
-                dir('metersphere') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
                 dir('metersphere-xpack') {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                     sh("git push -f origin refs/tags/${RELEASE}")
@@ -113,11 +112,11 @@ pipeline {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"metersphere-xpack/${RELEASE}", quietPeriod:10
+                            build job:"../metersphere-xpack/${RELEASE}", quietPeriod:10
                             break
                         } catch (Exception e) {
                             println(e)
-                            println("Not building the job metersphere-xpack/${RELEASE} as it doesn't exist")
+                            println("Not building the job ../metersphere-xpack/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -135,59 +134,59 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"metersphere/${RELEASE}", quietPeriod:10
+                                    build job:"../metersphere-next/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
                                     println(e)
-                                    println("Not building the job metersphere/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../metersphere-next/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
                         }
                     }
                 }
-//                 stage('ui-test') {
-//                     steps {
-//                         dir('ui-test') {
-//                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-//                             sh("git push -f origin refs/tags/${RELEASE}")
-//                         }
-//                         script {
-//                             for (int i=0;i<10;i++) {
-//                                 try {
-//                                     echo "Waiting for scanning new created Job"
-//                                     sleep 10
-//                                     build job:"ui-test/${RELEASE}", quietPeriod:10
-//                                     break
-//                                 } catch (Exception e) {
-//                                     println("Not building the job ui-test/${RELEASE} as it doesn't exist")
-//                                     continue
-//                                 }
-//                             }
-//                         }
-//                     }
-//                 }
-//                 stage('workstation') {
-//                     steps {
-//                         dir('ui-test') {
-//                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-//                             sh("git push -f origin refs/tags/${RELEASE}")
-//                         }
-//                         script {
-//                             for (int i=0;i<10;i++) {
-//                                 try {
-//                                     echo "Waiting for scanning new created Job"
-//                                     sleep 10
-//                                     build job:"workstation/${RELEASE}", quietPeriod:10
-//                                     break
-//                                 } catch (Exception e) {
-//                                     println("Not building the job workstation/${RELEASE} as it doesn't exist")
-//                                     continue
-//                                 }
-//                             }
-//                         }
-//                     }
-//                 }
+                stage('ui-test') {
+                    steps {
+                        dir('ui-test') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../ui-test/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../ui-test/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('workstation') {
+                    steps {
+                        dir('workstation') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../workstation/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../workstation/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
                 stage('node-controller') {
                     steps {
                         dir('node-controller') {
@@ -199,10 +198,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"node-controller/${RELEASE}", quietPeriod:10
+                                    build job:"../node-controller/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job node-controller/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../node-controller/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -220,10 +219,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"data-streaming/${RELEASE}", quietPeriod:10
+                                    build job:"../data-streaming/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job data-streaming/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../data-streaming/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -241,10 +240,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"jenkins-plugin/${RELEASE}", quietPeriod:10
+                                    build job:"../jenkins-plugin/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job jenkins-plugin/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../jenkins-plugin/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -355,8 +354,8 @@ pipeline {
                                     "report-stat:${RELEASE}",
                                     "system-setting:${RELEASE}",
                                     "test-track:${RELEASE}",
-//                                     "ui-test:${RELEASE}",
-//                                     "workstation:${RELEASE}",
+                                    "ui-test:${RELEASE}",
+                                    "workstation:${RELEASE}",
                                     "node-controller:${RELEASE}",
                                     "data-streaming:${RELEASE}"]
                         for (image in images) {
@@ -369,24 +368,24 @@ pipeline {
                     sh '''
                         #保存镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/api-test:${RELEASE} -o api-test.tar
-                        docker save ${IMAGE_PREFIX}/performance-test:${RELEASE} -o performance-test.tar
-                        docker save ${IMAGE_PREFIX}/project-management:${RELEASE} -o project-management.tar
-                        docker save ${IMAGE_PREFIX}/report-stat:${RELEASE} -o report-stat.tar
-                        docker save ${IMAGE_PREFIX}/system-setting:${RELEASE} -o system-setting.tar
-                        docker save ${IMAGE_PREFIX}/test-track:${RELEASE} -o test-track.tar
-                        # docker save ${IMAGE_PREFIX}/ui-test:${RELEASE} -o ui-test.tar
-                        # docker save ${IMAGE_PREFIX}/workstation:${RELEASE} -o workstation.tar
-                        docker save ${IMAGE_PREFIX}/node-controller:${RELEASE} -o node-controller.tar
-                        docker save ${IMAGE_PREFIX}/data-streaming:${RELEASE} -o data-streaming.tar
-                        docker save ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} -o jmeter-master.tar
-                        docker save ${IMAGE_PREFIX}/kafka:3.2.0 -o kafka.tar
-                        docker save ${IMAGE_PREFIX}/mysql:8.0.30 -o mysql.tar
-                        docker save ${IMAGE_PREFIX}/redis:6.2.6 -o redis.tar
-                        docker save ${IMAGE_PREFIX}/minio:latest -o minio.tar
-                        docker save ${IMAGE_PREFIX}/prometheus:latest -o prometheus.tar
-                        docker save ${IMAGE_PREFIX}/node-exporter:latest -o node-exporter.tar
-                        docker save ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.4-20220519 -o seleniarm-grid-all.tar
+                        docker save ${IMAGE_PREFIX}/api-test:${RELEASE} \\
+                        ${IMAGE_PREFIX}/performance-test:${RELEASE} \\
+                        ${IMAGE_PREFIX}/project-management:${RELEASE} \\
+                        ${IMAGE_PREFIX}/report-stat:${RELEASE} \\
+                        ${IMAGE_PREFIX}/system-setting:${RELEASE} \\
+                        ${IMAGE_PREFIX}/test-track:${RELEASE} \\
+                        ${IMAGE_PREFIX}/ui-test:${RELEASE} \\
+                        ${IMAGE_PREFIX}/workstation:${RELEASE} \\
+                        ${IMAGE_PREFIX}/node-controller:${RELEASE} \\
+                        ${IMAGE_PREFIX}/data-streaming:${RELEASE} \\
+                        ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
+                        ${IMAGE_PREFIX}/kafka:3.2.0 \\
+                        ${IMAGE_PREFIX}/mysql:8.0.30 \\
+                        ${IMAGE_PREFIX}/redis:6.2.6 \\
+                        ${IMAGE_PREFIX}/minio:latest \\
+                        ${IMAGE_PREFIX}/prometheus:latest \\
+                        ${IMAGE_PREFIX}/node-exporter:latest \\
+                        ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.4-20220519 > metersphere.tar
                         cd ..
                     '''
                     script {

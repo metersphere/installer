@@ -29,5 +29,5 @@ scrape_configs:
 
   - job_name: 'metersphere'
     consul_sd_configs:
-    - server: 'ms-server:8081'
+    - server: 'performance-test:8003'
       services: []

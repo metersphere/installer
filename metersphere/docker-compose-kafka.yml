@@ -9,7 +9,7 @@ services:
       test: ["CMD", "bash", "-c", "< /dev/tcp/localhost/9093"]
       interval: 6s
       timeout: 10s
-      retries: 20
+      retries: 50
     restart: always
     environment:
       KAFKA_ENABLE_KRAFT: 'yes'
@@ -30,7 +30,7 @@ services:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     networks:
       - ms-network
-  ms-data-streaming:
+  data-streaming:
     depends_on:
       kafka:
         condition: service_healthy

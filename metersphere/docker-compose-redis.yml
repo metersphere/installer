@@ -7,7 +7,9 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 6s
       timeout: 5s
-      retries: 10
+      retries: 50
+    environment:
+      TZ: "Asia/Shanghai"
     ports:
       - ${MS_REDIS_PORT}:6379
     volumes:
@@ -17,7 +19,7 @@ services:
     networks:
       - ms-network
     restart: always
-  ms-server:
+  system-setting:
     depends_on:
       redis:
         condition: service_healthy

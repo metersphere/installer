@@ -34,10 +34,10 @@ function generate_compose_files() {
   mkdir -p ${MS_BASE}/metersphere/data/body
   case ${MS_INSTALL_MODE} in
   allinone)
-    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-node-controller.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-minio.yml"
+    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-node-controller.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml"
     ;;
   server)
-    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-minio.yml"
+    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml"
     ;;
   node-controller)
     compose_files="${compose_files} -f docker-compose-node-controller.yml"
@@ -68,8 +68,13 @@ function generate_compose_files() {
       mkdir -p ${MS_BASE}/metersphere/data/redis
       compose_files="${compose_files} -f docker-compose-redis.yml"
     fi
-    # 是否创建 seleniarm 容器
-    if [ ${MS_SELENIARM_ENABLED} = "true" ]; then
+    # 是否使用外部 minio
+    if [ ${MS_EXTERNAL_MINIO} = "false" ]; then
+      mkdir -p ${MS_BASE}/metersphere/data/minio
+      compose_files="${compose_files} -f docker-compose-minio.yml"
+    fi
+    # 是否创建 ui 容器
+    if [ ${MS_UI_ENABLED} = "true" ]; then
       compose_files="${compose_files} -f docker-compose-seleniarm.yml -f docker-compose-ui-test.yml"
     fi
     # 是否创建 workstation 容器

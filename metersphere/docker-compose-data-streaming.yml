@@ -1,7 +1,7 @@
 version: "2.1"
 services:
-  ms-data-streaming:
-    image: ${MS_IMAGE_PREFIX}/ms-data-streaming:${MS_IMAGE_TAG}
+  data-streaming:
+    image: ${MS_IMAGE_PREFIX}/data-streaming:${MS_IMAGE_TAG}
     container_name: ms-data-streaming
     environment:
       HOST_HOSTNAME: $HOSTNAME
@@ -16,11 +16,12 @@ services:
       KAFKA_REPORT_TOPIC: ${MS_KAFKA_REPORT_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8084"]
       interval: 6s
       timeout: 10s
-      retries: 20
+      retries: 50
     restart: always
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties

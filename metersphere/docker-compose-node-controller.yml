@@ -1,11 +1,12 @@
 version: "2.1"
 services:
-  ms-node-controller:
-    image: ${MS_IMAGE_PREFIX}/ms-node-controller:${MS_IMAGE_TAG}
+  node-controller:
+    image: ${MS_IMAGE_PREFIX}/node-controller:${MS_IMAGE_TAG}
     container_name: ms-node-controller
     environment:
       HOST_HOSTNAME: $HOSTNAME
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
       - ${MS_NODEEXPORTER_PORT}:9100
@@ -13,7 +14,7 @@ services:
       test: ["CMD", "nc", "-zv", "localhost", "8082"]
       interval: 6s
       timeout: 5s
-      retries: 10
+      retries: 50
     volumes:
       - ms-conf:/opt/metersphere/conf
       - ms-data:/opt/metersphere/data
@@ -42,5 +43,5 @@ services:
       test: ["CMD", "nc", "-zv", "localhost", "9100"]
       interval: 6s
       timeout: 5s
-      retries: 10      
-    network_mode: service:ms-node-controller
+      retries: 50
+    network_mode: service:node-controller
