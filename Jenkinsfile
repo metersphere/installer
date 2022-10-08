@@ -35,7 +35,7 @@ pipeline {
                 // Get some code from a GitHub repository
 
                 dir('metersphere') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-next.git', branch: "${BRANCH_NAME}"
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH_NAME}"
                 }
                 dir('metersphere-xpack') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-xpack.git', branch: "${BRANCH_NAME}"
@@ -134,11 +134,11 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../metersphere-next/${RELEASE}", quietPeriod:10
+                                    build job:"../metersphere/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
                                     println(e)
-                                    println("Not building the job ../metersphere-next/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }

@@ -3,8 +3,6 @@ services:
   eureka:
     image: ${MS_IMAGE_PREFIX}/eureka:${MS_IMAGE_TAG}
     container_name: eureka
-    expose:
-      - 8761
 #    ports:
 #      - '8761:8761' # 默认不开启
     healthcheck:

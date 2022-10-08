@@ -26,9 +26,6 @@ services:
       MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
       MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
       MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
-      
-    expose:
-      - 8007
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8007"]
       interval: 6s

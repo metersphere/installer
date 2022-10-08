@@ -16,7 +16,9 @@ services:
       KAFKA_REPORT_TOPIC: ${MS_KAFKA_REPORT_TOPIC}
       KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
-      
+      MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
+      MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
+      MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8084"]
       interval: 6s

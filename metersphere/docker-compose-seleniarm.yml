@@ -13,8 +13,6 @@ services:
       - SE_NODE_MAX_SESSIONS=300
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - browser=chrome
-    expose:
-      - 4444
     ports:
       - "4444:4444"
 #       - "7900:7900" # 不开启

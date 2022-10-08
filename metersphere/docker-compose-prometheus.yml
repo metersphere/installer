@@ -13,8 +13,6 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention=200h'
     restart: always
-    expose:
-      - 9090
     ports:
       - ${MS_PROMETHEUS_PORT}:9090
     healthcheck:

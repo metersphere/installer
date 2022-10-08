@@ -26,9 +26,6 @@ services:
       MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
       MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
       MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
-      
-    expose:
-      - 8004
     ports:
       - ${MS_TCP_MOCK_PORT}:${MS_TCP_MOCK_PORT}
     healthcheck:
