@@ -168,7 +168,7 @@ fi
 
 log "启动服务"
 msctl down -v 2>&1 | tee -a ${__current_dir}/install.log
-msctl up -d 2>&1 | tee -a ${__current_dir}/install.log
+msctl up -d --remove-orphans 2>&1 | tee -a ${__current_dir}/install.log
 
 msctl status 2>&1 | tee -a ${__current_dir}/install.log
 
