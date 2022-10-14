@@ -36,6 +36,6 @@ services:
       - ms-conf:/opt/metersphere/conf
       - ms-logs:/opt/metersphere/logs
       - ms-data:/opt/metersphere/data
-    mem_limit: 1g
+    mem_limit: 800m
     networks:
       - ms-network
