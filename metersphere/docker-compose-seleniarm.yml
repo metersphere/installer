@@ -10,7 +10,7 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_HUB_PORT=4444
-      - SE_NODE_MAX_SESSIONS=300
+      - SE_NODE_MAX_SESSIONS=20
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - browser=chrome
     ports:
