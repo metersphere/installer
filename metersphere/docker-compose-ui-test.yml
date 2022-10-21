@@ -26,7 +26,6 @@ services:
       MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
       MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
       MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
-      JAVA_OPTIONS: -Xms1024m -Xmx1024m
     healthcheck:
       test: ["CMD", "nc", "-zv", "localhost", "8008"]
       interval: 6s
