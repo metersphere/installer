@@ -10,19 +10,18 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - SE_HUB_PORT=4444
-      - SE_NODE_MAX_SESSIONS=5
+      - SE_NODE_MAX_SESSIONS=20
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - browser=chrome
-    expose:
-      - 4444
+      - JAVA_OPTS=-Xmx512m
     ports:
       - "4444:4444"
-#       - "5900:5900" # 不开启
+#       - "5900:5900" # vnc端口默认不开启，用户需要调试可使用
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4444" ]
       interval: 6s
       timeout: 5s
-      retries: 10
+      retries: 50
     restart: always
     networks:
       - ms-network
