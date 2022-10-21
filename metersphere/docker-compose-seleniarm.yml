@@ -13,9 +13,10 @@ services:
       - SE_NODE_MAX_SESSIONS=20
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - browser=chrome
+      - JAVA_OPTS=-Xmx512m
     ports:
       - "4444:4444"
-#       - "7900:7900" # 不开启
+#       - "5900:5900" # vnc端口默认不开启，用户需要调试可使用
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4444" ]
       interval: 6s
