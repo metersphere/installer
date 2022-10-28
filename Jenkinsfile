@@ -356,6 +356,8 @@ pipeline {
                                     "test-track:${RELEASE}",
                                     "ui-test:${RELEASE}",
                                     "workstation:${RELEASE}",
+                                    "gateway:${RELEASE}",
+                                    "eureka:${RELEASE}",
                                     "node-controller:${RELEASE}",
                                     "data-streaming:${RELEASE}"]
                         for (image in images) {
@@ -376,6 +378,8 @@ pipeline {
                         ${IMAGE_PREFIX}/test-track:${RELEASE} \\
                         ${IMAGE_PREFIX}/ui-test:${RELEASE} \\
                         ${IMAGE_PREFIX}/workstation:${RELEASE} \\
+                        ${IMAGE_PREFIX}/gateway:${RELEASE} \\
+                        ${IMAGE_PREFIX}/eureka:${RELEASE} \\
                         ${IMAGE_PREFIX}/node-controller:${RELEASE} \\
                         ${IMAGE_PREFIX}/data-streaming:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
