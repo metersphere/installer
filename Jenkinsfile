@@ -253,7 +253,7 @@ pipeline {
         stage('Release') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
-                withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
+                withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN'), string(credentialsId: 'HTTPS_PROXY', variable: 'HTTPS_PROXY')]) {
                     withEnv(["TOKEN=$TOKEN", "HTTPS_PROXY=$HTTPS_PROXY"]) {
                         dir('installer') {
                             sh script: '''
@@ -266,7 +266,7 @@ pipeline {
                         }
                     }
                 }
-                withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN')]) {
+                withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN'), string(credentialsId: 'HTTPS_PROXY', variable: 'HTTPS_PROXY')]) {
                     withEnv(["TOKEN=$TOKEN", "HTTPS_PROXY=$HTTPS_PROXY"]) {
                         dir('ms-jmeter-core') {
                             sh script: '''
