@@ -23,5 +23,9 @@ services:
       timeout: 5s
       retries: 50
     restart: always
+    volumes:
+      - ms-conf:/opt/metersphere/conf
+      - ms-logs:/opt/metersphere/logs
+      - ms-data:/opt/metersphere/data
     networks:
       - ms-network
