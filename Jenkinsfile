@@ -55,41 +55,13 @@ pipeline {
                 dir('jenkins-plugin') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
                 }
-                dir('ms-jmeter-core') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ms-jmeter-core.git', branch: "${BRANCH_NAME}"
-                }
                 sh '''
                     git config --global user.email "metersphere@fit2cloud.com"
                     git config --global user.name "metersphere-bot"
                 '''
             }
         }
-        stage('MS jmeter core') {
-            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
-            steps {
-                dir('metersphere') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
-                dir('ms-jmeter-core') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
-                script {
-                    for (int i=0;i<10;i++) {
-                        try {
-                            echo "Waiting for scanning new created Job"
-                            sleep 10
-                            build job:"../ms-jmeter-core/${RELEASE}", quietPeriod:10
-                            break
-                        } catch (Exception e) {
-                            println("Not building the job ../ms-jmeter-core/${RELEASE} as it doesn't exist")
-                            continue
-                        }
-                    }
-                }
-            }
-        }
+
         stage('MS Domain SDK XPack') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
@@ -320,15 +292,6 @@ pipeline {
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-online-installer-${RELEASE}.tar.gz
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-release-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-release-${RELEASE}.tar.gz
-                            '''
-                        }
-                    }
-                }
-                withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN'), string(credentialsId: 'HTTPS_PROXY', variable: 'HTTPS_PROXY')]) {
-                    withEnv(["TOKEN=$TOKEN", "HTTPS_PROXY=$HTTPS_PROXY"]) {
-                        dir('ms-jmeter-core') {
-                            sh script: '''
-                                curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/ms-jmeter-core/releases
                             '''
                         }
                     }
