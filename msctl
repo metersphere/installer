@@ -34,10 +34,10 @@ function generate_compose_files() {
   mkdir -p ${MS_BASE}/metersphere/data/body
   case ${MS_INSTALL_MODE} in
   allinone)
-    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-node-controller.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml"
+    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-node-controller.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-workstation.yml"
     ;;
   server)
-    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml"
+    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-workstation.yml"
     ;;
   node-controller)
     compose_files="${compose_files} -f docker-compose-node-controller.yml"
@@ -76,10 +76,6 @@ function generate_compose_files() {
     # 是否创建 ui 容器
     if [ ${MS_UI_ENABLED} = "true" ]; then
       compose_files="${compose_files} -f docker-compose-seleniarm.yml -f docker-compose-ui-test.yml"
-    fi
-    # 是否创建 workstation 容器
-    if [ ${MS_WORKSTATION_ENABLED} = "true" ]; then
-      compose_files="${compose_files} -f docker-compose-workstation.yml"
     fi
   fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
