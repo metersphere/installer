@@ -72,6 +72,10 @@ pipeline {
                     env.REVISION = "${REVISION}"
                     echo "REVISION=${REVISION}"
                 }
+                dir('metersphere') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
                 dir('metersphere-xpack') {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                     sh("git push -f origin refs/tags/${RELEASE}")
