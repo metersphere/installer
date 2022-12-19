@@ -9,7 +9,7 @@ pipeline {
     }
     environment {
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
-        JMETER_TAG = "5.5-ms3-jdk11"
+        JMETER_TAG = "5.5-ms4-jdk11"
     }
     stages {
         stage('Preparation') {
