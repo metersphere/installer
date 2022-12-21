@@ -1,0 +1,4 @@
+singleServerConfig:
+  password: ${REDIS_PASSWORD}
+  address: "redis://${REDIS_HOST}:${REDIS_PORT}"
+  database: 0
