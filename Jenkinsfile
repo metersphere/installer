@@ -289,7 +289,7 @@ pipeline {
                                     'redis:6.2.6',
                                     'minio:latest',
                                     'prometheus:latest',
-                                    'seleniarm-grid-all:4.1.4-20221122',
+                                    'seleniarm-grid-all:4.1.4-20220519',
                                     'node-exporter:latest',
                                     "api-test:${RELEASE}",
                                     "performance-test:${RELEASE}",
