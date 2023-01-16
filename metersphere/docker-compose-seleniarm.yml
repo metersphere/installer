@@ -17,7 +17,7 @@ services:
       - 4444
     ports:
       - "4444:4444"
-#       - "7900:7900" # 不开启
+#       - "5900:5900" # 不开启 vnc 密码: secret
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4444" ]
       interval: 6s
