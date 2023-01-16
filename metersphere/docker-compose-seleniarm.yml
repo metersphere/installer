@@ -16,7 +16,7 @@ services:
       - JAVA_OPTS=-Xmx512m
     ports:
       - "4444:4444"
-#       - "5900:5900" # vnc端口默认不开启，用户需要调试可使用
+#       - "5900:5900" # vnc端口默认不开启，用户需要调试可使用，密码：secret
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4444" ]
       interval: 6s
