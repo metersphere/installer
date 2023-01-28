@@ -79,7 +79,9 @@ function generate_compose_files() {
     fi
   fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
-  chmod +rw -R ${MS_BASE}/metersphere
+  chmod +rw -R ${MS_BASE}/metersphere/bin
+  chmod +rw -R ${MS_BASE}/metersphere/conf
+  chmod +rw -R ${MS_BASE}/metersphere/*.yml
   COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files 2>/dev/null || echo "")
 }
 
