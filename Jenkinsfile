@@ -246,16 +246,6 @@ pipeline {
                             --exclude images \\
                             --exclude docker \\
                             -czvf metersphere-online-installer-${RELEASE}.tar.gz .
-                        #打包旧名称格式在线包
-                        touch metersphere-release-${RELEASE}.tar.gz
-                        tar --transform "s/^\\./metersphere-release-${RELEASE}/" \\
-                            --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}.tar.gz \\
-                            --exclude .git \\
-                            --exclude images \\
-                            --exclude docker \\
-                            -czvf metersphere-release-${RELEASE}.tar.gz .
                     '''
                 }
             }
@@ -271,7 +261,6 @@ pipeline {
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-online-installer-${RELEASE}.tar.gz
-                                curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-release-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-release-${RELEASE}.tar.gz
                             '''
                         }
                     }
