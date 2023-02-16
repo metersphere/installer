@@ -35,7 +35,7 @@ services:
       - ms-conf:/opt/metersphere/conf
       - ms-logs:/opt/metersphere/logs
       - ms-data:/opt/metersphere/data
-    mem_limit: 800m
+    mem_limit: ${MS_TRACK_MEM_LIMIT:-800m}
     networks:
       - ms-network
     depends_on:
