@@ -22,7 +22,7 @@ services:
     command: server --console-address ':9001' /data
     privileged: true
     restart: always
-    mem_limit: 1g
+    mem_limit: ${MS_MINIO_MEM_LIMIT:-1g}
 
 volumes:
   ms-minio-data:
