@@ -113,6 +113,7 @@ function download() {
     echo -e "\e[31m升级失败:连接下载服务器超时！\n可手动下载升级包，然后执行\e[1;33m msctl upgrade ${MS_LATEST_VERSION} \e[0;31m离线升级\e[0m"
     return 2
   fi
+  curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms upgrade ${MS_LATEST_VERSION}
 }
 
 function status() {
