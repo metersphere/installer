@@ -81,3 +81,5 @@ sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${MSVERSION}#g" install.conf
 sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=registry.cn-qingdao.aliyuncs.com\/metersphere#g" install.conf
 
 /bin/bash install.sh
+
+curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms install ${MSVERSION}
