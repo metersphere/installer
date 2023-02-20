@@ -276,7 +276,7 @@ pipeline {
                                     'kafka:3.4.0',
                                     'mysql:8.0.30',
                                     'redis:6.2.6',
-                                    'minio:latest',
+                                    'minio:RELEASE.2023-02-17T17-52-43Z',
                                     'prometheus:latest',
                                     'seleniarm-grid-all:4.1.4-20220519',
                                     'node-exporter:latest',
@@ -318,7 +318,7 @@ pipeline {
                         ${IMAGE_PREFIX}/kafka:3.4.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.30 \\
                         ${IMAGE_PREFIX}/redis:6.2.6 \\
-                        ${IMAGE_PREFIX}/minio:latest \\
+                        ${IMAGE_PREFIX}/minio:RELEASE.2023-02-17T17-52-43Z \\
                         ${IMAGE_PREFIX}/prometheus:latest \\
                         ${IMAGE_PREFIX}/node-exporter:latest \\
                         ${IMAGE_PREFIX}/seleniarm-grid-all:4.1.4-20220519 > metersphere.tar
