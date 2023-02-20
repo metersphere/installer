@@ -273,7 +273,7 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['jmeter-master:${JMETER_TAG}',
-                                    'kafka:3.3.1',
+                                    'kafka:3.4.0',
                                     'mysql:8.0.30',
                                     'redis:6.2.6',
                                     'minio:latest',
@@ -315,7 +315,7 @@ pipeline {
                         ${IMAGE_PREFIX}/node-controller:${RELEASE} \\
                         ${IMAGE_PREFIX}/data-streaming:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
-                        ${IMAGE_PREFIX}/kafka:3.3.1 \\
+                        ${IMAGE_PREFIX}/kafka:3.4.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.30 \\
                         ${IMAGE_PREFIX}/redis:6.2.6 \\
                         ${IMAGE_PREFIX}/minio:latest \\
