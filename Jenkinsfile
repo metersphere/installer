@@ -261,28 +261,13 @@ pipeline {
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-online-installer-${RELEASE}.tar.gz
+
+                                ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/installer/releases/download/${RELEASE}/ --update
+                                ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/quick_start.sh --update
+                                ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/latest/download/quick_start.sh --update
                             '''
                         }
                     }
-                }
-                withCredentials([usernamePassword(credentialsId: 'MS_OSS_KEY', passwordVariable: 'SK', usernameVariable: 'AK')]) {
-                    sh'''
-                    if [ ! -f "/opt/jenkins-home/metersphere/config" ]; then
-                        cat > /opt/jenkins-home/metersphere/config <<"EOF"
-                    [Credentials]
-                    language=CH
-                    accessKeyID=$AK
-                    accessKeySecret=$SK
-                    endpoint=http://oss-cn-hangzhou.aliyuncs.com
-                    EOF
-
-                    fi
-
-                    ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/installer/releases/download/${RELEASE}/ --update
-                    ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/quick_start.sh --update
-                    ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/latest/download/quick_start.sh --update
-
-                    '''
                 }
             }
         }        
