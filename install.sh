@@ -13,15 +13,20 @@ function log() {
 set -a
 __local_ip=$(hostname -I|cut -d" " -f 1)
 source ${__current_dir}/install.conf
+
+export INSTALL_TYPE='install'
 if [ -f ~/.msrc ];then
   source ~/.msrc > /dev/null
   echo "存在已安装的 MeterSphere, 安装目录为 ${MS_BASE}/metersphere, 执行升级流程"
+  INSTALL_TYPE='upgrade'
 elif [ -f /usr/local/bin/msctl ];then
   MS_BASE=$(cat /usr/local/bin/msctl | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
   echo "存在已安装的 MeterSphere, 安装目录为 ${MS_BASE}/metersphere, 执行升级流程"
+  INSTALL_TYPE='upgrade'
 else
   MS_BASE=$(cat ${__current_dir}/install.conf | grep MS_BASE= | awk -F= '{print $2}' 2>/dev/null)
   echo "安装目录为 ${MS_BASE}/metersphere, 开始进行安装"
+  INSTALL_TYPE='install'
 fi
 if [ ${MS_EXTERNAL_KAFKA} = 'false' ];then
    if [[ ${__os} =~ 'Darwin' ]];then
@@ -107,7 +112,7 @@ else
       chmod +x /usr/bin/docker-compose
    else
       log "... 在线安装 docker-compose"
-      curl -L https://get.daocloud.io/docker/compose/releases/download/v2.2.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
+      curl -L https://get.daocloud.io/docker/compose/releases/download/v2.16.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
@@ -157,6 +162,7 @@ else
    log "拉取镜像"
    msctl pull 2>&1 | tee -a ${__current_dir}/install.log
    docker pull ${MS_JMETER_IMAGE} 2>&1 | tee -a ${__current_dir}/install.log
+   curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms ${INSTALL_TYPE} ${MS_IMAGE_TAG}
    cd -
 fi
 
