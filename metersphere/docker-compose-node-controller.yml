@@ -19,7 +19,7 @@ services:
       - ms-data:/opt/metersphere/data
       - ms-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
-    mem_limit: ${MS_NC_MEM_LIMIT:-1g}
+    mem_limit: ${MS_NC_MEM_LIMIT:-1073741824} # default 1g bytes
     restart: always
     networks:
       - ms-network
