@@ -265,6 +265,25 @@ pipeline {
                         }
                     }
                 }
+                withCredentials([usernamePassword(credentialsId: 'MS_OSS_KEY', passwordVariable: 'SK', usernameVariable: 'AK')]) {
+                    sh'''
+                    if [ ! -f "/opt/jenkins-home/metersphere/config" ]; then
+                        cat > /opt/jenkins-home/metersphere/config <<"EOF"
+                    [Credentials]
+                    language=CH
+                    accessKeyID=$AK
+                    accessKeySecret=$SK
+                    endpoint=http://oss-cn-hangzhou.aliyuncs.com
+                    EOF
+
+                    fi
+
+                    ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/installer/releases/download/${RELEASE}/ --update
+                    ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/quick_start.sh --update
+                    ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/latest/download/quick_start.sh --update
+
+                    '''
+                }
             }
         }        
         stage('Package Offline-install') {
