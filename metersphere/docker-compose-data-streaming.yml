@@ -27,6 +27,6 @@ services:
     volumes:
       - ./conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
       - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
-    mem_limit: ${MS_DS_MEM_LIMIT:-1g}
+    mem_limit: ${MS_DS_MEM_LIMIT:-1073741824} # default 1g bytes
     networks:
       - ms-network
