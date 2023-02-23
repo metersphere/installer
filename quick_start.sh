@@ -40,7 +40,7 @@ EOF
 MSVERSION=$(cat /tmp/ms_latest_release)
 os=`uname -a`
 
-git_urls=('github.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
+git_urls=('github.com' 'resource.fit2cloud.com' 'hub.fastgit.org' 'ghproxy.com/https://github.com')
 
 for git_url in ${git_urls[*]}
 do
