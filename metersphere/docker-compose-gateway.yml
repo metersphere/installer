@@ -37,6 +37,6 @@ services:
       - ms-conf:/opt/metersphere/conf
       - ms-logs:/opt/metersphere/logs
       - ms-data:/opt/metersphere/data
-    mem_limit: ${MS_GATEWAY_MEM_LIMIT:-512m}
+    mem_limit: ${MS_GATEWAY_MEM_LIMIT:-536870912} # default 512m bytes
     networks:
       - ms-network
