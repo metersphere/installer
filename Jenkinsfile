@@ -311,7 +311,8 @@ pipeline {
                     }
                     sh '''
                         #获取docker
-                        rm -rf docker*
+                        rm -rf docker/*
+                        rmdir docker
 
                         wget https://resource.fit2cloud.com/docker/download/${ARCH}/docker-23.0.1.tgz
                         wget https://resource.fit2cloud.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-${ARCH} && mv docker-compose-linux-${ARCH} docker-compose && chmod +x docker-compose
