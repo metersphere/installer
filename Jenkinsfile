@@ -331,11 +331,11 @@ pipeline {
                     script {
                         // 区分不同架构
                         RELEASE = ""
-                        ARCH = ""
+                        ARCH = "x86_64"
                         if (env.TAG_NAME != null) {
                             RELEASE = env.TAG_NAME
                             if (RELEASE.endsWith("-arm64")) {
-                                ARCH = "-arm64"
+                                ARCH = "aarch64"
                             }
                         } else {
                             RELEASE = env.BRANCH_NAME
@@ -348,10 +348,14 @@ pipeline {
                     sh '''
                         #获取docker
                         rm -rf docker*
-                        wget http://fit2cloud2-offline-installer.oss-cn-beijing.aliyuncs.com/tools/docker${ARCH}.zip
-                        unzip docker${ARCH}.zip
-                        rm -rf __MACOSX
-                        rm -rf docker${ARCH}.zip
+
+                        wget https://resource.fit2cloud.com/docker/download/${ARCH}/docker-23.0.1.tgz
+                        wget https://resource.fit2cloud.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-${ARCH} && mv docker-compose-linux-${ARCH} docker-compose && chmod +x docker-compose
+                        tar -zxvf docker-23.0.1.tgz
+                        rm -rf docker-23.0.1.tgz
+                        mv docker bin && mkdir docker && mv bin docker/
+                        mv docker-compose docker/bin
+                        mkdir docker/service && mv docker.service docker/service/
 
                         #打包离线包
                         touch metersphere-offline-installer-${RELEASE}.tar.gz
