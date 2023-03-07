@@ -282,7 +282,7 @@ pipeline {
                                     'redis:6.2.6',
                                     'minio:RELEASE.2023-02-17T17-52-43Z',
                                     'prometheus:latest',
-                                    'seleniarm-grid-all:4.8.0-20230211',
+                                    'seleniarm-grid-all:4.8.0-20230302',
                                     'node-exporter:latest',
                                     "api-test:${RELEASE}",
                                     "performance-test:${RELEASE}",
@@ -325,7 +325,7 @@ pipeline {
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-02-17T17-52-43Z \\
                         ${IMAGE_PREFIX}/prometheus:latest \\
                         ${IMAGE_PREFIX}/node-exporter:latest \\
-                        ${IMAGE_PREFIX}/seleniarm-grid-all:4.8.0-20230211 > metersphere.tar
+                        ${IMAGE_PREFIX}/seleniarm-grid-all:4.8.0-20230302 > metersphere.tar
                         cd ..
                     '''
                     script {
