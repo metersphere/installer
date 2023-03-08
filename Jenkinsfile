@@ -281,9 +281,9 @@ pipeline {
                                     'mysql:8.0.30',
                                     'redis:6.2.6',
                                     'minio:RELEASE.2023-02-17T17-52-43Z',
-                                    'prometheus:latest',
+                                    'prometheus:v2.37.6',
                                     'seleniarm-grid-all:4.8.0-20230302',
-                                    'node-exporter:latest',
+                                    'node-exporter:v1.5.0',
                                     "api-test:${RELEASE}",
                                     "performance-test:${RELEASE}",
                                     "project-management:${RELEASE}",
@@ -323,8 +323,8 @@ pipeline {
                         ${IMAGE_PREFIX}/mysql:8.0.30 \\
                         ${IMAGE_PREFIX}/redis:6.2.6 \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-02-17T17-52-43Z \\
-                        ${IMAGE_PREFIX}/prometheus:latest \\
-                        ${IMAGE_PREFIX}/node-exporter:latest \\
+                        ${IMAGE_PREFIX}/prometheus:v2.37.6 \\
+                        ${IMAGE_PREFIX}/node-exporter:v1.5.0 \\
                         ${IMAGE_PREFIX}/seleniarm-grid-all:4.8.0-20230302 > metersphere.tar
                         cd ..
                     '''
