@@ -1,4 +1,5 @@
 #!/bin/bash
+
 __current_dir=$(
    cd "$(dirname "$0")"
    pwd
@@ -156,6 +157,7 @@ if [ $? != 0 ];then
    exit
 fi
 
+set -e
 export COMPOSE_HTTP_TIMEOUT=180
 cd ${__current_dir}
 # 加载镜像
