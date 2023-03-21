@@ -42,8 +42,11 @@ function generate_compose_files() {
   node-controller)
     compose_files="${compose_files} -f docker-compose-node-controller.yml"
     ;;
+  selenium-hub)
+    compose_files="${compose_files} -f docker-compose-seleniarm.yml"
+    ;;
   *)
-    log "... 不支持的安装模式，请从 [ allinone | server | node-controller ] 中进行选择"
+    log "... 不支持的安装模式，请从 [ allinone | server | node-controller | selenium-hub ] 中进行选择"
     ;;
   esac
   if [ ${MS_INSTALL_MODE} != "node-controller" ]; then
