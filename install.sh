@@ -94,8 +94,8 @@ else
 
    else
       log "... 在线安装 docker"
-      curl -fsSL https://get.docker.com -o get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
-      sudo sh get-docker.sh --mirror Aliyun 2>&1 | tee -a ${__current_dir}/install.log
+      curl -fsSL https://resource.fit2cloud.com/get-docker-linux.sh -o get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
+      sudo sh get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
       log "... 启动 docker"
       service docker start 2>&1 | tee -a ${__current_dir}/install.log
    fi
@@ -119,7 +119,7 @@ else
       chmod +x /usr/bin/docker-compose
    else
       log "... 在线安装 docker-compose"
-      curl -L https://get.daocloud.io/docker/compose/releases/download/v2.16.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
+      curl -L https://resource.fit2cloud.com/docker/compose/releases/download/v2.16.0/docker-compose-$(uname -s | tr A-Z a-z)-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
