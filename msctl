@@ -49,7 +49,7 @@ function generate_compose_files() {
     log "... 不支持的安装模式，请从 [ allinone | server | node-controller | selenium-hub ] 中进行选择"
     ;;
   esac
-  if [ ${MS_INSTALL_MODE} != "node-controller" ] && [ ${MS_INSTALL_MODE} != "node-controller" ]; then
+  if [ ${MS_INSTALL_MODE} != "node-controller" ] && [ ${MS_INSTALL_MODE} != "selenium-hub" ]; then
     # 是否使用外部数据库
     if [ ${MS_EXTERNAL_MYSQL} = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/mysql
