@@ -157,6 +157,7 @@ if [ $? != 0 ];then
    exit
 fi
 
+exec > >(tee -a ${__current_dir}/install.log) 2>&1
 set -e
 export COMPOSE_HTTP_TIMEOUT=180
 cd ${__current_dir}
@@ -164,24 +165,24 @@ cd ${__current_dir}
 if [[ -d images ]]; then
    log "加载镜像"
    for i in $(ls images); do
-      docker load -i images/$i 2>&1 | tee -a ${__current_dir}/install.log
+      docker load -i images/$i
    done
 else
    log "拉取镜像"
-   msctl pull 2>&1 | tee -a ${__current_dir}/install.log
-   docker pull ${MS_JMETER_IMAGE} 2>&1 | tee -a ${__current_dir}/install.log
+   msctl pull
+   docker pull ${MS_JMETER_IMAGE}
    curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms ${INSTALL_TYPE} ${MS_IMAGE_TAG}
    cd -
 fi
 
 log "启动服务"
-msctl down -v 2>&1 | tee -a ${__current_dir}/install.log
-msctl up -d --remove-orphans 2>&1 | tee -a ${__current_dir}/install.log
+msctl down -v
+msctl up -d --remove-orphans
 
-msctl status 2>&1 | tee -a ${__current_dir}/install.log
+msctl status
 
-echo -e "======================= 安装完成 =======================\n" 2>&1 | tee -a ${__current_dir}/install.log
+echo -e "======================= 安装完成 =======================\n"
 
-echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere" 2>&1 | tee -a ${__current_dir}/install.log
-echo -e "企业用户升级后需手动设置 install.conf 中的 MS_UI_ENABLED=true 并执行 'msctl reload' 来开启UI功能" 2>&1 | tee -a ${__current_dir}/install.log
-echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n" 2>&1 | tee -a ${__current_dir}/install.log-a ${__current_dir}/install.log
+echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere"
+echo -e "企业用户升级后需手动设置 install.conf 中的 MS_UI_ENABLED=true 并执行 'msctl reload' 来开启UI功能"
+echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
