@@ -66,6 +66,7 @@ services:
       - "4442:4442"
       - "4443:4443"
       - "4444:4444"
+    restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:4444" ]
       interval: 6s
