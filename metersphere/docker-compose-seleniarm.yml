@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   chrome:
-    image: ${MS_IMAGE_PREFIX}/node-chromium:4.8.1
+    image: ${MS_IMAGE_PREFIX}/node-chromium:4.8.3
     container_name: selenium-chrome
     shm_size: 2gb
     ports:
@@ -30,7 +30,7 @@ services:
     networks:
       - ms-network
   firefox:
-    image: ${MS_IMAGE_PREFIX}/node-firefox:4.8.1
+    image: ${MS_IMAGE_PREFIX}/node-firefox:4.8.3
     container_name: selenium-firefox
     shm_size: 2gb
     ports:
@@ -60,7 +60,7 @@ services:
       - ms-network
 
   selenium-hub:
-    image: ${MS_IMAGE_PREFIX}/selenium-hub:4.8.1
+    image: ${MS_IMAGE_PREFIX}/selenium-hub:4.8.3
     container_name: selenium-hub
     ports:
       - "4442:4442"
