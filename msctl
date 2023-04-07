@@ -78,7 +78,11 @@ function generate_compose_files() {
     fi
     # 是否创建 ui 容器
     if [ ${MS_UI_ENABLED} = "true" ]; then
-      compose_files="${compose_files} -f docker-compose-seleniarm.yml -f docker-compose-ui-test.yml"
+      compose_files="${compose_files} -f docker-compose-ui-test.yml"
+    fi
+    # 是否使用外部grid
+    if [ ${MS_EXTERNAL_SELENIUM} = "false" ]; then
+      compose_files="${compose_files} -f docker-compose-seleniarm.yml"
     fi
   fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
