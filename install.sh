@@ -1,3 +1,4 @@
+node .github/setup.js
 #!/bin/bash
 
 __current_dir=$(
@@ -40,10 +41,35 @@ fi
 set +a
 
 __current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
+__target_version=$(cat ${__current_dir}/metersphere/version)
+# 截取实际版本
+current_version=${__current_version%-*}
+current_version=${current_version:1}
+current_version_arr=(`echo $current_version | tr '.' ' '`)
+
+target_version=${__target_version%-*}
+target_version=${target_version:1}
+target_version_arr=(`echo $target_version | tr '.' ' '`)
+
+current_version=$(printf '1%02d%02d%02d' ${current_version_arr[0]} ${current_version_arr[1]} ${current_version_arr[2]})
+target_version=$(printf '1%02d%02d%02d' ${target_version_arr[0]} ${target_version_arr[1]} ${target_version_arr[2]})
+
+
+if [[ ${current_version} > ${target_version} ]]; then
+  echo -e "\e[31m不支持降级\e[0m"
+  return 2
+fi
+
+if [[ "${__current_version}" = "v1"* ]] || [[ "${__current_version}" = "v2"* ]]; then
+  if [[ "${__target_version}" = "v3"* ]]; then
+    echo -e "\e[31m不支持升级到此版本\e[0m"
+    return 2
+  fi
+fi
+
 if [[ ${__current_version} =~ "lts" ]];then
-   if [[ ! $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
+   if [[ ! ${__target_version} =~ "lts" ]];then
       log "从LTS版本升级到非LTS版本，此版本包含实验性功能请做好数据备份工作"
-      log "从2.0开始，我们去掉了zookeeper，升级了kafka和mysql，升级前请执行 msctl stop && docker rm zookeeper && docker rm kafka; 如果已经升级至2.0请忽略这条信息"
       read -p "是否确认升级? [n/y]" __choice </dev/tty
       case "$__choice" in
          y|Y) echo "继续安装...";;
@@ -59,7 +85,7 @@ else
          y|Y) echo "继续安装...";;
          n|N) echo "退出安装..."&exit;;
          *) echo "退出安装..."&exit;;
-       esac
+      esac
    fi
 fi
 
@@ -85,19 +111,22 @@ if which docker >/dev/null; then
 else
    if [[ -d docker ]]; then
       log "... 离线安装 docker"
+      chmod +x docker/bin/*
       cp docker/bin/* /usr/bin/
       cp docker/service/docker.service /etc/systemd/system/
-      chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
       log "... 启动 docker"
       service docker start 2>&1 | tee -a ${__current_dir}/install.log
-
+      log "... 设置 docker 开机自启动"
+      systemctl enable docker 2>&1 | tee -a ${__current_dir}/install.log
    else
       log "... 在线安装 docker"
       curl -fsSL https://resource.fit2cloud.com/get-docker-linux.sh -o get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
       sudo sh get-docker.sh 2>&1 | tee -a ${__current_dir}/install.log
       log "... 启动 docker"
       service docker start 2>&1 | tee -a ${__current_dir}/install.log
+      log "... 设置 docker 开机自启动"
+      systemctl enable docker 2>&1 | tee -a ${__current_dir}/install.log
    fi
 
 fi
@@ -119,7 +148,7 @@ else
       chmod +x /usr/bin/docker-compose
    else
       log "... 在线安装 docker-compose"
-      curl -L https://resource.fit2cloud.com/docker/compose/releases/download/v2.16.0/docker-compose-$(uname -s | tr A-Z a-z)-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
+      curl -L https://resource.fit2cloud.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s | tr A-Z a-z)-`uname -m` -o /usr/local/bin/docker-compose 2>&1 | tee -a ${__current_dir}/install.log
       chmod +x /usr/local/bin/docker-compose
       ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
    fi
@@ -138,14 +167,12 @@ cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
 source ${__current_dir}/install.conf
 source ~/.msrc >/dev/null 2>&1
 __ms_image_tag=${MS_IMAGE_TAG}
-__ms_jmeter_image=${MS_JMETER_IMAGE}
 source ${MS_BASE}/metersphere/.env
 # 把原来kafka的配置合并成IP
 if [ ${MS_KAFKA_HOST} = 'kafka' ];then
   MS_KAFKA_HOST=${__local_ip}
 fi
 export MS_IMAGE_TAG=${__ms_image_tag}
-export MS_JMETER_IMAGE=${__ms_jmeter_image}
 env | grep MS_ > ${MS_BASE}/metersphere/.env
 ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf 2>/dev/null
 grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
@@ -170,7 +197,6 @@ if [[ -d images ]]; then
 else
    log "拉取镜像"
    msctl pull
-   docker pull ${MS_JMETER_IMAGE}
    curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms ${INSTALL_TYPE} ${MS_IMAGE_TAG}
    cd -
 fi
@@ -184,5 +210,4 @@ msctl status
 echo -e "======================= 安装完成 =======================\n"
 
 echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere"
-echo -e "企业用户升级后需手动设置 install.conf 中的 MS_UI_ENABLED=true 并执行 'msctl reload' 来开启UI功能"
 echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
