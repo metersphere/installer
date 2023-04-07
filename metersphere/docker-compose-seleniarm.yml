@@ -1,4 +1,4 @@
-version: "3"
+version: "2.1"
 services:
   chrome:
     image: ${MS_IMAGE_PREFIX}/node-chromium:4.8.1
