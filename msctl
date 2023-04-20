@@ -37,7 +37,7 @@ function generate_compose_files() {
     compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-node-controller.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-workstation.yml"
     ;;
   server)
-    compose_files="${compose_files} -f docker-compose-data-streaming.yml -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-workstation.yml"
+    compose_files="${compose_files} -f docker-compose-eureka.yml -f docker-compose-gateway.yml -f docker-compose-api-test.yml -f docker-compose-performance-test.yml -f docker-compose-project-management.yml -f docker-compose-system-setting.yml -f docker-compose-report-stat.yml -f docker-compose-test-track.yml -f docker-compose-workstation.yml"
     ;;
   node-controller)
     compose_files="${compose_files} -f docker-compose-node-controller.yml"
@@ -45,43 +45,56 @@ function generate_compose_files() {
   selenium-hub)
     compose_files="${compose_files} -f docker-compose-seleniarm.yml"
     ;;
+  middleware)
+    compose_files="${compose_files} -f docker-compose-data-streaming.yml"
+    ;;
   *)
-    log "... 不支持的安装模式，请从 [ allinone | server | node-controller | selenium-hub ] 中进行选择"
+    log "... 不支持的安装模式，请从 [ allinone | server | node-controller | selenium-hub | middleware ] 中进行选择"
     ;;
   esac
-  if [ ${MS_INSTALL_MODE} != "node-controller" ] && [ ${MS_INSTALL_MODE} != "selenium-hub" ]; then
+  if [ "${MS_INSTALL_MODE}" != "node-controller" ] && [ "${MS_INSTALL_MODE}" != "selenium-hub" ] && [ "${MS_INSTALL_MODE}" != "server" ]; then
     # 是否使用外部数据库
-    if [ ${MS_EXTERNAL_MYSQL} = "false" ]; then
+    if [ "${MS_EXTERNAL_MYSQL}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/mysql
       chmod 655 ${MS_BASE}/metersphere/conf/my.cnf
       compose_files="${compose_files} -f docker-compose-mysql.yml"
+      # 中间件去掉 depends_on
+      if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
+        sed -i -e '/system-setting/,+3d' ${MS_BASE}/metersphere/docker-compose-mysql.yml
+      fi
     fi
     # 是否使用外部 Kafka
-    if [ ${MS_EXTERNAL_KAFKA} = "false" ]; then
+    if [ "${MS_EXTERNAL_KAFKA}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/kafka
       compose_files="${compose_files} -f docker-compose-kafka.yml"
+      if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
+        sed -i -e '/data-streaming/,+3d' ${MS_BASE}/metersphere/docker-compose-kafka.yml
+      fi
     fi
     # 是否使用外部 Prometheus
-    if [ ${MS_EXTERNAL_PROM} = "false" ]; then
+    if [ "${MS_EXTERNAL_PROM}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/prometheus
       compose_files="${compose_files} -f docker-compose-prometheus.yml"
     fi
     # 是否使用外部 Redis
-    if [ ${MS_EXTERNAL_REDIS} = "false" ]; then
+    if [ "${MS_EXTERNAL_REDIS}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/redis
       compose_files="${compose_files} -f docker-compose-redis.yml"
+      if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
+        sed -i -e '/system-setting/,+3d' ${MS_BASE}/metersphere/docker-compose-redis.yml
+      fi
     fi
     # 是否使用外部 minio
-    if [ ${MS_EXTERNAL_MINIO} = "false" ]; then
+    if [ "${MS_EXTERNAL_MINIO}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/minio
       compose_files="${compose_files} -f docker-compose-minio.yml"
     fi
     # 是否创建 ui 容器
-    if [ ${MS_UI_ENABLED} = "true" ]; then
+    if [ "${MS_UI_ENABLED}" = "true" ]; then
       compose_files="${compose_files} -f docker-compose-ui-test.yml"
     fi
     # 是否使用外部grid
-    if [ ${MS_EXTERNAL_SELENIUM} = "false" ]; then
+    if [ "${MS_EXTERNAL_SELENIUM}" = "false" ]; then
       compose_files="${compose_files} -f docker-compose-seleniarm.yml"
     fi
   fi
