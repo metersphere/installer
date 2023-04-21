@@ -280,7 +280,7 @@ pipeline {
                                     'kafka:3.4.0',
                                     'mysql:8.0.30',
                                     'redis:6.2.6',
-                                    'minio:RELEASE.2023-02-17T17-52-43Z',
+                                    'minio:RELEASE.2023-04-13T03-08-07Z',
                                     'prometheus:v2.37.6',
                                     'node-chromium:4.8.3',
                                     'node-firefox:4.8.3',
@@ -324,7 +324,7 @@ pipeline {
                         ${IMAGE_PREFIX}/kafka:3.4.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.30 \\
                         ${IMAGE_PREFIX}/redis:6.2.6 \\
-                        ${IMAGE_PREFIX}/minio:RELEASE.2023-02-17T17-52-43Z \\
+                        ${IMAGE_PREFIX}/minio:RELEASE.2023-04-13T03-08-07Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.37.6 \\
                         ${IMAGE_PREFIX}/node-exporter:v1.5.0 \\
                         ${IMAGE_PREFIX}/node-firefox:4.8.3 \\
