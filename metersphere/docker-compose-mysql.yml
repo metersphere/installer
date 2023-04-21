@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   mysql:
-    image: ${MS_IMAGE_PREFIX}/mysql:8.0.30
+    image: ${MS_IMAGE_PREFIX}/mysql:8.0.33
     container_name: mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MS_MYSQL_PASSWORD}"]
