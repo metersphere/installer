@@ -15,7 +15,6 @@ services:
       timeout: 5s
       retries: 50
     volumes:
-      - ms-conf:/opt/metersphere/conf
       - ms-data:/opt/metersphere/data
       - ms-logs:/opt/metersphere/logs
       - /var/run/docker.sock:/var/run/docker.sock
