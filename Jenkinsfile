@@ -383,6 +383,7 @@ pipeline {
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+-arm64\$", comparator: "REGEXP";
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts-rc\$", comparator: "REGEXP";
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts-arm64\$", comparator: "REGEXP"
                 }
             }
