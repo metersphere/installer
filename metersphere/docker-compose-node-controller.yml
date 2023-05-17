@@ -6,6 +6,7 @@ services:
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
+    command: sh -c 'sed -i "s/:101:/:${DOCKER_GID:-101}:/g" /etc/group; /deployments/run-java.sh'
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
       - ${MS_NODEEXPORTER_PORT}:9100
