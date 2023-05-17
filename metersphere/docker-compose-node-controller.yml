@@ -4,7 +4,6 @@ services:
     image: ${MS_IMAGE_PREFIX}/ms-node-controller:${MS_IMAGE_TAG}
     container_name: ms-node-controller
     environment:
-      HOST_HOSTNAME: $HOSTNAME
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
