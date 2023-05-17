@@ -5,6 +5,7 @@ services:
     container_name: ms-node-controller
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      RUN_AS_NON_ROOT_USER: '1'
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
       - ${MS_NODEEXPORTER_PORT}:9100
