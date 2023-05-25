@@ -12,7 +12,7 @@ services:
       MYSQL_DATABASE: ${MS_MYSQL_DB}
       MYSQL_ROOT_PASSWORD: ${MS_MYSQL_PASSWORD}
     ports:
-      - 3307:3306
+      - ${MS_MYSQL_PORT}:3306
     volumes:
       - ${MS_BASE}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
       - ${MS_BASE}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
