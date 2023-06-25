@@ -1,8 +1,8 @@
 version: "2.1"
 services:
-  ui-test:
-    image: ${MS_IMAGE_PREFIX}/ui-test:${MS_IMAGE_TAG}
-    container_name: ui-test
+  metersphere:
+    image: ${MS_IMAGE_PREFIX}/metersphere:${MS_IMAGE_TAG}
+    container_name: metersphere
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false&sessionVariables=sql_mode=%27STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION%27
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
@@ -25,19 +25,18 @@ services:
       MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
       MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
       MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
+    ports:
+      - ${MS_SERVER_PORT}:8081
     healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "8008"]
+      test: [ "CMD", "nc", "-zv", "localhost", "8081" ]
       interval: 6s
       timeout: 10s
       retries: 50
     restart: always
     volumes:
-      - ms-conf:/opt/metersphere/conf
-      - ms-logs:/opt/metersphere/logs
-      - ms-data:/opt/metersphere/data
-    mem_limit: ${MS_UI_MEM_LIMIT:-1073741824} # default 1g bytes
+      - ${MS_BASE}/metersphere/conf:/opt/metersphere/conf
+      - ${MS_BASE}/metersphere/logs/metersphere:/opt/metersphere/logs/metersphere
+      - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
+    mem_limit: ${MS_SYSTEM_MEM_LIMIT:-858993459} # default 800m bytes
     networks:
       - ms-network
-    depends_on:
-      system-setting:
-        condition: service_healthy

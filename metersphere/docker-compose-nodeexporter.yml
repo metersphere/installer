@@ -1,0 +1,26 @@
+version: "2.1"
+services:
+  nodeexporter:
+    image: ${MS_IMAGE_PREFIX}/node-exporter:v1.5.0
+    container_name: nodeexporter
+    user: root
+    privileged: true
+    ports:
+      - ${MS_NODEEXPORTER_PORT}:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: always
+    mem_limit: 128m
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "9100" ]
+      interval: 6s
+      timeout: 5s
+      retries: 50
+    networks:
+      - ms-network

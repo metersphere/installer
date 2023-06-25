@@ -43,6 +43,9 @@ pipeline {
                 dir('ui-test') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ui-test.git', branch: "${BRANCH_NAME}"
                 }
+                dir('load-test') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/load-test.git', branch: "${BRANCH_NAME}"
+                }
                 dir('node-controller') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH_NAME}"
                 }
@@ -133,6 +136,27 @@ pipeline {
                                     break
                                 } catch (Exception e) {
                                     println("Not building the job ../ui-test/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('load-test') {
+                    steps {
+                        dir('load-test') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../load-test/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../load-test/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -277,25 +301,16 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['jmeter-master:${JMETER_TAG}',
-                                    'kafka:3.4.0',
+                                    'kafka:3.4.1',
                                     'mysql:8.0.33',
-                                    'redis:6.2.6',
+                                    'redis:7.0.11-alpine',
                                     'minio:RELEASE.2023-04-13T03-08-07Z',
                                     'prometheus:v2.42.0',
-                                    'node-chromium:4.8.3',
-                                    'node-firefox:4.8.3',
-                                    'selenium-hub:4.8.3',
+                                    'node-chromium:4.9.1',
+                                    'node-firefox:4.9.1',
+                                    'selenium-hub:4.9.1',
                                     'node-exporter:v1.5.0',
-                                    "api-test:${RELEASE}",
-                                    "performance-test:${RELEASE}",
-                                    "project-management:${RELEASE}",
-                                    "report-stat:${RELEASE}",
-                                    "system-setting:${RELEASE}",
-                                    "test-track:${RELEASE}",
-                                    "ui-test:${RELEASE}",
-                                    "workstation:${RELEASE}",
-                                    "gateway:${RELEASE}",
-                                    "eureka:${RELEASE}",
+                                    "metersphere:${RELEASE}",
                                     "node-controller:${RELEASE}",
                                     "data-streaming:${RELEASE}"]
                         for (image in images) {
@@ -308,28 +323,19 @@ pipeline {
                     sh '''
                         #保存镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/api-test:${RELEASE} \\
-                        ${IMAGE_PREFIX}/performance-test:${RELEASE} \\
-                        ${IMAGE_PREFIX}/project-management:${RELEASE} \\
-                        ${IMAGE_PREFIX}/report-stat:${RELEASE} \\
-                        ${IMAGE_PREFIX}/system-setting:${RELEASE} \\
-                        ${IMAGE_PREFIX}/test-track:${RELEASE} \\
-                        ${IMAGE_PREFIX}/ui-test:${RELEASE} \\
-                        ${IMAGE_PREFIX}/workstation:${RELEASE} \\
-                        ${IMAGE_PREFIX}/gateway:${RELEASE} \\
-                        ${IMAGE_PREFIX}/eureka:${RELEASE} \\
+                        docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} \\
                         ${IMAGE_PREFIX}/node-controller:${RELEASE} \\
                         ${IMAGE_PREFIX}/data-streaming:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
-                        ${IMAGE_PREFIX}/kafka:3.4.0 \\
+                        ${IMAGE_PREFIX}/kafka:3.4.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.33 \\
-                        ${IMAGE_PREFIX}/redis:6.2.6 \\
+                        ${IMAGE_PREFIX}/redis:7.0.11-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-04-13T03-08-07Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
                         ${IMAGE_PREFIX}/node-exporter:v1.5.0 \\
-                        ${IMAGE_PREFIX}/node-firefox:4.8.3 \\
-                        ${IMAGE_PREFIX}/node-chromium:4.8.3 \\
-                        ${IMAGE_PREFIX}/selenium-hub:4.8.3 > metersphere.tar
+                        ${IMAGE_PREFIX}/node-firefox:4.9.1 \\
+                        ${IMAGE_PREFIX}/node-chromium:4.9.1 \\
+                        ${IMAGE_PREFIX}/selenium-hub:4.9.1 > metersphere.tar
                         cd ..
                     '''
                     script {

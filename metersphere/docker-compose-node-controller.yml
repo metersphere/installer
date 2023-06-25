@@ -9,39 +9,17 @@ services:
     command: sh -c 'sed -i "s/:101:/:${MS_DOCKER_GID:-101}:/g" /etc/group; /deployments/run-java.sh'
     ports:
       - ${MS_NODE_CONTROLLER_PORT}:8082
-      - ${MS_NODEEXPORTER_PORT}:9100
     healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "8082"]
+      test: [ "CMD", "nc", "-zv", "localhost", "8082" ]
       interval: 6s
       timeout: 5s
       retries: 50
     volumes:
-      - ms-data:/opt/metersphere/data
-      - ms-logs:/opt/metersphere/logs
+      - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
+      - ${MS_BASE}/metersphere/logs/node-controller:/opt/metersphere/logs/node-controller
       - /var/run/docker.sock:/var/run/docker.sock
     mem_limit: ${MS_NC_MEM_LIMIT:-1073741824} # default 1g bytes
     restart: always
     networks:
       - ms-network
-  
-  nodeexporter:
-    image: ${MS_IMAGE_PREFIX}/node-exporter:v1.5.0
-    container_name: nodeexporter
-    user: root
-    privileged: true
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: always
-    mem_limit: 128m
-    healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "9100"]
-      interval: 6s
-      timeout: 5s
-      retries: 50
-    network_mode: service:node-controller
+

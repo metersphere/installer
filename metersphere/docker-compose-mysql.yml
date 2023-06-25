@@ -20,7 +20,7 @@ services:
     networks:
       - ms-network
     restart: always
-  system-setting:
+  metersphere:
     depends_on:
       mysql:
         condition: service_healthy
