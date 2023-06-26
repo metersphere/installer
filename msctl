@@ -71,7 +71,7 @@ function generate_compose_files() {
       fi
     fi
     # 是否使用外部 Prometheus
-    if [ "${MS_EXTERNAL_PROM}" = "false" ]; then
+    if [ "${MS_EXTERNAL_PROM}" = "false" ] && [ "${MS_ENTERPRISE_ENABLE}" = "true" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/prometheus
       compose_files="${compose_files} -f docker-compose-prometheus.yml"
     fi
