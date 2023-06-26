@@ -91,7 +91,7 @@ function generate_compose_files() {
     fi
 
     # 是否使用外部grid
-    if [ "${MS_EXTERNAL_SELENIUM}" = "false" ]; then
+    if [ "${MS_EXTERNAL_SELENIUM}" = "false" ] && [ "${MS_ENTERPRISE_ENABLE}" = "true" ]; then
       compose_files="${compose_files} -f docker-compose-seleniarm.yml"
     fi
   fi
