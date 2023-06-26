@@ -2,7 +2,7 @@ version: "2.1"
 services:
   node-controller:
     image: ${MS_IMAGE_PREFIX}/node-controller:${MS_IMAGE_TAG}
-    container_name: ms-node-controller
+    container_name: node-controller
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'

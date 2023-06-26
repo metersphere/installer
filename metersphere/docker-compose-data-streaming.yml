@@ -2,7 +2,7 @@ version: "2.1"
 services:
   data-streaming:
     image: ${MS_IMAGE_PREFIX}/data-streaming:${MS_IMAGE_TAG}
-    container_name: ms-data-streaming
+    container_name: data-streaming
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
@@ -26,6 +26,7 @@ services:
     restart: always
     volumes:
       - ${MS_BASE}/metersphere/conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
+      - ${MS_BASE}/metersphere/conf/redisson.yml:/opt/metersphere/conf/redisson.yml
       - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
     mem_limit: ${MS_DS_MEM_LIMIT:-1073741824} # default 1g bytes
     networks:
