@@ -65,7 +65,6 @@ function generate_compose_files() {
     fi
     # 是否使用外部 Kafka
     if [ "${MS_EXTERNAL_KAFKA}" = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/kafka
       compose_files="${compose_files} -f docker-compose-kafka.yml"
       if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
         sed -i -e '/data-streaming/,+3d' ${MS_BASE}/metersphere/docker-compose-kafka.yml
