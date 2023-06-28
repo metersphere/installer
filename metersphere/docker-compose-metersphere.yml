@@ -1,8 +1,12 @@
-version: "2.1"
+version: "3"
 services:
   metersphere:
     image: ${MS_IMAGE_PREFIX}/metersphere:${MS_IMAGE_TAG}
     container_name: metersphere
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_MEM_LIMIT:-1g}
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false&sessionVariables=sql_mode=%27STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION%27
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
@@ -37,6 +41,5 @@ services:
       - ${MS_BASE}/metersphere/conf:/opt/metersphere/conf
       - ${MS_BASE}/metersphere/logs/metersphere:/opt/metersphere/logs/metersphere
       - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
-    mem_limit: ${MS_SYSTEM_MEM_LIMIT:-858993459} # default 800m bytes
     networks:
       - ms-network

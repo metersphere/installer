@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3"
 services:
   prometheus:
     image: ${MS_IMAGE_PREFIX}/prometheus:v2.42.0

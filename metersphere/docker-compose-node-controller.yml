@@ -1,8 +1,12 @@
-version: "2.1"
+version: "3"
 services:
   node-controller:
     image: ${MS_IMAGE_PREFIX}/node-controller:${MS_IMAGE_TAG}
     container_name: node-controller
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_NC_MEM_LIMIT:-1g}
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
@@ -18,7 +22,6 @@ services:
       - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
       - ${MS_BASE}/metersphere/logs/node-controller:/opt/metersphere/logs/node-controller
       - /var/run/docker.sock:/var/run/docker.sock
-    mem_limit: ${MS_NC_MEM_LIMIT:-1073741824} # default 1g bytes
     restart: always
     networks:
       - ms-network

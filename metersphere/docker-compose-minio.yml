@@ -1,9 +1,13 @@
-version: '2.1'
+version: '3'
 services:
   minio:
     image: ${MS_IMAGE_PREFIX}/minio:RELEASE.2023-04-13T03-08-07Z
     container_name: minio
     hostname: "minio"
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_MINIO_MEM_LIMIT:-1g}
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -22,7 +26,6 @@ services:
     command: server --console-address ':9001' /data
     privileged: true
     restart: always
-    mem_limit: ${MS_MINIO_MEM_LIMIT:-1073741824} # default 1g bytes
 
 volumes:
   ms-minio-data:
