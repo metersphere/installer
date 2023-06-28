@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   kafka:
-    image: '${MS_IMAGE_PREFIX}/kafka:3.4.1'
+    image: '${MS_IMAGE_PREFIX}/kafka:3.5.0'
     container_name: kafka
     ports:
       - '${MS_KAFKA_PORT}:9092'
