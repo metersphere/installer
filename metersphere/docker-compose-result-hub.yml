@@ -1,8 +1,8 @@
 version: "3"
 services:
-  data-streaming:
-    image: ${MS_IMAGE_PREFIX}/data-streaming:${MS_IMAGE_TAG}
-    container_name: data-streaming
+  result-hub:
+    image: ${MS_IMAGE_PREFIX}/result-hub:${MS_IMAGE_TAG}
+    container_name: result-hub
     deploy:
       resources:
         limits:
@@ -34,6 +34,6 @@ services:
     volumes:
       - ${MS_BASE}/metersphere/conf/metersphere.properties:/opt/metersphere/conf/metersphere.properties
       - ${MS_BASE}/metersphere/conf/redisson.yml:/opt/metersphere/conf/redisson.yml
-      - ${MS_BASE}/metersphere/logs/data-streaming:/opt/metersphere/logs/data-streaming
+      - ${MS_BASE}/metersphere/logs/result-hub:/opt/metersphere/logs/result-hub
     networks:
       - ms-network

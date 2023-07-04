@@ -46,11 +46,11 @@ pipeline {
                 dir('load-test') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/load-test.git', branch: "${BRANCH_NAME}"
                 }
-                dir('node-controller') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/node-controller.git', branch: "${BRANCH_NAME}"
+                dir('task-runner') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/task-runner.git', branch: "${BRANCH_NAME}"
                 }
-                dir('data-streaming') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/data-streaming.git', branch: "${BRANCH_NAME}"
+                dir('result-hub') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/result-hub.git', branch: "${BRANCH_NAME}"
                 }
                 dir('jenkins-plugin') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
@@ -163,9 +163,9 @@ pipeline {
                         }
                     }
                 }
-                stage('node-controller') {
+                stage('task-runner') {
                     steps {
-                        dir('node-controller') {
+                        dir('task-runner') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
@@ -174,19 +174,19 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../node-controller/${RELEASE}", quietPeriod:10
+                                    build job:"../task-runner/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../node-controller/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../task-runner/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
                         }
                     }
                 }
-                stage('data-streaming') {
+                stage('result-hub') {
                     steps {
-                        dir('data-streaming') {
+                        dir('result-hub') {
                             sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                             sh("git push -f origin refs/tags/${RELEASE}")
                         }
@@ -195,10 +195,10 @@ pipeline {
                                 try {
                                     echo "Waiting for scanning new created Job"
                                     sleep 10
-                                    build job:"../data-streaming/${RELEASE}", quietPeriod:10
+                                    build job:"../result-hub/${RELEASE}", quietPeriod:10
                                     break
                                 } catch (Exception e) {
-                                    println("Not building the job ../data-streaming/${RELEASE} as it doesn't exist")
+                                    println("Not building the job ../result-hub/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
@@ -311,8 +311,8 @@ pipeline {
                                     'selenium-hub:4.10.0',
                                     'node-exporter:v1.5.0',
                                     "metersphere:${RELEASE}",
-                                    "node-controller:${RELEASE}",
-                                    "data-streaming:${RELEASE}"]
+                                    "task-runner:${RELEASE}",
+                                    "result-hub:${RELEASE}"]
                         for (image in images) {
                             waitUntil {
                                 def r = sh script: "docker pull ${IMAGE_PREFIX}/${image}", returnStatus: true
@@ -324,8 +324,8 @@ pipeline {
                         #保存镜像
                         rm -rf images && mkdir images && cd images
                         docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} \\
-                        ${IMAGE_PREFIX}/node-controller:${RELEASE} \\
-                        ${IMAGE_PREFIX}/data-streaming:${RELEASE} \\
+                        ${IMAGE_PREFIX}/task-runner:${RELEASE} \\
+                        ${IMAGE_PREFIX}/result-hub:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.33 \\

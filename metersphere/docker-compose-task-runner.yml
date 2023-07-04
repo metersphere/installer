@@ -1,8 +1,8 @@
 version: "3"
 services:
-  node-controller:
-    image: ${MS_IMAGE_PREFIX}/node-controller:${MS_IMAGE_TAG}
-    container_name: node-controller
+  task-runner:
+    image: ${MS_IMAGE_PREFIX}/task-runner:${MS_IMAGE_TAG}
+    container_name: task-runner
     deploy:
       resources:
         limits:
@@ -20,7 +20,7 @@ services:
       retries: 50
     volumes:
       - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
-      - ${MS_BASE}/metersphere/logs/node-controller:/opt/metersphere/logs/node-controller
+      - ${MS_BASE}/metersphere/logs/task-runner:/opt/metersphere/logs/task-runner
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     networks:
