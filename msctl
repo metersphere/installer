@@ -43,7 +43,7 @@ function generate_compose_files() {
     compose_files="${compose_files} -f docker-compose-task-runner.yml -f docker-compose-nodeexporter.yml"
     ;;
   selenium-hub)
-    compose_files="${compose_files} -f docker-compose-seleniarm.yml"
+    compose_files="${compose_files} -f docker-compose-selenium.yml"
     ;;
   middleware)
     compose_files="${compose_files} -f docker-compose-result-hub.yml"
@@ -91,7 +91,7 @@ function generate_compose_files() {
 
     # 是否使用外部grid
     if [ "${MS_EXTERNAL_SELENIUM}" = "false" ] && [ "${MS_ENTERPRISE_ENABLE}" = "true" ]; then
-      compose_files="${compose_files} -f docker-compose-seleniarm.yml"
+      compose_files="${compose_files} -f docker-compose-selenium.yml"
     fi
   fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
