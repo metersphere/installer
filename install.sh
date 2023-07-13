@@ -40,8 +40,34 @@ fi
 set +a
 
 __current_version=$(cat ${MS_BASE}/metersphere/version 2>/dev/null || echo "")
+__target_version=$(cat ${__current_dir}/metersphere/version)
+# 截取实际版本
+current_version=${__current_version%-*}
+current_version=${current_version:1}
+current_version_arr=(`echo $current_version | tr '.' ' '`)
+
+target_version=${__target_version%-*}
+target_version=${target_version:1}
+target_version_arr=(`echo $target_version | tr '.' ' '`)
+
+current_version=$(printf '1%02d%02d%02d' ${current_version_arr[0]} ${current_version_arr[1]} ${current_version_arr[2]})
+target_version=$(printf '1%02d%02d%02d' ${target_version_arr[0]} ${target_version_arr[1]} ${target_version_arr[2]})
+
+
+if [[ ${current_version} > ${target_version} ]]; then
+  echo -e "\e[31m不支持降级\e[0m"
+  return 2
+fi
+
+if [[ "${current_version}" = "v1"* ]] || [[ "${current_version}" = "v2"* ]]; then
+  if [[ "${target_version}" = "v3"* ]]; then
+    echo -e "\e[31m不支持升级到此版本\e[0m"
+    return 2
+  fi
+fi
+
 if [[ ${__current_version} =~ "lts" ]];then
-   if [[ ! $(cat ${__current_dir}/metersphere/version) =~ "lts" ]];then
+   if [[ ! ${__target_version} =~ "lts" ]];then
       log "从LTS版本升级到非LTS版本，此版本包含实验性功能请做好数据备份工作"
       log "从2.0开始，我们去掉了zookeeper，升级了kafka和mysql，升级前请执行 msctl stop && docker rm zookeeper && docker rm kafka; 如果已经升级至2.0请忽略这条信息"
       read -p "是否确认升级? [n/y]" __choice </dev/tty
@@ -59,7 +85,7 @@ else
          y|Y) echo "继续安装...";;
          n|N) echo "退出安装..."&exit;;
          *) echo "退出安装..."&exit;;
-       esac
+      esac
    fi
 fi
 
