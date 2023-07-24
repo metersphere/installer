@@ -45,6 +45,9 @@ function generate_compose_files() {
   selenium-hub)
     compose_files="${compose_files} -f docker-compose-seleniarm.yml"
     ;;
+  task-runner)
+    compose_files="${compose_files} -f docker-compose-seleniarm.yml -f docker-compose-node-controller.yml"
+    ;;
   middleware)
     compose_files="${compose_files} -f docker-compose-data-streaming.yml"
     ;;
@@ -52,7 +55,7 @@ function generate_compose_files() {
     log "... 不支持的安装模式，请从 [ allinone | server | node-controller | selenium-hub | middleware ] 中进行选择"
     ;;
   esac
-  if [ "${MS_INSTALL_MODE}" != "node-controller" ] && [ "${MS_INSTALL_MODE}" != "selenium-hub" ] && [ "${MS_INSTALL_MODE}" != "server" ]; then
+  if [ "${MS_INSTALL_MODE}" != "node-controller" ] && [ "${MS_INSTALL_MODE}" != "selenium-hub" ] && [ "${MS_INSTALL_MODE}" != "server" ] && [ "${MS_INSTALL_MODE}" != "task-runner" ]; then
     # 是否使用外部数据库
     if [ "${MS_EXTERNAL_MYSQL}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/mysql
