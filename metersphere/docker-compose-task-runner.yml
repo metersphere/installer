@@ -48,4 +48,4 @@ services:
       interval: 6s
       timeout: 5s
       retries: 50
-    network_mode: service:node-controller
+    network_mode: service:task-runner
