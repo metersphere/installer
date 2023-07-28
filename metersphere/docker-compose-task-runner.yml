@@ -12,9 +12,10 @@ services:
       RUN_AS_NON_ROOT_USER: 'true'
     command: sh -c 'sed -i "s/:101:/:${MS_DOCKER_GID:-101}:/g" /etc/group; /deployments/run-java.sh'
     ports:
-      - ${MS_NODE_CONTROLLER_PORT}:8082
+      - ${MS_TASK_RUNNER_PORT}:6000
+      - ${MS_NODE_EXPORTER_PORT}:9100
     healthcheck:
-      test: [ "CMD", "nc", "-zv", "localhost", "8082" ]
+      test: [ "CMD", "nc", "-zv", "localhost", "6000" ]
       interval: 6s
       timeout: 5s
       retries: 50
