@@ -34,13 +34,13 @@ function generate_compose_files() {
   mkdir -p ${MS_BASE}/metersphere/data/app
   case ${MS_INSTALL_MODE} in
   allinone)
-    compose_files="${compose_files} -f docker-compose-result-hub.yml -f docker-compose-task-runner.yml -f docker-compose-nodeexporter.yml -f docker-compose-metersphere.yml"
+    compose_files="${compose_files} -f docker-compose-result-hub.yml -f docker-compose-task-runner.yml -f docker-compose-metersphere.yml"
     ;;
   server)
     compose_files="${compose_files} -f docker-compose-metersphere.yml"
     ;;
   task-runner)
-    compose_files="${compose_files} -f docker-compose-task-runner.yml -f docker-compose-nodeexporter.yml"
+    compose_files="${compose_files} -f docker-compose-task-runner.yml"
     ;;
   selenium-hub)
     compose_files="${compose_files} -f docker-compose-selenium.yml"

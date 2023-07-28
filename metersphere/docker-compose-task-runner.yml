@@ -6,7 +6,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${MS_NC_MEM_LIMIT:-1g}
+          memory: ${MS_TASK_MEM_LIMIT:-1g}
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
@@ -25,4 +25,27 @@ services:
     restart: always
     networks:
       - ms-network
-
+  node-exporter:
+    image: ${MS_IMAGE_PREFIX}/node-exporter:v1.5.0
+    container_name: nodeexporter
+    user: root
+    privileged: true
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: always
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "9100" ]
+      interval: 6s
+      timeout: 5s
+      retries: 50
+    network_mode: service:node-controller
