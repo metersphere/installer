@@ -28,7 +28,7 @@ services:
       - ms-network
   node-exporter:
     image: ${MS_IMAGE_PREFIX}/node-exporter:v1.5.0
-    container_name: nodeexporter
+    container_name: node-exporter
     user: root
     privileged: true
     deploy:
