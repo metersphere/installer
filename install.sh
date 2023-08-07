@@ -85,9 +85,9 @@ if which docker >/dev/null; then
 else
    if [[ -d docker ]]; then
       log "... 离线安装 docker"
+      chmod +x docker/bin/*
       cp docker/bin/* /usr/bin/
       cp docker/service/docker.service /etc/systemd/system/
-      chmod +x /usr/bin/docker*
       chmod 754 /etc/systemd/system/docker.service
       log "... 启动 docker"
       service docker start 2>&1 | tee -a ${__current_dir}/install.log
