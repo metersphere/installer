@@ -301,8 +301,8 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['jmeter-master:${JMETER_TAG}',
-                                    'kafka:3.5.0',
-                                    'mysql:8.0.33',
+                                    'kafka:3.5.1',
+                                    'mysql:8.0.34',
                                     'redis:7.0.12-alpine',
                                     'minio:RELEASE.2023-08-09T23-30-22Z',
                                     'prometheus:v2.42.0',
@@ -327,8 +327,8 @@ pipeline {
                         ${IMAGE_PREFIX}/task-runner:${RELEASE} \\
                         ${IMAGE_PREFIX}/result-hub:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
-                        ${IMAGE_PREFIX}/kafka:3.5.0 \\
-                        ${IMAGE_PREFIX}/mysql:8.0.33 \\
+                        ${IMAGE_PREFIX}/kafka:3.5.1 \\
+                        ${IMAGE_PREFIX}/mysql:8.0.34 \\
                         ${IMAGE_PREFIX}/redis:7.0.12-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-08-09T23-30-22Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
