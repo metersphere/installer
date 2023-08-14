@@ -309,7 +309,6 @@ pipeline {
                                     'node-chromium:4.10.0',
                                     'node-firefox:4.10.0',
                                     'selenium-hub:4.10.0',
-                                    'node-exporter:v1.5.0',
                                     "metersphere:${RELEASE}",
                                     "task-runner:${RELEASE}",
                                     "result-hub:${RELEASE}"]
@@ -332,7 +331,6 @@ pipeline {
                         ${IMAGE_PREFIX}/redis:7.0.12-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-08-09T23-30-22Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
-                        ${IMAGE_PREFIX}/node-exporter:v1.5.0 \\
                         ${IMAGE_PREFIX}/node-firefox:4.10.0 \\
                         ${IMAGE_PREFIX}/node-chromium:4.10.0 \\
                         ${IMAGE_PREFIX}/selenium-hub:4.10.0 > metersphere.tar
