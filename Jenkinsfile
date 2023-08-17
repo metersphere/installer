@@ -101,24 +101,6 @@ pipeline {
         stage('Tag Other Repos') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
-                stage('metersphere') {
-                    steps {
-                        script {
-                            for (int i=0;i<10;i++) {
-                                try {
-                                    echo "Waiting for scanning new created Job"
-                                    sleep 10
-                                    build job:"../metersphere/${RELEASE}", quietPeriod:10
-                                    break
-                                } catch (Exception e) {
-                                    println(e)
-                                    println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
-                                    continue
-                                }
-                            }
-                        }
-                    }
-                }
                 stage('ui-test') {
                     steps {
                         dir('ui-test') {
@@ -218,6 +200,24 @@ pipeline {
                                     break
                                 } catch (Exception e) {
                                     println("Not building the job ../jenkins-plugin/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('metersphere') {
+                    steps {
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../metersphere/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println(e)
+                                    println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
