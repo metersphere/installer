@@ -239,7 +239,7 @@ pipeline {
                         #修改安装参数
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
-                        sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
+                        sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter:${JMETER_TAG}#g" install.conf
                         echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version                   
                     '''
                 }
@@ -294,7 +294,7 @@ pipeline {
             steps {
                 dir('installer') {
                     script {
-                        def images = ['jmeter-master:${JMETER_TAG}',
+                        def images = ['jmeter:${JMETER_TAG}',
                                     'kafka:3.5.1',
                                     'mysql:8.0.34',
                                     'redis:7.0.12-alpine',
@@ -319,7 +319,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} \\
                         ${IMAGE_PREFIX}/task-runner:${RELEASE} \\
                         ${IMAGE_PREFIX}/result-hub:${RELEASE} \\
-                        ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
+                        ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.34 \\
                         ${IMAGE_PREFIX}/redis:7.0.12-alpine \\
