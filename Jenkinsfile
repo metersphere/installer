@@ -33,7 +33,6 @@ pipeline {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 // Get some code from a GitHub repository
-
                 dir('metersphere') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere.git', branch: "${BRANCH_NAME}"
                 }
@@ -61,7 +60,6 @@ pipeline {
                 '''
             }
         }
-
         stage('MS Domain SDK XPack') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
@@ -232,8 +230,6 @@ pipeline {
             when {
                 anyOf {
                     tag pattern: "^v.*", comparator: "REGEXP"
-                    tag "dev"
-                    tag "main"
                 }
             }
             steps {
@@ -253,8 +249,6 @@ pipeline {
             when {
                 anyOf {
                     tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP";
-                    tag "dev"
-                    tag "main"
                 }
             }
             steps {
