@@ -60,7 +60,7 @@ pipeline {
                 '''
             }
         }
-        stage('MS Domain SDK XPack') {
+        stage('Build SDK') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 script {
@@ -77,20 +77,18 @@ pipeline {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                     sh("git push -f origin refs/tags/${RELEASE}")
                 }
-                dir('metersphere-xpack') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
                 script {
                     for (int i=0;i<10;i++) {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"../metersphere-xpack/${RELEASE}", quietPeriod:10
+                            build job:"../metersphere/${RELEASE}", quietPeriod:10, parameters: [
+                                string(name: 'buildSdk', value: "true"),
+                            ]
                             break
                         } catch (Exception e) {
                             println(e)
-                            println("Not building the job ../metersphere-xpack/${RELEASE} as it doesn't exist")
+                            println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -101,6 +99,27 @@ pipeline {
         stage('Tag Other Repos') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
+                stage('metersphere-xpack') {
+                    steps {
+                        dir('metersphere-xpack') {
+                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                            sh("git push -f origin refs/tags/${RELEASE}")
+                        }
+                        script {
+                            for (int i=0;i<10;i++) {
+                                try {
+                                    echo "Waiting for scanning new created Job"
+                                    sleep 10
+                                    build job:"../metersphere-xpack/${RELEASE}", quietPeriod:10
+                                    break
+                                } catch (Exception e) {
+                                    println("Not building the job ../metersphere-xpack/${RELEASE} as it doesn't exist")
+                                    continue
+                                }
+                            }
+                        }
+                    }
+                }
                 stage('ui-test') {
                     steps {
                         dir('ui-test') {
@@ -206,21 +225,21 @@ pipeline {
                         }
                     }
                 }
-                stage('metersphere') {
-                    steps {
-                        script {
-                            for (int i=0;i<10;i++) {
-                                try {
-                                    echo "Waiting for scanning new created Job"
-                                    sleep 10
-                                    build job:"../metersphere/${RELEASE}", quietPeriod:10
-                                    break
-                                } catch (Exception e) {
-                                    println(e)
-                                    println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
-                                    continue
-                                }
-                            }
+            }
+        }
+        stage('metersphere') {
+            steps {
+                script {
+                    for (int i=0;i<10;i++) {
+                        try {
+                            echo "Waiting for scanning new created Job"
+                            sleep 10
+                            build job:"../metersphere/${RELEASE}", quietPeriod:10
+                            break
+                        } catch (Exception e) {
+                            println(e)
+                            println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
+                            continue
                         }
                     }
                 }
