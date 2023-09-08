@@ -27,12 +27,18 @@ scrape_configs:
     static_configs:
       - targets: [ 'localhost:9090' ]
 
-  - job_name: 'service-monitor'
+  - job_name: Service Monitor
     metrics_path: /actuator/prometheus
     static_configs:
       - targets: [ 'system-setting:7001', 'project-management:7002', 'performance-test:7003', 'api-test:7004', 'test-track:7005', 'report-stat:7006', 'workstation:7007', 'ui-test:7008' ]
 
-  - job_name: 'metersphere'
+
+  - job_name: Node Exporter
     consul_sd_configs:
       - server: 'performance-test:8003'
         services: [ ]
+    relabel_configs:
+      - source_labels: [ '__address__' ]
+        regex: (.*:8082)
+        target_label: __metrics_path__
+        replacement: /actuator/prometheus
