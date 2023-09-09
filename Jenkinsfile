@@ -282,9 +282,9 @@ pipeline {
                                     'redis:6.2.6',
                                     'minio:RELEASE.2023-04-13T03-08-07Z',
                                     'prometheus:v2.42.0',
-                                    'node-chromium:4.8.3',
-                                    'node-firefox:4.8.3',
-                                    'selenium-hub:4.8.3',
+                                    'node-chromium:4.10.0',
+                                    'node-firefox:4.10.0',
+                                    'selenium-hub:4.10.0',
                                     "api-test:${RELEASE}",
                                     "performance-test:${RELEASE}",
                                     "project-management:${RELEASE}",
@@ -325,9 +325,9 @@ pipeline {
                         ${IMAGE_PREFIX}/redis:6.2.6 \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-04-13T03-08-07Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
-                        ${IMAGE_PREFIX}/node-firefox:4.8.3 \\
-                        ${IMAGE_PREFIX}/node-chromium:4.8.3 \\
-                        ${IMAGE_PREFIX}/selenium-hub:4.8.3 > metersphere.tar
+                        ${IMAGE_PREFIX}/node-firefox:4.10.0 \\
+                        ${IMAGE_PREFIX}/node-chromium:4.10.0 \\
+                        ${IMAGE_PREFIX}/selenium-hub:4.10.0 > metersphere.tar
                         cd ..
                     '''
                     script {
