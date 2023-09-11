@@ -13,7 +13,6 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-      - SE_VNC_PASSWORD=Password123@selenium
       - TZ=Asia/Shanghai
       - SE_NODE_MAX_SESSIONS=6
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
@@ -46,7 +45,6 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-      - SE_VNC_PASSWORD=Password123@selenium
       - TZ=Asia/Shanghai
       - SE_NODE_MAX_SESSIONS=6
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
