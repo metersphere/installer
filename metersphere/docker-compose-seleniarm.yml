@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   chrome:
-    image: ${MS_IMAGE_PREFIX}/node-chromium:4.8.3
+    image: ${MS_IMAGE_PREFIX}/node-chromium:4.10.0
     container_name: selenium-chrome
     shm_size: 2gb
     ports:
@@ -13,6 +13,7 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_VNC_PASSWORD=Password123@selenium
       - TZ=Asia/Shanghai
       - SE_NODE_MAX_SESSIONS=6
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
@@ -33,7 +34,7 @@ services:
     networks:
       - ms-network
   firefox:
-    image: ${MS_IMAGE_PREFIX}/node-firefox:4.8.3
+    image: ${MS_IMAGE_PREFIX}/node-firefox:4.10.0
     container_name: selenium-firefox
     shm_size: 2gb
     ports:
@@ -45,6 +46,7 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_VNC_PASSWORD=Password123@selenium
       - TZ=Asia/Shanghai
       - SE_NODE_MAX_SESSIONS=6
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
@@ -66,7 +68,7 @@ services:
       - ms-network
 
   selenium-hub:
-    image: ${MS_IMAGE_PREFIX}/selenium-hub:4.8.3
+    image: ${MS_IMAGE_PREFIX}/selenium-hub:4.10.0
     container_name: selenium-hub
     ports:
       - "4442:4442"

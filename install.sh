@@ -109,6 +109,11 @@ if [ $? != 0 ];then
    exit
 fi
 
+# 配置docker服务开机自启
+if which systemctl >/dev/null; then
+  systemctl enable docker
+fi
+
 ##Install Latest Stable Docker Compose Release
 if which docker-compose >/dev/null; then
    log "检测到 Docker Compose 已安装，跳过安装步骤"
