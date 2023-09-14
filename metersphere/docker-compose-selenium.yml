@@ -26,7 +26,7 @@ services:
       - SE_VNC_PASSWORD=Password123@selenium
     restart: always
     healthcheck:
-      test: ["CMD", "bash", "-c", "< /dev/tcp/localhost/5900"]
+      test: ["CMD", "bash", "-c", "< /dev/tcp/localhost/5555"]
       interval: 6s
       timeout: 5s
       retries: 50
@@ -58,7 +58,7 @@ services:
       - SE_VNC_PASSWORD=Password123@selenium
     restart: always
     healthcheck:
-      test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/5900" ]
+      test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/5555" ]
       interval: 6s
       timeout: 5s
       retries: 50
