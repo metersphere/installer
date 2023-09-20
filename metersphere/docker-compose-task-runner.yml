@@ -6,7 +6,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${MS_NC_MEM_LIMIT:-1g}
+          memory: ${MS_RUNNER_MEM_LIMIT}
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
