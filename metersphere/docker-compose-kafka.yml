@@ -1,21 +1,18 @@
 version: "2.1"
 services:
   kafka:
-    image: '${MS_IMAGE_PREFIX}/kafka:3.5.0'
+    image: '${MS_IMAGE_PREFIX}/kafka:3.5.1'
     container_name: kafka
     ports:
       - '${MS_KAFKA_PORT}:9092'
     healthcheck:
-      test: ["CMD", "bash", "-c", "< /dev/tcp/localhost/9093"]
+      test: ["CMD", "bash", "-c", "< /dev/tcp/localhost/9092"]
       interval: 6s
       timeout: 10s
       retries: 50
     restart: always
     environment:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CFG_LOG_RETENTION_MS: 60000
       KAFKA_CFG_MAX_REQUEST_SIZE: 524288000
       KAFKA_CFG_MESSAGE_MAX_BYTES: 524288000
@@ -23,7 +20,13 @@ services:
       KAFKA_CFG_FETCH_MESSAGE_MAX_BYTES: 524288000
       KAFKA_CFG_PARTITION_FETCH_BYTES: 524288000
       KAFKA_HEAP_OPTS: '-Xmx512m -Xms256m'
-      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:9093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
     networks:
       - ms-network
   data-streaming:
