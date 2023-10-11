@@ -26,7 +26,6 @@ services:
       timeout: 5s
       retries: 50
     volumes:
-      - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
       - ${MS_BASE}/metersphere/logs/task-runner:/opt/metersphere/logs/task-runner
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/host/proc:ro

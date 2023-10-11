@@ -40,6 +40,5 @@ services:
     volumes:
       - ${MS_BASE}/metersphere/conf:/opt/metersphere/conf
       - ${MS_BASE}/metersphere/logs/metersphere:/opt/metersphere/logs/metersphere
-      - ${MS_BASE}/metersphere/data/app:/opt/metersphere/data/app
     networks:
       - ms-network
