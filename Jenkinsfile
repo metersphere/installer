@@ -39,12 +39,6 @@ pipeline {
                 dir('metersphere-xpack') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-xpack.git', branch: "${BRANCH_NAME}"
                 }
-                dir('ui-test') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/ui-test.git', branch: "${BRANCH_NAME}"
-                }
-                dir('load-test') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/load-test.git', branch: "${BRANCH_NAME}"
-                }
                 dir('task-runner') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/task-runner.git', branch: "${BRANCH_NAME}"
                 }
@@ -114,48 +108,6 @@ pipeline {
                                     break
                                 } catch (Exception e) {
                                     println("Not building the job ../metersphere-xpack/${RELEASE} as it doesn't exist")
-                                    continue
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('ui-test') {
-                    steps {
-                        dir('ui-test') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
-                        script {
-                            for (int i=0;i<10;i++) {
-                                try {
-                                    echo "Waiting for scanning new created Job"
-                                    sleep 10
-                                    build job:"../ui-test/${RELEASE}", quietPeriod:10
-                                    break
-                                } catch (Exception e) {
-                                    println("Not building the job ../ui-test/${RELEASE} as it doesn't exist")
-                                    continue
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('load-test') {
-                    steps {
-                        dir('load-test') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
-                        script {
-                            for (int i=0;i<10;i++) {
-                                try {
-                                    echo "Waiting for scanning new created Job"
-                                    sleep 10
-                                    build job:"../load-test/${RELEASE}", quietPeriod:10
-                                    break
-                                } catch (Exception e) {
-                                    println("Not building the job ../load-test/${RELEASE} as it doesn't exist")
                                     continue
                                 }
                             }
