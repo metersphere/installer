@@ -11,6 +11,7 @@ services:
     environment:
       MYSQL_DATABASE: ${MS_MYSQL_DB}
       MYSQL_ROOT_PASSWORD: ${MS_MYSQL_PASSWORD}
+      TZ: "Asia/Shanghai"
     ports:
       - ${MS_MYSQL_PORT}:3306
     volumes:

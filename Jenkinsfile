@@ -268,7 +268,7 @@ pipeline {
                         def images = ['jmeter:${JMETER_TAG}',
                                     'kafka:3.5.1',
                                     'mysql:8.0.34',
-                                    'redis:7.0.12-alpine',
+                                    'redis:7.2.0-alpine',
                                     'minio:RELEASE.2023-08-09T23-30-22Z',
                                     'prometheus:v2.42.0',
                                     'node-chromium:4.10.0',
@@ -293,7 +293,7 @@ pipeline {
                         ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.34 \\
-                        ${IMAGE_PREFIX}/redis:7.0.12-alpine \\
+                        ${IMAGE_PREFIX}/redis:7.2.0-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-08-09T23-30-22Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
                         ${IMAGE_PREFIX}/node-firefox:4.10.0 \\
