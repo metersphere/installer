@@ -47,6 +47,9 @@ pipeline {
                 dir('result-hub') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/result-hub.git', branch: "${BRANCH_NAME}"
                 }
+                dir('standalone') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/standalone.git', branch: "${BRANCH_NAME}"
+                }
                 dir('jenkins-plugin') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
                 }
@@ -193,6 +196,25 @@ pipeline {
                         } catch (Exception e) {
                             println(e)
                             println("Not building the job ../metersphere/${RELEASE} as it doesn't exist")
+                            continue
+                        }
+                    }
+                }
+            }
+        }
+        stage('standalone') {
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
+            steps {
+                script {
+                    for (int i=0;i<10;i++) {
+                        try {
+                            echo "Waiting for scanning new created Job"
+                            sleep 10
+                            build job:"../standalone/${RELEASE}", quietPeriod:10
+                            break
+                        } catch (Exception e) {
+                            println(e)
+                            println("Not building the job ../standalone/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
