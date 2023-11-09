@@ -1,0 +1,107 @@
+version: "3"
+services:
+  metersphere:
+    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
+    container_name: metersphere
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_MEM_LIMIT}
+    entrypoint: 'sh /shells/metersphere.sh'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false&sessionVariables=sql_mode=%27STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION%27
+      SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MS_MYSQL_PASSWORD}
+      KAFKA_PARTITIONS: 4
+      KAFKA_REPLICAS: 1
+      KAFKA_TOPIC: ${MS_KAFKA_TOPIC}
+      KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
+      KAFKA_TEST_TOPIC: ${MS_KAFKA_TEST_TOPIC}
+      KAFKA_REPORT_TOPIC: ${MS_KAFKA_REPORT_TOPIC}
+      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
+      JMETER_IMAGE: ${MS_JMETER_IMAGE}
+      K8S_task-runner-IMAGE: ${MS_IMAGE_PREFIX}/task-runner:${MS_IMAGE_TAG}
+      TCP_MOCK_PORT: ${MS_TCP_MOCK_PORT}
+      SPRING_SESSION_TIMEOUT: '30d'
+      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      REDIS_HOST: ${MS_REDIS_HOST}
+      REDIS_PORT: ${MS_REDIS_PORT}
+      REDIS_PASSWORD: ${MS_REDIS_PASSWORD}
+      MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
+      MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
+      MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
+    ports:
+      - ${MS_SERVER_PORT}:8081
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "8081" ]
+      interval: 6s
+      timeout: 10s
+      retries: 50
+    restart: always
+    volumes:
+      - ${MS_BASE}/metersphere/conf:/opt/metersphere/conf
+      - ${MS_BASE}/metersphere/logs/metersphere:/opt/metersphere/logs/metersphere
+    networks:
+      - ms-network
+  task-runner:
+    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
+    container_name: task-runner
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_RUNNER_MEM_LIMIT}
+    environment:
+      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      RUN_AS_NON_ROOT_USER: 'true'
+    entrypoint: 'sh /shells/task-runner.sh'
+    ports:
+      - ${MS_TASK_RUNNER_PORT}:6000
+      - ${MS_NODE_EXPORTER_PORT}:9100
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "6000" ]
+      interval: 6s
+      timeout: 5s
+      retries: 50
+    volumes:
+      - ${MS_BASE}/metersphere/logs/task-runner:/opt/metersphere/logs/task-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    restart: always
+    networks:
+      - ms-network 
+  result-hub:
+    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
+    container_name: result-hub
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_RESULT_MEM_LIMIT}
+    entrypoint: 'sh /shells/result-hub.sh'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MS_MYSQL_PASSWORD}
+      KAFKA_PARTITIONS: 4
+      KAFKA_REPLICAS: 1
+      KAFKA_TOPIC: ${MS_KAFKA_TOPIC}
+      KAFKA_LOG_TOPIC: ${MS_KAFKA_LOG_TOPIC}
+      KAFKA_TEST_TOPIC: ${MS_KAFKA_TEST_TOPIC}
+      KAFKA_REPORT_TOPIC: ${MS_KAFKA_REPORT_TOPIC}
+      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
+      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      REDIS_HOST: ${MS_REDIS_HOST}
+      REDIS_PORT: ${MS_REDIS_PORT}
+      REDIS_PASSWORD: ${MS_REDIS_PASSWORD}
+      MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
+      MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
+      MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "8084"]
+      interval: 6s
+      timeout: 10s
+      retries: 50
+    restart: always
+
+

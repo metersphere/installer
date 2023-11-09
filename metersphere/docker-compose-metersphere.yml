@@ -1,13 +1,12 @@
 version: "3"
 services:
   metersphere:
-    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
+    image: ${MS_IMAGE_PREFIX}/metersphere:${MS_IMAGE_TAG}
     container_name: metersphere
     deploy:
       resources:
         limits:
           memory: ${MS_MEM_LIMIT}
-    entrypoint: 'sh /shells/metersphere.sh'
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false&sessionVariables=sql_mode=%27STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION%27
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
