@@ -47,8 +47,8 @@ pipeline {
                 dir('result-hub') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/result-hub.git', branch: "${BRANCH_NAME}"
                 }
-                dir('metersphere-community') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-community.git', branch: "${BRANCH_NAME}"
+                dir('metersphere-standalone') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-standalone.git', branch: "${BRANCH_NAME}"
                 }
                 dir('jenkins-plugin') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
@@ -202,10 +202,10 @@ pipeline {
                 }
             }
         }
-        stage('metersphere-community') {
+        stage('metersphere-standalone') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
-                dir('metersphere-community') {
+                dir('metersphere-standalone') {
                     sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
                     sh("git push -f origin refs/tags/${RELEASE}")
                 }
@@ -214,11 +214,11 @@ pipeline {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"../metersphere-community/${RELEASE}", quietPeriod:10
+                            build job:"../metersphere-standalone/${RELEASE}", quietPeriod:10
                             break
                         } catch (Exception e) {
                             println(e)
-                            println("Not building the job ../metersphere-community/${RELEASE} as it doesn't exist")
+                            println("Not building the job ../metersphere-standalone/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -305,7 +305,8 @@ pipeline {
                                     'node-chromium:4.10.0',
                                     'node-firefox:4.10.0',
                                     'selenium-hub:4.10.0',
-                                    "metersphere-community:${RELEASE}"
+                                    "metersphere-community:${RELEASE}",
+                                    "metersphere-enterprise:${RELEASE}"
                                     ]
                         for (image in images) {
                             waitUntil {
@@ -326,7 +327,7 @@ pipeline {
 
                         #保存企业版镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
+                        docker save ${IMAGE_PREFIX}/metersphere-enterprise:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
@@ -382,6 +383,11 @@ pipeline {
                         rm -rf community
 
                         #打包企业版离线包
+                        sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-metersphere.yml
+                        sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-task-runner.yml
+                        sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-result-hub.yml
+                        rm -rf metersphere/*.yml-e
+                        
                         touch metersphere-enterprise-offline-installer-${RELEASE}.tar.gz
                         tar --transform "s/^\\./metersphere-enterprise-offline-installer-${RELEASE}/" \\
                             --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
