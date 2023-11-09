@@ -317,7 +317,7 @@ pipeline {
                     }
                     sh '''
                         #保存社区版镜像
-                        rm -rf community && mkdir community && cd community
+                        rm -rf images && mkdir images && cd images
                         docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
@@ -326,7 +326,7 @@ pipeline {
                         cd ..
 
                         #保存企业版镜像
-                        rm -rf images && mkdir images && cd images
+                        rm -rf enterprise && mkdir enterprise && cd enterprise
                         docker save ${IMAGE_PREFIX}/metersphere-enterprise:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
@@ -380,8 +380,9 @@ pipeline {
                             -czvf metersphere-community-offline-installer-${RELEASE}.tar.gz .
 
                         md5sum -b metersphere-community-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-community-offline-installer-${RELEASE}.tar.gz.md5
-                        rm -rf community
-
+                        rm -rf images
+                        
+                        mv enterprise images
                         #打包企业版离线包
                         sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-metersphere.yml
                         sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-task-runner.yml
