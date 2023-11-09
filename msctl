@@ -33,7 +33,7 @@ function generate_compose_files() {
   mkdir -p ${MS_BASE}/metersphere/logs
   case ${MS_INSTALL_MODE} in
   allinone)
-    compose_files="${compose_files} -f docker-compose-metersphere-community.yml"
+    compose_files="${compose_files} -f docker-compose-metersphere.yml -f docker-compose-task-runner.yml -f docker-compose-result-hub.yml"
     ;;
   server)
     compose_files="${compose_files} -f docker-compose-metersphere.yml"
