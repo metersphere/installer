@@ -377,6 +377,7 @@ pipeline {
                             --exclude metersphere-community-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
+                            --exclude enterprise \\
                             -czvf metersphere-community-offline-installer-${RELEASE}.tar.gz .
 
                         md5sum -b metersphere-community-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-community-offline-installer-${RELEASE}.tar.gz.md5
