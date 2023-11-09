@@ -1,12 +1,13 @@
 version: "3"
 services:
   task-runner:
-    image: ${MS_IMAGE_PREFIX}/task-runner:${MS_IMAGE_TAG}
+    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
     container_name: task-runner
     deploy:
       resources:
         limits:
           memory: ${MS_RUNNER_MEM_LIMIT}
+    entrypoint: 'sh /shells/task-runner.sh'
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
