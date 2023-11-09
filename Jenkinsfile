@@ -265,19 +265,7 @@ pipeline {
                             --exclude docker \\
                             -czvf metersphere-community-online-installer-${RELEASE}.tar.gz .
 
-                        #打包企业版在线包
-                        touch metersphere-online-installer-${RELEASE}.tar.gz
-                        tar --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
-                            --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-release-${RELEASE}.tar.gz \\
-                            --exclude .git \\
-                            --exclude images \\
-                            --exclude docker \\
-                            -czvf metersphere-online-installer-${RELEASE}.tar.gz .
+              
                     '''
                 }
             }
@@ -293,10 +281,8 @@ pipeline {
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-community-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-community-online-installer-${RELEASE}.tar.gz
-                                curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-online-installer-${RELEASE}.tar.gz
 
                                 ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-community-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/ --update
-                                ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/ --update
                                 ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/quick_start.sh --update
                                 ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/latest/download/quick_start.sh --update
                             '''
@@ -398,12 +384,9 @@ pipeline {
                         #打包企业版离线包
                         touch metersphere-enterprise-offline-installer-${RELEASE}.tar.gz
                         tar --transform "s/^\\./metersphere-enterprise-offline-installer-${RELEASE}/" \\
-                            --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             -czvf metersphere-enterprise-offline-installer-${RELEASE}.tar.gz .
 

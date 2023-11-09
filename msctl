@@ -274,7 +274,8 @@ EOF
 
   ms_type="community"
   if [ "${MS_ENTERPRISE_ENABLE}" = "true" ]; then
-    ms_type="enterprise"
+    echo -e "\e[32m 企业版请通过离线包进行升级\e[0m"
+    return 3
   fi
 
   if [ ! -f "/tmp/metersphere-${ms_type}-online-installer-${MS_LATEST_VERSION}.tar.gz" ]; then
