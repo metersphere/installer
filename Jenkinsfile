@@ -271,6 +271,9 @@ pipeline {
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
+                            --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-community-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude docker \\
