@@ -319,10 +319,7 @@ pipeline {
                                     'node-chromium:4.10.0',
                                     'node-firefox:4.10.0',
                                     'selenium-hub:4.10.0',
-                                    "metersphere-community:${RELEASE}",
-                                    "metersphere:${RELEASE}",
-                                    "task-runner:${RELEASE}",
-                                    "result-hub:${RELEASE}"
+                                    "metersphere-community:${RELEASE}"
                                     ]
                         for (image in images) {
                             waitUntil {
@@ -343,9 +340,7 @@ pipeline {
 
                         #保存企业版镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} \\
-                        ${IMAGE_PREFIX}/result-hub:${RELEASE} \\
-                        ${IMAGE_PREFIX}/task-runner:${RELEASE} \\
+                        docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
