@@ -205,6 +205,10 @@ pipeline {
         stage('metersphere-community') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
+                dir('metersphere-community') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
                 script {
                     for (int i=0;i<10;i++) {
                         try {
