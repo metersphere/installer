@@ -269,7 +269,7 @@ pipeline {
                         touch metersphere-online-installer-${RELEASE}.tar.gz
                         tar --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
@@ -396,18 +396,18 @@ pipeline {
                         rm -rf community
 
                         #打包企业版离线包
-                        touch metersphere-offline-installer-${RELEASE}.tar.gz
-                        tar --transform "s/^\\./metersphere-offline-installer-${RELEASE}/" \\
+                        touch metersphere-enterprise-offline-installer-${RELEASE}.tar.gz
+                        tar --transform "s/^\\./metersphere-enterprise-offline-installer-${RELEASE}/" \\
                             --exclude metersphere-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-release-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
-                            -czvf metersphere-offline-installer-${RELEASE}.tar.gz .
+                            -czvf metersphere-enterprise-offline-installer-${RELEASE}.tar.gz .
 
-                        md5sum -b metersphere-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-offline-installer-${RELEASE}.tar.gz.md5
+                        md5sum -b metersphere-enterprise-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-enterprise-offline-installer-${RELEASE}.tar.gz.md5
                         rm -rf images
                     '''
                 }
@@ -429,8 +429,8 @@ pipeline {
                         sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-community-offline-installer-${RELEASE}.tar.gz ./metersphere-community-offline-installer-${RELEASE}.tar.gz")
                         sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-community-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-community-offline-installer-${RELEASE}.tar.gz.md5")
 
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-offline-installer-${RELEASE}.tar.gz ./metersphere-offline-installer-${RELEASE}.tar.gz")
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-offline-installer-${RELEASE}.tar.gz.md5")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-enterprise-offline-installer-${RELEASE}.tar.gz ./metersphere-enterprise-offline-installer-${RELEASE}.tar.gz")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-enterprise-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-enterprise-offline-installer-${RELEASE}.tar.gz.md5")
                     }
                 }
             }
