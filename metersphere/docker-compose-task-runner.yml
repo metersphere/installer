@@ -10,7 +10,6 @@ services:
     entrypoint: 'sh /shells/task-runner.sh'
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
-      RUN_AS_NON_ROOT_USER: 'true'
     ports:
       - ${MS_TASK_RUNNER_PORT}:6000
       - ${MS_NODE_EXPORTER_PORT}:9100
