@@ -47,8 +47,8 @@ pipeline {
                 dir('result-hub') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/result-hub.git', branch: "${BRANCH_NAME}"
                 }
-                dir('standalone') {
-                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/standalone.git', branch: "${BRANCH_NAME}"
+                dir('metersphere-community') {
+                    git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/metersphere-community.git', branch: "${BRANCH_NAME}"
                 }
                 dir('jenkins-plugin') {
                     git credentialsId:'metersphere-registry', url: 'git@github.com:metersphere/jenkins-plugin.git', branch: "${BRANCH_NAME}"
@@ -202,7 +202,7 @@ pipeline {
                 }
             }
         }
-        stage('standalone') {
+        stage('metersphere-community') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 script {
@@ -210,11 +210,11 @@ pipeline {
                         try {
                             echo "Waiting for scanning new created Job"
                             sleep 10
-                            build job:"../standalone/${RELEASE}", quietPeriod:10
+                            build job:"../metersphere-community/${RELEASE}", quietPeriod:10
                             break
                         } catch (Exception e) {
                             println(e)
-                            println("Not building the job ../standalone/${RELEASE} as it doesn't exist")
+                            println("Not building the job ../metersphere-community/${RELEASE} as it doesn't exist")
                             continue
                         }
                     }
@@ -291,16 +291,15 @@ pipeline {
                     script {
                         def images = ['jmeter:${JMETER_TAG}',
                                     'kafka:3.5.1',
-                                    'mysql:8.0.34',
+                                    'mysql:8.0.35',
                                     'redis:7.2.0-alpine',
                                     'minio:RELEASE.2023-08-09T23-30-22Z',
                                     'prometheus:v2.42.0',
                                     'node-chromium:4.10.0',
                                     'node-firefox:4.10.0',
                                     'selenium-hub:4.10.0',
-                                    "metersphere:${RELEASE}",
-                                    "task-runner:${RELEASE}",
-                                    "result-hub:${RELEASE}"]
+                                    "metersphere-community:${RELEASE}"
+                                    ]
                         for (image in images) {
                             waitUntil {
                                 def r = sh script: "docker pull ${IMAGE_PREFIX}/${image}", returnStatus: true
@@ -311,12 +310,10 @@ pipeline {
                     sh '''
                         #保存镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/metersphere:${RELEASE} \\
-                        ${IMAGE_PREFIX}/task-runner:${RELEASE} \\
-                        ${IMAGE_PREFIX}/result-hub:${RELEASE} \\
+                        docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
-                        ${IMAGE_PREFIX}/mysql:8.0.34 \\
+                        ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:7.2.0-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-08-09T23-30-22Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\

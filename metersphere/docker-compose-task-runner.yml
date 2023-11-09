@@ -1,7 +1,7 @@
 version: "3"
 services:
   task-runner:
-    image: ${MS_IMAGE_PREFIX}/task-runner:${MS_IMAGE_TAG}
+    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
     container_name: task-runner
     deploy:
       resources:
@@ -10,13 +10,7 @@ services:
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
-    command:
-      - sh
-      - -c
-      - |
-        node_exporter --path.procfs=/host/proc --path.sysfs=/host/sys &
-        sed -i "s/:101:/:${MS_DOCKER_GID:-101}:/g" /etc/group
-        /deployments/run-java.sh
+    entrypoint: 'sh /shells/task-runner.sh'
     ports:
       - ${MS_TASK_RUNNER_PORT}:6000
       - ${MS_NODE_EXPORTER_PORT}:9100
