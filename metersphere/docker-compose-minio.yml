@@ -12,7 +12,7 @@ services:
       - '9000:9000'
       - '9001:9001'
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9001" ]
+      test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/9000" ]
       interval: 6s
       timeout: 10s
       retries: 50
