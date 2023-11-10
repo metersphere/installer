@@ -262,6 +262,7 @@ pipeline {
                             --exclude .git \\
                             --exclude images \\
                             --exclude community \\
+                            --exclude enterprise \\
                             --exclude docker \\
                             -czvf metersphere-community-online-installer-${RELEASE}.tar.gz .
 
