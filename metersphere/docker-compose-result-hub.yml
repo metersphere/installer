@@ -7,7 +7,11 @@ services:
       resources:
         limits:
           memory: ${MS_RESULT_MEM_LIMIT}
-    entrypoint: 'sh /shells/result-hub.sh'
+    entrypoint: 
+      - sh
+      - -c
+      - |
+        sh /shells/result-hub.sh
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
