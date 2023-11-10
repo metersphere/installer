@@ -300,7 +300,7 @@ pipeline {
                                     'kafka:3.5.1',
                                     'mysql:8.0.35',
                                     'redis:7.2.0-alpine',
-                                    'minio:RELEASE.2023-08-09T23-30-22Z',
+                                    'minio:RELEASE.2023-11-06T22-26-08Z',
                                     'prometheus:v2.42.0',
                                     'node-chromium:4.10.0',
                                     'node-firefox:4.10.0',
@@ -322,7 +322,7 @@ pipeline {
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:7.2.0-alpine \\
-                        ${IMAGE_PREFIX}/minio:RELEASE.2023-08-09T23-30-22Z > metersphere.tar
+                        ${IMAGE_PREFIX}/minio:RELEASE.2023-11-06T22-26-08Z > metersphere.tar
                         cd ..
 
                         #保存企业版镜像
@@ -332,7 +332,7 @@ pipeline {
                         ${IMAGE_PREFIX}/kafka:3.5.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:7.2.0-alpine \\
-                        ${IMAGE_PREFIX}/minio:RELEASE.2023-08-09T23-30-22Z \\
+                        ${IMAGE_PREFIX}/minio:RELEASE.2023-11-06T22-26-08Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
                         ${IMAGE_PREFIX}/node-firefox:4.10.0 \\
                         ${IMAGE_PREFIX}/node-chromium:4.10.0 \\
