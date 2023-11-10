@@ -396,6 +396,7 @@ pipeline {
                             --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
                             --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz.md5 \\
                             --exclude .git \\
                             -czvf metersphere-enterprise-offline-installer-${RELEASE}.tar.gz .
 
