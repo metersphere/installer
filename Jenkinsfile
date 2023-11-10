@@ -185,6 +185,7 @@ pipeline {
             }
         }
         stage('metersphere') {
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
                 script {
                     for (int i=0;i<10;i++) {
