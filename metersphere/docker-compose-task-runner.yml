@@ -17,7 +17,7 @@ services:
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
     ports:
-      - ${MS_TASK_RUNNER_PORT}:6000
+      - ${MS_TASK_RUNNER_PORT}:8000
       - ${MS_NODE_EXPORTER_PORT}:9100
     healthcheck:
       test: [ "CMD", "nc", "-zv", "localhost", "6000" ]
