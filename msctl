@@ -165,6 +165,9 @@ function uninstall() {
   echo
   cd ${MS_BASE}/metersphere
   docker-compose ${COMPOSE_FILES} down ${target}
+  #
+  rm -f ~/.msrc
+  rm -f /usr/local/bin/msctl
 }
 function version() {
   echo
