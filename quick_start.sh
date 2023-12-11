@@ -71,11 +71,20 @@ fi
 
 echo "使用下载服务器 ${server_url}"
 
-DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-community-online-installer-${MSVERSION}.tar.gz"
+DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-online-installer-${MSVERSION}.tar.gz"
+if [[ "${MSVERSION}" = "v3"* ]]; then
+  DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-community-online-installer-${MSVERSION}.tar.gz"
+fi
+
 
 wget --no-check-certificate ${DOWNLOAD_URL}
-tar zxvf metersphere-community-online-installer-${MSVERSION}.tar.gz
-cd metersphere-community-online-installer-${MSVERSION}
+if [[ "${MSVERSION}" = "v3"* ]]; then
+  tar zxvf metersphere-community-online-installer-${MSVERSION}.tar.gz
+  cd metersphere-community-online-installer-${MSVERSION}
+else
+  tar zxvf metersphere-online-installer-${MSVERSION}.tar.gz
+  cd metersphere-online-installer-${MSVERSION}
+fi
 
 sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${MSVERSION}#g" install.conf
 sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=registry.cn-qingdao.aliyuncs.com\/metersphere#g" install.conf
