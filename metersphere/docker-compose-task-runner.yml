@@ -16,6 +16,8 @@ services:
         sh /shells/task-runner.sh
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      TOTP_ENABLED: ${MS_TOTP_ENABLED}
+      TOTP_SECRET: ${MS_TOTP_SECRET}
     ports:
       - ${MS_TASK_RUNNER_PORT}:8000
       - ${MS_NODE_EXPORTER_PORT}:9100
