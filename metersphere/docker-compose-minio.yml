@@ -1,7 +1,7 @@
 version: '3'
 services:
   minio:
-    image: ${MS_IMAGE_PREFIX}/minio:RELEASE.2023-11-06T22-26-08Z
+    image: ${MS_IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z
     container_name: minio
     hostname: "minio"
     deploy:
