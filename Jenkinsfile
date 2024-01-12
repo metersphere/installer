@@ -301,7 +301,7 @@ pipeline {
                         def images = ['jmeter:${JMETER_TAG}',
                                     'kafka:3.6.1',
                                     'mysql:8.0.35',
-                                    'redis:7.2.3-alpine',
+                                    'redis:7.2.4-alpine',
                                     'minio:RELEASE.2024-01-05T22-17-24Z',
                                     'prometheus:v2.42.0',
                                     'node-chromium:4.16.1',
@@ -323,7 +323,7 @@ pipeline {
                         docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
                         ${IMAGE_PREFIX}/kafka:3.6.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
-                        ${IMAGE_PREFIX}/redis:7.2.3-alpine \\
+                        ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z > metersphere.tar
                         cd ..
 
@@ -333,7 +333,7 @@ pipeline {
                         ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.6.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
-                        ${IMAGE_PREFIX}/redis:7.2.3-alpine \\
+                        ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
                         ${IMAGE_PREFIX}/node-firefox:4.16.1 \\
