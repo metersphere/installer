@@ -1,7 +1,7 @@
 version: "3"
 services:
   kafka:
-    image: '${MS_IMAGE_PREFIX}/kafka:3.6.1'
+    image: '${MS_IMAGE_PREFIX}/kafka:3.7.0-rc2'
     container_name: kafka
     ports:
       - '${MS_KAFKA_PORT}:9092'
@@ -11,19 +11,19 @@ services:
       timeout: 10s
       retries: 50
     restart: always
+    volumes:
+      - ${MS_BASE}/metersphere/conf/kafka/config:/mnt/shared/config
     environment:
-      ALLOW_PLAINTEXT_LISTENER: 'yes'
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CFG_LOG_RETENTION_MS: 60000
-      KAFKA_CFG_MAX_REQUEST_SIZE: 524288000
-      KAFKA_CFG_MESSAGE_MAX_BYTES: 524288000
-      KAFKA_CFG_REPLICA_FETCH_MAX_BYTES: 524288000
-      KAFKA_CFG_FETCH_MESSAGE_MAX_BYTES: 524288000
-      KAFKA_CFG_PARTITION_FETCH_BYTES: 524288000
-      KAFKA_HEAP_OPTS: '-Xmx512m -Xms256m'
-      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
+      # Environment variables used by kafka scripts will be needed in case of File input.
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      # Set properties not provided in the file input
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'CONTROLLER://:29093,PLAINTEXT_HOST://:9092,PLAINTEXT://:19092'
+      # Override an existing property
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT_HOST://${MS_KAFKA_HOST}:${MS_KAFKA_PORT},PLAINTEXT://kafka:19092'
+
     networks:
       - ms-network
   result-hub:
