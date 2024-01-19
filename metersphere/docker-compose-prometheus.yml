@@ -2,12 +2,12 @@ version: "3"
 services:
   prometheus:
     image: ${MS_IMAGE_PREFIX}/prometheus:v2.42.0
-    container_name: ms-prometheus
+    container_name: prometheus
     environment:
       TZ: "Asia/Shanghai"
     volumes:
-        - ms-prometheus-conf:/etc/prometheus/
-        - ms-prometheus-data:/prometheus
+        - prometheus-conf:/etc/prometheus/
+        - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -26,12 +26,12 @@ services:
       - ms-network
 
 volumes:
-  ms-prometheus-data:
+  prometheus-data:
     driver_opts:
       type: none
       device: ${MS_BASE}/metersphere/data/prometheus
       o: bind
-  ms-prometheus-conf:
+  prometheus-conf:
     driver_opts:
       type: none
       device: ${MS_BASE}/metersphere/conf/prometheus
