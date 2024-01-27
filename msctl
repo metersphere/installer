@@ -30,7 +30,9 @@ function usage() {
 
 function generate_compose_files() {
   compose_files="-f docker-compose-base.yml"
-  mkdir -p ${MS_BASE}/metersphere/logs
+  mkdir -p ${MS_BASE}/metersphere/logs/metersphere
+  mkdir -p ${MS_BASE}/metersphere/logs/result-hub
+  mkdir -p ${MS_BASE}/metersphere/logs/task-runner
   case ${MS_INSTALL_MODE} in
   allinone)
     compose_files="${compose_files} -f docker-compose-metersphere.yml -f docker-compose-task-runner.yml -f docker-compose-result-hub.yml"
@@ -94,7 +96,9 @@ function generate_compose_files() {
     fi
   fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
-  chmod 777 -R ${MS_BASE}/metersphere/logs
+  chmod 777 -R ${MS_BASE}/metersphere/logs/metersphere
+  chmod 777 -R ${MS_BASE}/metersphere/logs/result-hub
+  chmod 777 -R ${MS_BASE}/metersphere/logs/task-runner
   chmod +rw -R ${MS_BASE}/metersphere/conf
   chmod +rw -R ${MS_BASE}/metersphere/*.yml
   COMPOSE_FILES=$(cat ${MS_BASE}/metersphere/compose_files 2>/dev/null || echo "")
