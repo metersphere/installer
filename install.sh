@@ -196,7 +196,7 @@ if [[ -d images ]]; then
 else
    log "拉取镜像"
    msctl pull
-   docker pull ${MS_JMETER_IMAGE}
+   # docker pull ${MS_JMETER_IMAGE}
    curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms ${INSTALL_TYPE} ${MS_IMAGE_TAG}
    cd -
 fi
