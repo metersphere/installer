@@ -240,7 +240,7 @@ pipeline {
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
                         sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter:${JMETER_TAG}#g" install.conf
-                        echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version                   
+                        echo ${RELEASE} > ./metersphere/version                   
                     '''
                 }
             }
