@@ -298,15 +298,15 @@ pipeline {
             steps {
                 dir('installer') {
                     script {
-                        def images = ['jmeter:${JMETER_TAG}',
+                        def images = ['mysql:8.0.35',
                                     'kafka:3.7.0-rc2',
-                                    'mysql:8.0.35',
                                     'redis:7.2.4-alpine',
                                     'minio:RELEASE.2024-01-05T22-17-24Z',
-                                    'prometheus:v2.42.0',
-                                    'node-chromium:4.16.1',
-                                    'node-firefox:4.16.1',
-                                    'selenium-hub:4.16.1',
+                                    // 'jmeter:${JMETER_TAG}',
+                                    // 'prometheus:v2.42.0',
+                                    // 'node-chromium:4.16.1',
+                                    // 'node-firefox:4.16.1',
+                                    // 'selenium-hub:4.16.1',
                                     "metersphere-community:${RELEASE}",
                                     "metersphere-enterprise:${RELEASE}"
                                     ]
@@ -330,15 +330,15 @@ pipeline {
                         #保存企业版镜像
                         rm -rf enterprise && mkdir enterprise && cd enterprise
                         docker save ${IMAGE_PREFIX}/metersphere-enterprise:${RELEASE} \\
-                        ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.7.0-rc2 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
-                        ${IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z \\
-                        ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
-                        ${IMAGE_PREFIX}/node-firefox:4.16.1 \\
-                        ${IMAGE_PREFIX}/node-chromium:4.16.1 \\
-                        ${IMAGE_PREFIX}/selenium-hub:4.16.1 > metersphere.tar
+                        ${IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z > metersphere.tar 
+                        # ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
+                        # ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
+                        # ${IMAGE_PREFIX}/node-firefox:4.16.1 \\
+                        # ${IMAGE_PREFIX}/node-chromium:4.16.1 \\
+                        # ${IMAGE_PREFIX}/selenium-hub:4.16.1 
                         cd ..
                     '''
                     script {
