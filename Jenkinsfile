@@ -352,10 +352,10 @@ pipeline {
                         rm -rf docker/*
                         rm -rf docker
 
-                        wget https://resource.fit2cloud.com/docker/download/${ARCH}/docker-23.0.1.tgz
-                        wget https://resource.fit2cloud.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-${ARCH} && mv docker-compose-linux-${ARCH} docker-compose && chmod +x docker-compose
-                        tar -zxvf docker-23.0.1.tgz
-                        rm -rf docker-23.0.1.tgz
+                        wget https://resource.fit2cloud.com/docker/download/${ARCH}/docker-25.0.2.tgz
+                        wget https://resource.fit2cloud.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-${ARCH} && mv docker-compose-linux-${ARCH} docker-compose && chmod +x docker-compose
+                        tar -zxvf docker-25.0.2.tgz
+                        rm -rf docker-25.0.2.tgz
                         mv docker bin && mkdir docker && mv bin docker/
                         mv docker-compose docker/bin
                         mkdir docker/service && mv docker.service docker/service/
