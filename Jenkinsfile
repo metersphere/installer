@@ -9,7 +9,7 @@ pipeline {
     }
     environment {
         IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
-        JMETER_TAG = "5.5-ms7-jdk17"
+        JMETER_TAG = "5.5-ms9-jdk17"
     }
     stages {
         stage('Preparation') {
@@ -220,7 +220,7 @@ pipeline {
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
                         sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
-                        echo ${RELEASE}-b$BUILD_NUMBER > ./metersphere/version                   
+                        echo ${RELEASE} > ./metersphere/version                   
                     '''
                 }
             }
@@ -277,7 +277,7 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['jmeter-master:${JMETER_TAG}',
-                                    'kafka:3.5.1',
+                                    'kafka:3.6.1',
                                     'mysql:8.0.35',
                                     'redis:6.2.6',
                                     'minio:RELEASE.2023-04-13T03-08-07Z',
@@ -320,7 +320,7 @@ pipeline {
                         ${IMAGE_PREFIX}/node-controller:${RELEASE} \\
                         ${IMAGE_PREFIX}/data-streaming:${RELEASE} \\
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
-                        ${IMAGE_PREFIX}/kafka:3.5.1 \\
+                        ${IMAGE_PREFIX}/kafka:3.6.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:6.2.6 \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-04-13T03-08-07Z \\
