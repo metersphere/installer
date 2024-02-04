@@ -301,7 +301,7 @@ pipeline {
                         def images = ['mysql:8.0.35',
                                     'kafka:3.7.0-rc2',
                                     'redis:7.2.4-alpine',
-                                    'minio:RELEASE.2024-01-05T22-17-24Z',
+                                    'minio:RELEASE.2024-01-31T20-20-33Z',
                                     // 'jmeter:${JMETER_TAG}',
                                     // 'prometheus:v2.42.0',
                                     // 'node-chromium:4.16.1',
@@ -324,7 +324,7 @@ pipeline {
                         ${IMAGE_PREFIX}/kafka:3.7.0-rc2 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
-                        ${IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z > metersphere.tar
+                        ${IMAGE_PREFIX}/minio:RELEASE.2024-01-31T20-20-33Z > metersphere.tar
                         cd ..
 
                         #保存企业版镜像
@@ -333,7 +333,7 @@ pipeline {
                         ${IMAGE_PREFIX}/kafka:3.7.0-rc2 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
-                        ${IMAGE_PREFIX}/minio:RELEASE.2024-01-05T22-17-24Z > metersphere.tar 
+                        ${IMAGE_PREFIX}/minio:RELEASE.2024-01-31T20-20-33Z > metersphere.tar 
                         # ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
                         # ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
                         # ${IMAGE_PREFIX}/node-firefox:4.16.1 \\
