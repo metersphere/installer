@@ -210,5 +210,4 @@ msctl status
 echo -e "======================= 安装完成 =======================\n"
 
 echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere"
-echo -e "企业用户升级后需手动设置 install.conf 中的 MS_UI_ENABLED=true 并执行 'msctl reload' 来开启UI功能"
-echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
+eecho -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
