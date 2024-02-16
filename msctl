@@ -183,7 +183,8 @@ function upgrade() {
     echo -e "\e[31m获取最新版本信息失败,请检查服务器到GitHub的网络连接是否正常！\e[0m"
     return 2
   fi
-  export MS_VERSION=$(cat ${MS_BASE}/metersphere/version)
+  # export MS_VERSION=$(cat ${MS_BASE}/metersphere/version)
+  export MS_VERSION=v2.0.0
   echo -e "\e[32m 检测当前版本为\e[1;33m${MS_VERSION} \e[0m"
 
   latest_release=""
@@ -192,15 +193,15 @@ function upgrade() {
   # 判断是否是 LTS 版本
   current_version=$MS_VERSION
   if [[ $current_version == v1.* || $current_version == v2.* ]]; then
-    release_pattern="v2\.\d+\.\d+-lts$"
+    release_pattern="v2\.[0-9]+\.[0-9]+-lts$"
   elif [[ $current_version == v3.* ]]; then
     if [[ $current_version == *-lts ]]; then
-      release_pattern="v3\.\d+\.\d+-lts$"
+      release_pattern="v3\.[0-9]+\.[0-9]+-lts$"
     else
-      release_pattern="v3\.\d+\.\d+$"
+      release_pattern="v3\.[0-9]+\.[0-9]+$"
     fi
   else
-    release_pattern="v\d+\.\d+\.\d+$"
+    release_pattern="v[0-9]+\.[0-9]+\.[0-9]+$"
   fi
 
   get_releases() {
