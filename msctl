@@ -207,7 +207,7 @@ function upgrade() {
     # 根据是否是 LTS 版本获取对应的最新版本号
     page=$1
     releases=$(curl -s "https://api.github.com/repos/metersphere/metersphere/releases?page=$page")
-    releases=$(echo "$releases" | jq -r '.[] | select(.prerelease == false) | .name')
+    releases=$(echo "${releases}" | grep -o '"name": "[^"]*' | awk -F '[:"]' '{print $5}' | grep '^v')
     for release in $releases; do
       if [[ $release =~ $release_pattern ]]; then
         echo "$release"
