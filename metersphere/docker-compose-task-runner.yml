@@ -15,7 +15,6 @@ services:
         sed -i "s/:101:/:${MS_DOCKER_GID:-101}:/g" /etc/group
         sh /shells/task-runner.sh
     environment:
-      FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       TOTP_ENABLED: ${MS_TOTP_ENABLED}
       TOTP_SECRET: ${MS_TOTP_SECRET}
     ports:
