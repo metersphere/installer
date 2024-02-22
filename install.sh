@@ -69,7 +69,6 @@ fi
 if [[ ${__current_version} =~ "lts" ]];then
    if [[ ! ${__target_version} =~ "lts" ]];then
       log "从LTS版本升级到非LTS版本，此版本包含实验性功能请做好数据备份工作"
-      log "从2.0开始，我们去掉了zookeeper，升级了kafka和mysql，升级前请执行 msctl stop && docker rm zookeeper && docker rm kafka; 如果已经升级至2.0请忽略这条信息"
       read -p "是否确认升级? [n/y]" __choice </dev/tty
       case "$__choice" in
          y|Y) echo "继续安装...";;
