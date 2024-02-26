@@ -3,6 +3,10 @@ services:
   kafka:
     image: '${MS_IMAGE_PREFIX}/kafka:3.7.0-rc4'
     container_name: kafka
+    deploy:
+      resources:
+        limits:
+          memory: ${MS_KAFKA_MEM_LIMIT}
     ports:
       - '${MS_KAFKA_PORT}:9092'
     healthcheck:
