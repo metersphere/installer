@@ -299,7 +299,7 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['mysql:8.0.36',
-                                    'kafka:3.7.0-rc4',
+                                    'kafka:3.7.0',
                                     'redis:7.2.4-alpine',
                                     'minio:RELEASE.2024-02-17T01-15-57Z',
                                     // 'jmeter:${JMETER_TAG}',
@@ -321,7 +321,7 @@ pipeline {
                         #保存社区版镜像
                         rm -rf images && mkdir images && cd images
                         docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
-                        ${IMAGE_PREFIX}/kafka:3.7.0-rc4 \\
+                        ${IMAGE_PREFIX}/kafka:3.7.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.36 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-02-17T01-15-57Z > metersphere.tar
@@ -330,7 +330,7 @@ pipeline {
                         #保存企业版镜像
                         rm -rf enterprise && mkdir enterprise && cd enterprise
                         docker save ${IMAGE_PREFIX}/metersphere-enterprise:${RELEASE} \\
-                        ${IMAGE_PREFIX}/kafka:3.7.0-rc4 \\
+                        ${IMAGE_PREFIX}/kafka:3.7.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.36 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-02-17T01-15-57Z > metersphere.tar 
