@@ -16,7 +16,6 @@ services:
       - ${MS_MYSQL_PORT}:3306
     volumes:
       - ${MS_BASE}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ${MS_BASE}/metersphere/bin/mysql:/docker-entrypoint-initdb.d/
       - ms-mysql-data:/var/lib/mysql
     networks:
       - ms-network
