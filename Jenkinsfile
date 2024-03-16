@@ -58,6 +58,34 @@ pipeline {
                 '''
             }
         }
+        stage('Tags All Repos') {
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
+            dir('metersphere') {
+                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                sh("git push -f origin refs/tags/${RELEASE}")
+            }
+            dir('metersphere-xpack') {
+                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                sh("git push -f origin refs/tags/${RELEASE}")
+            }
+            dir('ui-test') {
+                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                sh("git push -f origin refs/tags/${RELEASE}")
+            }
+            dir('node-controller') {
+                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                sh("git push -f origin refs/tags/${RELEASE}")
+            }
+            dir('data-streaming') {
+                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                sh("git push -f origin refs/tags/${RELEASE}")
+            }
+            dir('jenkins-plugin') {
+                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                sh("git push -f origin refs/tags/${RELEASE}")
+            }
+            build job:"/刷新组织最新分支"
+        }
 
         stage('MS Domain SDK XPack') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
@@ -72,14 +100,7 @@ pipeline {
                     env.REVISION = "${REVISION}"
                     echo "REVISION=${REVISION}"
                 }
-                dir('metersphere') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
-                dir('metersphere-xpack') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
+             
                 script {
                     for (int i=0;i<10;i++) {
                         try {
@@ -120,10 +141,6 @@ pipeline {
                 }
                 stage('ui-test') {
                     steps {
-                        dir('ui-test') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -141,10 +158,6 @@ pipeline {
                 }
                 stage('node-controller') {
                     steps {
-                        dir('node-controller') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -162,10 +175,6 @@ pipeline {
                 }
                 stage('data-streaming') {
                     steps {
-                        dir('data-streaming') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -183,10 +192,6 @@ pipeline {
                 }
                 stage('jenkins-plugin') {
                     steps {
-                        dir('jenkins-plugin') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
