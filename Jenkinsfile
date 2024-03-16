@@ -59,6 +59,36 @@ pipeline {
                 '''
             }
         }
+        stage('Tags All repo') {
+            when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
+            steps {
+                dir('metersphere') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('metersphere-xpack') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('task-runner') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('result-hub') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('jenkins-plugin') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('metersphere-standalone') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                build job:"/刷新组织最新分支"
+            }
+        }
         stage('Build SDK') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
@@ -71,10 +101,6 @@ pipeline {
                     }
                     env.REVISION = "${REVISION}"
                     echo "REVISION=${REVISION}"
-                }
-                dir('metersphere') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
                 }
                 script {
                     for (int i=0;i<10;i++) {
@@ -94,16 +120,12 @@ pipeline {
                 }
             }
         }
-
-        stage('Tag Other Repos') {
+        stage('Build Repos') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             parallel {
                 stage('metersphere-xpack') {
                     steps {
-                        dir('metersphere-xpack') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
+                      
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -121,10 +143,7 @@ pipeline {
                 }
                 stage('task-runner') {
                     steps {
-                        dir('task-runner') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
+                       
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -142,10 +161,6 @@ pipeline {
                 }
                 stage('result-hub') {
                     steps {
-                        dir('result-hub') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -163,10 +178,6 @@ pipeline {
                 }
                 stage('jenkins-plugin') {
                     steps {
-                        dir('jenkins-plugin') {
-                            sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                            sh("git push -f origin refs/tags/${RELEASE}")
-                        }
                         script {
                             for (int i=0;i<10;i++) {
                                 try {
@@ -206,10 +217,6 @@ pipeline {
         stage('metersphere-standalone') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
             steps {
-                dir('metersphere-standalone') {
-                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                    sh("git push -f origin refs/tags/${RELEASE}")
-                }
                 script {
                     for (int i=0;i<10;i++) {
                         try {
