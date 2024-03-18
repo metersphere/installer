@@ -209,4 +209,4 @@ msctl status
 echo -e "======================= 安装完成 =======================\n"
 
 echo -e "请通过以下方式访问:\n URL: http://\$LOCAL_IP:${MS_SERVER_PORT}\n 用户名: admin\n 初始密码: metersphere"
-eecho -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
+echo -e "您可以使用命令 'msctl status' 检查服务运行情况.\n"
