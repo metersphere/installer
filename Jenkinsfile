@@ -60,31 +60,33 @@ pipeline {
         }
         stage('Tags All Repos') {
             when { tag pattern: "^v.*?(?<!-arm64)\$", comparator: "REGEXP" }
-            dir('metersphere') {
-                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                sh("git push -f origin refs/tags/${RELEASE}")
+            steps {
+                dir('metersphere') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('metersphere-xpack') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('ui-test') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('node-controller') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('data-streaming') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                dir('jenkins-plugin') {
+                    sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
+                    sh("git push -f origin refs/tags/${RELEASE}")
+                }
+                build job:"/刷新组织最新分支"
             }
-            dir('metersphere-xpack') {
-                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                sh("git push -f origin refs/tags/${RELEASE}")
-            }
-            dir('ui-test') {
-                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                sh("git push -f origin refs/tags/${RELEASE}")
-            }
-            dir('node-controller') {
-                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                sh("git push -f origin refs/tags/${RELEASE}")
-            }
-            dir('data-streaming') {
-                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                sh("git push -f origin refs/tags/${RELEASE}")
-            }
-            dir('jenkins-plugin') {
-                sh("git tag -f -a ${RELEASE} -m 'Tagged by Jenkins'")
-                sh("git push -f origin refs/tags/${RELEASE}")
-            }
-            build job:"/刷新组织最新分支"
         }
 
         stage('MS Domain SDK XPack') {
