@@ -68,14 +68,14 @@ echo "使用下载服务器 ${server_url}"
 
 DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-online-installer-${MSVERSION}.tar.gz"
 if [[ "${MSVERSION}" = "v3"* ]]; then
-  DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-community-online-installer-${MSVERSION}.tar.gz"
+  DOWNLOAD_URL="https://${server_url}/metersphere/metersphere/releases/download/${MSVERSION}/metersphere-ce-online-installer-${MSVERSION}.tar.gz"
 fi
 
 
 wget --no-check-certificate ${DOWNLOAD_URL}
 if [[ "${MSVERSION}" = "v3"* ]]; then
-  tar zxvf metersphere-community-online-installer-${MSVERSION}.tar.gz
-  cd metersphere-community-online-installer-${MSVERSION}
+  tar zxvf metersphere-ce-online-installer-${MSVERSION}.tar.gz
+  cd metersphere-ce-online-installer-${MSVERSION}
 else
   tar zxvf metersphere-online-installer-${MSVERSION}.tar.gz
   cd metersphere-online-installer-${MSVERSION}

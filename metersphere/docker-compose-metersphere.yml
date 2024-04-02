@@ -1,7 +1,7 @@
 version: "3"
 services:
   metersphere:
-    image: ${MS_IMAGE_PREFIX}/metersphere-community:${MS_IMAGE_TAG}
+    image: ${MS_IMAGE_PREFIX}/metersphere-ce:${MS_IMAGE_TAG}
     container_name: metersphere
     deploy:
       resources:

@@ -262,17 +262,17 @@ pipeline {
                 dir('installer') {
                     sh '''          
                         #打包社区版在线包
-                        touch metersphere-community-online-installer-${RELEASE}.tar.gz
-                        tar --transform "s/^\\./metersphere-community-online-installer-${RELEASE}/" \\
-                            --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-release-${RELEASE}.tar.gz \\
+                        touch metersphere-ce-online-installer-${RELEASE}.tar.gz
+                        tar --transform "s/^\\./metersphere-ce-online-installer-${RELEASE}/" \\
+                            --exclude metersphere-ce-online-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude images \\
                             --exclude community \\
                             --exclude enterprise \\
                             --exclude docker \\
-                            -czvf metersphere-community-online-installer-${RELEASE}.tar.gz .
+                            -czvf metersphere-ce-online-installer-${RELEASE}.tar.gz .
 
               
                     '''
@@ -289,9 +289,9 @@ pipeline {
                                 release=$(curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere/releases)
                                 id=$(echo "$release" | sed -n -e \'s/"id":\\ \\([0-9]\\+\\),/\\1/p\' | head -n 1 | sed \'s/[[:blank:]]//g\')
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @quick_start.sh https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=quick_start.sh
-                                curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-community-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-community-online-installer-${RELEASE}.tar.gz
+                                curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-ce-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-ce-online-installer-${RELEASE}.tar.gz
 
-                                ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-community-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/ --update
+                                ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-ce-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/ --update
                                 ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/quick_start.sh --update
                                 ossutil -c /opt/jenkins-home/metersphere/config cp -f quick_start.sh oss://resource-fit2cloud-com/metersphere/metersphere/releases/latest/download/quick_start.sh --update
                             '''
@@ -314,8 +314,8 @@ pipeline {
                                     // 'node-chromium:4.18.0',
                                     // 'node-firefox:4.18.0',
                                     // 'selenium-hub:4.18.0',
-                                    "metersphere-community:${RELEASE}",
-                                    "metersphere-enterprise:${RELEASE}"
+                                    "metersphere-ce:${RELEASE}",
+                                    "metersphere-ee:${RELEASE}"
                                     ]
                         for (image in images) {
                             waitUntil {
@@ -327,7 +327,7 @@ pipeline {
                     sh '''
                         #保存社区版镜像
                         rm -rf images && mkdir images && cd images
-                        docker save ${IMAGE_PREFIX}/metersphere-community:${RELEASE} \\
+                        docker save ${IMAGE_PREFIX}/metersphere-ce:${RELEASE} \\
                         ${IMAGE_PREFIX}/kafka:3.7.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.36 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
@@ -336,7 +336,7 @@ pipeline {
 
                         #保存企业版镜像
                         rm -rf enterprise && mkdir enterprise && cd enterprise
-                        docker save ${IMAGE_PREFIX}/metersphere-enterprise:${RELEASE} \\
+                        docker save ${IMAGE_PREFIX}/metersphere-ee:${RELEASE} \\
                         ${IMAGE_PREFIX}/kafka:3.7.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.36 \\
                         ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
@@ -379,35 +379,35 @@ pipeline {
                         mkdir docker/service && mv docker.service docker/service/
 
                         #打包社区版离线包
-                        touch metersphere-community-offline-installer-${RELEASE}.tar.gz
-                        tar --transform "s/^\\./metersphere-community-offline-installer-${RELEASE}/" \\
-                            --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-release-${RELEASE}.tar.gz \\
+                        touch metersphere-ce-offline-installer-${RELEASE}.tar.gz
+                        tar --transform "s/^\\./metersphere-ce-offline-installer-${RELEASE}/" \\
+                            --exclude metersphere-ce-online-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-release-${RELEASE}.tar.gz \\
                             --exclude .git \\
                             --exclude enterprise \\
-                            -czvf metersphere-community-offline-installer-${RELEASE}.tar.gz .
+                            -czvf metersphere-ce-offline-installer-${RELEASE}.tar.gz .
 
-                        md5sum -b metersphere-community-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-community-offline-installer-${RELEASE}.tar.gz.md5
+                        md5sum -b metersphere-ce-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-ce-offline-installer-${RELEASE}.tar.gz.md5
                         rm -rf images
                         
                         mv enterprise images
                         #打包企业版离线包
-                        sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-metersphere.yml
-                        sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-task-runner.yml
-                        sed -i -e "s#-community#-enterprise#g" metersphere/docker-compose-result-hub.yml
+                        sed -i -e "s#-ce#-ee#g" metersphere/docker-compose-metersphere.yml
+                        sed -i -e "s#-ce#-ee#g" metersphere/docker-compose-task-runner.yml
+                        sed -i -e "s#-ce#-ee#g" metersphere/docker-compose-result-hub.yml
                         rm -rf metersphere/*.yml-e
                         
-                        touch metersphere-enterprise-offline-installer-${RELEASE}.tar.gz
-                        tar --transform "s/^\\./metersphere-enterprise-offline-installer-${RELEASE}/" \\
-                            --exclude metersphere-enterprise-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-online-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz \\
-                            --exclude metersphere-community-offline-installer-${RELEASE}.tar.gz.md5 \\
+                        touch metersphere-ee-offline-installer-${RELEASE}.tar.gz
+                        tar --transform "s/^\\./metersphere-ee-offline-installer-${RELEASE}/" \\
+                            --exclude metersphere-ee-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-online-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-offline-installer-${RELEASE}.tar.gz \\
+                            --exclude metersphere-ce-offline-installer-${RELEASE}.tar.gz.md5 \\
                             --exclude .git \\
-                            -czvf metersphere-enterprise-offline-installer-${RELEASE}.tar.gz .
+                            -czvf metersphere-ee-offline-installer-${RELEASE}.tar.gz .
 
-                        md5sum -b metersphere-enterprise-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-enterprise-offline-installer-${RELEASE}.tar.gz.md5
+                        md5sum -b metersphere-ee-offline-installer-${RELEASE}.tar.gz | awk '{print $1}' > metersphere-ee-offline-installer-${RELEASE}.tar.gz.md5
                         rm -rf images
                     '''
                 }
@@ -426,11 +426,11 @@ pipeline {
                 dir('installer') {
                     echo "UPLOADING"
                     withCredentials([usernamePassword(credentialsId: 'OSSKEY', passwordVariable: 'SK', usernameVariable: 'AK')]) {
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-community-offline-installer-${RELEASE}.tar.gz ./metersphere-community-offline-installer-${RELEASE}.tar.gz")
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-community-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-community-offline-installer-${RELEASE}.tar.gz.md5")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-ce-offline-installer-${RELEASE}.tar.gz ./metersphere-ce-offline-installer-${RELEASE}.tar.gz")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-ce-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-ce-offline-installer-${RELEASE}.tar.gz.md5")
 
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-enterprise-offline-installer-${RELEASE}.tar.gz ./metersphere-enterprise-offline-installer-${RELEASE}.tar.gz")
-                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-enterprise-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-enterprise-offline-installer-${RELEASE}.tar.gz.md5")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-ee-offline-installer-${RELEASE}.tar.gz ./metersphere-ee-offline-installer-${RELEASE}.tar.gz")
+                        sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-ee-offline-installer-${RELEASE}.tar.gz.md5 ./metersphere-ee-offline-installer-${RELEASE}.tar.gz.md5")
                     }
                 }
             }
