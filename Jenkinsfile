@@ -246,7 +246,6 @@ pipeline {
                         #修改安装参数
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
-                        sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter:${JMETER_TAG}#g" install.conf
                         echo ${RELEASE} > ./metersphere/version                   
                     '''
                 }
@@ -405,7 +404,7 @@ pipeline {
                         echo '## 是否使用外部grid' >> install.conf
                         echo 'MS_EXTERNAL_SELENIUM=false' >> install.conf
                         echo '## 性能测试使用的 JMeter 镜像' >> install.conf
-                        echo 'MS_JMETER_IMAGE=${MS_IMAGE_PREFIX}/jmeter:5.6.2-release1' >> install.conf
+                        echo "MS_JMETER_IMAGE=${MS_IMAGE_PREFIX}/${JMETER_TAG}" >> install.conf
                         echo 'MS_NODE_EXPORTER_PORT=9100' >> install.conf
                         echo '## docker gid' >> install.conf
                         echo 'MS_DOCKER_GID=$(getent group docker | cut -f3 -d:)' >> install.conf
