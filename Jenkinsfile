@@ -396,6 +396,20 @@ pipeline {
                         sed -i -e "s#-ce#-ee#g" metersphere/docker-compose-metersphere.yml
                         sed -i -e "s#-ce#-ee#g" metersphere/docker-compose-task-runner.yml
                         sed -i -e "s#-ce#-ee#g" metersphere/docker-compose-result-hub.yml
+
+                        # 部分配置只有企业版包有
+                        echo '# 企业版配置' >> install.conf
+                        echo '## 是否使用企业版' >> install.conf
+                        echo 'MS_ENTERPRISE_ENABLE=false' >> install.conf
+                        echo '# UI容器配置' >> install.conf
+                        echo '## 是否使用外部grid' >> install.conf
+                        echo 'MS_EXTERNAL_SELENIUM=false' >> install.conf
+                        echo '## 性能测试使用的 JMeter 镜像' >> install.conf
+                        echo 'MS_JMETER_IMAGE=${MS_IMAGE_PREFIX}/jmeter:5.6.2-release1' >> install.conf
+                        echo 'MS_NODE_EXPORTER_PORT=9100' >> install.conf
+                        echo '## docker gid' >> install.conf
+                        echo 'MS_DOCKER_GID=$(getent group docker | cut -f3 -d:)' >> install.conf
+                        
                         rm -rf metersphere/*.yml-e
                         
                         touch metersphere-ee-offline-installer-${RELEASE}.tar.gz
