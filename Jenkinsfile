@@ -429,6 +429,11 @@ pipeline {
         stage('Upload') {
             when {
                 anyOf {
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-alpha\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-alpha-arm64\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-beta\$", comparator: "REGEXP";
+                    tag pattern: "^v\\d+\\.\\d+\\.\\d+-beta-arm64\$", comparator: "REGEXP";
+
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+\$", comparator: "REGEXP";
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+-arm64\$", comparator: "REGEXP";
                     tag pattern: "^v\\d+\\.\\d+\\.\\d+-lts\$", comparator: "REGEXP";
