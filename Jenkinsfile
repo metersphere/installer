@@ -398,6 +398,10 @@ pipeline {
 
                         # 部分配置只有企业版包有
                         echo '# 企业版配置' >> install.conf
+                        echo '# Prometheus 配置' >> install.conf
+                        echo '## 是否使用外部Prometheus' >> install.conf
+                        echo 'MS_EXTERNAL_PROM=false' >> install.conf
+                        echo 'MS_PROMETHEUS_PORT=9090' >> install.conf
                         echo '## 是否使用企业版' >> install.conf
                         echo 'MS_ENTERPRISE_ENABLE=false' >> install.conf
                         echo '# UI容器配置' >> install.conf
@@ -405,7 +409,6 @@ pipeline {
                         echo 'MS_EXTERNAL_SELENIUM=false' >> install.conf
                         echo '## 性能测试使用的 JMeter 镜像' >> install.conf
                         echo "MS_JMETER_IMAGE=${MS_IMAGE_PREFIX}/${JMETER_TAG}" >> install.conf
-                        echo 'MS_NODE_EXPORTER_PORT=9100' >> install.conf
                         echo '## docker gid' >> install.conf
                         echo 'MS_DOCKER_GID=$(getent group docker | cut -f3 -d:)' >> install.conf
                         
