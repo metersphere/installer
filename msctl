@@ -71,11 +71,6 @@ function generate_compose_files() {
         sed -i -e '/result-hub/,+3d' ${MS_BASE}/metersphere/docker-compose-kafka.yml
       fi
     fi
-    # todo 是否使用外部 Prometheus
-    # if [ "${MS_EXTERNAL_PROM}" = "false" ] && [ "${MS_ENTERPRISE_ENABLE}" = "true" ]; then
-    #   mkdir -p ${MS_BASE}/metersphere/data/prometheus
-    #   compose_files="${compose_files} -f docker-compose-prometheus.yml"
-    # fi
 
     # 是否使用外部 Redis
     if [ "${MS_EXTERNAL_REDIS}" = "false" ]; then
@@ -91,10 +86,6 @@ function generate_compose_files() {
       compose_files="${compose_files} -f docker-compose-minio.yml"
     fi
 
-    # todo 是否使用外部grid
-    # if [ "${MS_EXTERNAL_SELENIUM}" = "false" ] && [ "${MS_ENTERPRISE_ENABLE}" = "true" ]; then
-    #   compose_files="${compose_files} -f docker-compose-selenium.yml"
-    # fi
   fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
   chmod 777 -R ${MS_BASE}/metersphere/logs/metersphere
