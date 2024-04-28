@@ -43,17 +43,14 @@ function generate_compose_files() {
   task-runner)
     compose_files="${compose_files} -f docker-compose-task-runner.yml"
     ;;
-  selenium-hub)
-    compose_files="${compose_files} -f docker-compose-selenium.yml"
-    ;;
   middleware)
     compose_files="${compose_files} -f docker-compose-result-hub.yml"
     ;;
   *)
-    log "... 不支持的安装模式，请从 [ allinone | server | task-runner | selenium-hub | middleware ] 中进行选择"
+    log "... 不支持的安装模式，请从 [ allinone | server | task-runner | middleware ] 中进行选择"
     ;;
   esac
-  if [ "${MS_INSTALL_MODE}" != "task-runner" ] && [ "${MS_INSTALL_MODE}" != "selenium-hub" ] && [ "${MS_INSTALL_MODE}" != "server" ]; then
+  if [ "${MS_INSTALL_MODE}" != "task-runner" ] && [ "${MS_INSTALL_MODE}" != "server" ]; then
     # 是否使用外部数据库
     if [ "${MS_EXTERNAL_MYSQL}" = "false" ]; then
       mkdir -p ${MS_BASE}/metersphere/data/mysql
