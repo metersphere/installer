@@ -24,10 +24,6 @@ services:
       retries: 50
     volumes:
       - ${MS_BASE}/metersphere/logs/task-runner:/opt/metersphere/logs/task-runner
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
     restart: always
     networks:
       - ms-network
