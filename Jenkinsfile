@@ -10,7 +10,7 @@ pipeline {
         checkoutToSubdirectory('installer')
     }
     environment {
-        IMAGE_PREFIX = "registry.cn-qingdao.aliyuncs.com/metersphere"
+        IMAGE_PREFIX = "registry.fit2cloud.com/metersphere"
         JMETER_TAG = "5.6.3-release1"
     }
     stages {
