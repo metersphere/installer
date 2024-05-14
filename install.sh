@@ -163,14 +163,12 @@ cp -f ${__current_dir}/install.conf ${MS_BASE}/metersphere/install.conf.example
 source ${__current_dir}/install.conf
 source ~/.msrc >/dev/null 2>&1
 __ms_image_tag=${MS_IMAGE_TAG}
-__ms_jmeter_image=${MS_JMETER_IMAGE}
 source ${MS_BASE}/metersphere/.env
 # 把原来kafka的配置合并成IP
 if [ ${MS_KAFKA_HOST} = 'kafka' ];then
   MS_KAFKA_HOST=${__local_ip}
 fi
 export MS_IMAGE_TAG=${__ms_image_tag}
-export MS_JMETER_IMAGE=${__ms_jmeter_image}
 env | grep MS_ > ${MS_BASE}/metersphere/.env
 ln -s ${MS_BASE}/metersphere/.env ${MS_BASE}/metersphere/install.conf 2>/dev/null
 grep "127.0.0.1 $(hostname)" /etc/hosts >/dev/null || echo "127.0.0.1 $(hostname)" >> /etc/hosts
@@ -195,7 +193,6 @@ if [[ -d images ]]; then
 else
    log "拉取镜像"
    msctl pull
-   # docker pull ${MS_JMETER_IMAGE}
    curl -sfL https://resource.fit2cloud.com/installation-log.sh | sh -s ms ${INSTALL_TYPE} ${MS_IMAGE_TAG}
    cd -
 fi
