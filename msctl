@@ -250,12 +250,12 @@ function upgrade() {
   if [ -z "$target" ]; then
     download
   else
-    current_version=${MS_VERSION%-*}
-    current_version=${current_version:1}
+    __current_version=${MS_VERSION%-*}
+    current_version=${__current_version:1}
     current_version_arr=($(echo $current_version | tr '.' ' '))
 
-    target_version=${target%-*}
-    target_version=${target_version:1}
+    __target_version=${target%-*}
+    target_version=${__target_version:1}
     target_version_arr=($(echo $target_version | tr '.' ' '))
 
     current_version=$(printf '1%02d%02d%02d' ${current_version_arr[0]} ${current_version_arr[1]} ${current_version_arr[2]})
@@ -271,8 +271,8 @@ function upgrade() {
       return 2
     fi
 
-    if [[ "${current_version}" = "v1"* ]] || [[ "${current_version}" = "v2"* ]]; then
-      if [[ "${target_version}" = "v3"* ]]; then
+    if [[ "${__current_version}" = "v1"* ]] || [[ "${__current_version}" = "v2"* ]]; then
+      if [[ "${__target_version}" = "v3"* ]]; then
         echo -e "\e[31m不支持升级到此版本\e[0m"
         return 2
       fi
