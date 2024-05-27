@@ -59,8 +59,8 @@ if [[ ${current_version} > ${target_version} ]]; then
   return 2
 fi
 
-if [[ "${current_version}" = "v1"* ]] || [[ "${current_version}" = "v2"* ]]; then
-  if [[ "${target_version}" = "v3"* ]]; then
+if [[ "${__current_version}" = "v1"* ]] || [[ "${__current_version}" = "v2"* ]]; then
+  if [[ "${__target_version}" = "v3"* ]]; then
     echo -e "\e[31m不支持升级到此版本\e[0m"
     return 2
   fi
