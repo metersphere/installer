@@ -29,7 +29,7 @@ services:
     ports:
       - ${MS_SERVER_PORT}:8081
     healthcheck:
-      test: [ "CMD", "nc", "-zv", "localhost", "8081" ]
+      test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/8081" ]
       interval: 6s
       timeout: 10s
       retries: 50

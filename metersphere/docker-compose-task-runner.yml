@@ -18,7 +18,7 @@ services:
     ports:
       - ${MS_TASK_RUNNER_PORT}:8000
     healthcheck:
-      test: [ "CMD", "nc", "-zv", "localhost", "8000" ]
+      test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/8000" ]
       interval: 6s
       timeout: 5s
       retries: 50

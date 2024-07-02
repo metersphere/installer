@@ -11,7 +11,6 @@ pipeline {
     }
     environment {
         IMAGE_PREFIX = "registry.fit2cloud.com/metersphere"
-        JMETER_TAG = "5.6.3-release1"
     }
     stages {
         stage('Preparation') {
@@ -302,14 +301,9 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['mysql:8.0.37',
-                                    'kafka:3.7.0',
-                                    'redis:7.2.4-alpine',
+                                    'kafka:3.7.1',
+                                    'redis:7.2.5-alpine',
                                     'minio:RELEASE.2024-05-07T06-41-25Z',
-                                    // 'jmeter:${JMETER_TAG}',
-                                    // 'prometheus:v2.42.0',
-                                    // 'node-chromium:4.18.0',
-                                    // 'node-firefox:4.18.0',
-                                    // 'selenium-hub:4.18.0',
                                     "metersphere-ce:${RELEASE}",
                                     "metersphere-ee:${RELEASE}"
                                     ]
@@ -324,24 +318,19 @@ pipeline {
                         #保存社区版镜像
                         rm -rf images && mkdir images && cd images
                         docker save ${IMAGE_PREFIX}/metersphere-ce:${RELEASE} \\
-                        ${IMAGE_PREFIX}/kafka:3.7.0 \\
+                        ${IMAGE_PREFIX}/kafka:3.7.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.37 \\
-                        ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
+                        ${IMAGE_PREFIX}/redis:7.2.5-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-05-07T06-41-25Z > metersphere.tar
                         cd ..
 
                         #保存企业版镜像
                         rm -rf enterprise && mkdir enterprise && cd enterprise
                         docker save ${IMAGE_PREFIX}/metersphere-ee:${RELEASE} \\
-                        ${IMAGE_PREFIX}/kafka:3.7.0 \\
+                        ${IMAGE_PREFIX}/kafka:3.7.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.37 \\
-                        ${IMAGE_PREFIX}/redis:7.2.4-alpine \\
+                        ${IMAGE_PREFIX}/redis:7.2.5-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-05-07T06-41-25Z > metersphere.tar 
-                        # ${IMAGE_PREFIX}/jmeter:${JMETER_TAG} \\
-                        # ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
-                        # ${IMAGE_PREFIX}/node-firefox:4.18.0 \\
-                        # ${IMAGE_PREFIX}/node-chromium:4.18.0 \\
-                        # ${IMAGE_PREFIX}/selenium-hub:4.18.0 
                         cd ..
                     '''
                     script {

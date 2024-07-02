@@ -24,7 +24,7 @@ services:
       MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
       MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
     healthcheck:
-      test: ["CMD", "nc", "-zv", "localhost", "8084"]
+      test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/8084" ]
       interval: 6s
       timeout: 10s
       retries: 50
