@@ -1,7 +1,7 @@
 version: "3"
 services:
   redis:
-    image: ${MS_IMAGE_PREFIX}/redis:7.2.5-alpine
+    image: ${MS_IMAGE_PREFIX}/redis:7.2.5
     container_name: redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
