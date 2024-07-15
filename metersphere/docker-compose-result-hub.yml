@@ -16,13 +16,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://${MS_MYSQL_HOST}:${MS_MYSQL_PORT}/${MS_MYSQL_DB}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: ${MS_MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MS_MYSQL_PASSWORD}
-      KAFKA_BOOTSTRAP-SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
+      KAFKA_BOOTSTRAP_SERVERS: ${MS_KAFKA_HOST}:${MS_KAFKA_PORT}
       REDIS_HOST: ${MS_REDIS_HOST}
       REDIS_PORT: ${MS_REDIS_PORT}
       REDIS_PASSWORD: ${MS_REDIS_PASSWORD}
       MINIO_ENDPOINT: ${MS_MINIO_ENDPOINT}
-      MINIO_ACCESS-KEY: ${MS_MINIO_ACCESS_KEY}
-      MINIO_SECRET-KEY: ${MS_MINIO_SECRET_KEY}
+      MINIO_ACCESS_KEY: ${MS_MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MS_MINIO_SECRET_KEY}
     healthcheck:
       test: [ "CMD", "bash", "-c", "< /dev/tcp/localhost/8084" ]
       interval: 6s
