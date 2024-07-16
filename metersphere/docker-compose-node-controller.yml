@@ -6,6 +6,7 @@ services:
     environment:
       FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS: 'true'
       RUN_AS_NON_ROOT_USER: 'true'
+      SUMMARY_SAMPLES_ENABLE: 'true'
     command:
       - sh
       - -c
