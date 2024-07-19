@@ -1,0 +1,33 @@
+version: "3"
+services:
+  mysql:
+    image: ${MS_IMAGE_PREFIX}/mariadb:11.4.2
+    container_name: mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-p${MS_MYSQL_PASSWORD}"]
+      interval: 6s
+      timeout: 5s
+      retries: 50
+    environment:
+      MYSQL_DATABASE: ${MS_MYSQL_DB}
+      MYSQL_ROOT_PASSWORD: ${MS_MYSQL_PASSWORD}
+      TZ: "Asia/Shanghai"
+    ports:
+      - ${MS_MYSQL_PORT}:3306
+    volumes:
+      - ${MS_BASE}/metersphere/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ms-mariadb-data:/var/lib/mysql
+    networks:
+      - ms-network
+    restart: always
+  metersphere:
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  ms-mariadb-data:
+    driver_opts:
+      type: none
+      device: ${MS_BASE}/metersphere/data/mariadb
+      o: bind

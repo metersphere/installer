@@ -53,12 +53,27 @@ function generate_compose_files() {
   if [ "${MS_INSTALL_MODE}" != "task-runner" ] && [ "${MS_INSTALL_MODE}" != "server" ]; then
     # 是否使用外部数据库
     if [ "${MS_EXTERNAL_MYSQL}" = "false" ]; then
-      mkdir -p ${MS_BASE}/metersphere/data/mysql
       chmod 655 ${MS_BASE}/metersphere/conf/my.cnf
-      compose_files="${compose_files} -f docker-compose-mysql.yml"
+
+      database='mariadb'
+      # 升级查看是否是 mysql 还是 mariadb
+      if ["${INSTALL_TYPE}" == "upgrade"]; then
+        if [ -d "${MS_BASE}/metersphere/data/mysql" ];then
+          database='mysql'
+        fi
+        if [ -d "${MS_BASE}/metersphere/data/mariadb" ];then
+          database='mariadb'
+        fi
+      fi
+      # 全新安装的环境使用 mariadb
+      if [ "${INSTALL_TYPE}" == "install" ]; then
+        database='mariadb'
+      fi
+      mkdir -p ${MS_BASE}/metersphere/data/${database}
+      compose_files="${compose_files} -f docker-compose-${database}.yml"
       # 中间件去掉 depends_on
       if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
-        sed -i -e '/metersphere/,+3d' ${MS_BASE}/metersphere/docker-compose-mysql.yml
+        sed -i -e '/metersphere/,+3d' ${MS_BASE}/metersphere/docker-compose-${database}.yml
       fi
     fi
     # 是否使用外部 Kafka
