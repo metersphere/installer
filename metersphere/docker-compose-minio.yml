@@ -17,8 +17,8 @@ services:
       timeout: 10s
       retries: 50
     environment:
-      MINIO_ACCESS_KEY: ${MS_MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MS_MINIO_SECRET_KEY}
+      MINIO_ROOT_USER: ${MS_MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MS_MINIO_SECRET_KEY}
     volumes:
       - ms-minio-data:/data
     networks:
