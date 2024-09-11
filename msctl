@@ -58,14 +58,14 @@ function generate_compose_files() {
       compose_files="${compose_files} -f docker-compose-mysql.yml"
       # 中间件去掉 depends_on
       if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
-        sed -i -e '/metersphere/,+3d' ${MS_BASE}/metersphere/docker-compose-mysql.yml
+        sed -i -e '/metersphere:/,+3d' ${MS_BASE}/metersphere/docker-compose-mysql.yml
       fi
     fi
     # 是否使用外部 Kafka
     if [ "${MS_EXTERNAL_KAFKA}" = "false" ]; then
       compose_files="${compose_files} -f docker-compose-kafka.yml"
       if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
-        sed -i -e '/result-hub/,+3d' ${MS_BASE}/metersphere/docker-compose-kafka.yml
+        sed -i -e '/result-hub:/,+3d' ${MS_BASE}/metersphere/docker-compose-kafka.yml
       fi
     fi
 
@@ -74,7 +74,7 @@ function generate_compose_files() {
       mkdir -p ${MS_BASE}/metersphere/data/redis
       compose_files="${compose_files} -f docker-compose-redis.yml"
       if [ "${MS_INSTALL_MODE}" = "middleware" ]; then
-        sed -i -e '/metersphere/,+3d' ${MS_BASE}/metersphere/docker-compose-redis.yml
+        sed -i -e '/metersphere:/,+3d' ${MS_BASE}/metersphere/docker-compose-redis.yml
       fi
     fi
     # 是否使用外部 minio
