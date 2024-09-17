@@ -101,6 +101,16 @@ function generate_compose_files() {
       fi
     fi
   fi
+  # fix mode=server ui_enable=true 时，缺少 docker-compose-ui-test.yml 的问题 
+  if [ "${MS_INSTALL_MODE}" = "server" ]; then
+    if [ "${MS_UI_ENABLED}" = "true" ]; then
+      compose_files="${compose_files} -f docker-compose-ui-test.yml"
+      # 是否使用外部grid
+      if [ "${MS_EXTERNAL_SELENIUM}" = "false" ]; then
+        compose_files="${compose_files} -f docker-compose-seleniarm.yml"
+      fi
+    fi
+  fi
   echo ${compose_files} >${MS_BASE}/metersphere/compose_files
   mkdir -p ${MS_BASE}/metersphere/logs && chmod 777 -R ${MS_BASE}/metersphere/logs
   mkdir -p ${MS_BASE}/metersphere/data/body && chmod 777 -R ${MS_BASE}/metersphere/data/body
