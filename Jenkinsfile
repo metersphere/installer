@@ -102,7 +102,7 @@ pipeline {
                     env.REVISION = "${REVISION}"
                     echo "REVISION=${REVISION}"
                 }
-             
+
                 script {
                     for (int i=0;i<10;i++) {
                         try {
@@ -227,7 +227,7 @@ pipeline {
                         sed -i -e "s#MS_IMAGE_TAG=.*#MS_IMAGE_TAG=${RELEASE}#g" install.conf
                         sed -i -e "s#MS_IMAGE_PREFIX=.*#MS_IMAGE_PREFIX=${IMAGE_PREFIX}#g" install.conf
                         sed -i -e "s#MS_JMETER_IMAGE=.*#MS_JMETER_IMAGE=\\\${MS_IMAGE_PREFIX}/jmeter-master:${JMETER_TAG}#g" install.conf
-                        echo ${RELEASE} > ./metersphere/version                   
+                        echo ${RELEASE} > ./metersphere/version
                     '''
                 }
             }
@@ -242,7 +242,7 @@ pipeline {
             }
             steps {
                 dir('installer') {
-                    sh '''          
+                    sh '''
                         #打包在线包
                         touch metersphere-online-installer-${RELEASE}.tar.gz
                         tar --transform "s/^\\./metersphere-online-installer-${RELEASE}/" \\
@@ -277,7 +277,7 @@ pipeline {
                     }
                 }
             }
-        }        
+        }
         stage('Package Offline-install') {
             when { tag pattern: "^v.*", comparator: "REGEXP" }
             steps {
@@ -286,7 +286,7 @@ pipeline {
                         def images = ['jmeter-master:${JMETER_TAG}',
                                     'kafka:3.7.0',
                                     'mysql:8.0.35',
-                                    'redis:6.2.6',
+                                    'redis:7.2.5-alpine',
                                     'minio:RELEASE.2023-04-13T03-08-07Z',
                                     'prometheus:v2.42.0',
                                     'node-chromium:4.10.0',
@@ -329,7 +329,7 @@ pipeline {
                         ${IMAGE_PREFIX}/jmeter-master:${JMETER_TAG} \\
                         ${IMAGE_PREFIX}/kafka:3.7.0 \\
                         ${IMAGE_PREFIX}/mysql:8.0.35 \\
-                        ${IMAGE_PREFIX}/redis:6.2.6 \\
+                        ${IMAGE_PREFIX}/redis:7.2.5-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2023-04-13T03-08-07Z \\
                         ${IMAGE_PREFIX}/prometheus:v2.42.0 \\
                         ${IMAGE_PREFIX}/node-firefox:4.10.0 \\
