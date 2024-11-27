@@ -289,6 +289,8 @@ pipeline {
                                 curl -XPOST -H "Authorization:token $TOKEN" -H "Content-Type:application/octet-stream" --data-binary @metersphere-ce-online-installer-${RELEASE}.tar.gz https://uploads.github.com/repos/metersphere/metersphere/releases/${id}/assets?name=metersphere-ce-online-installer-${RELEASE}.tar.gz
 
                                 ossutil -c /opt/jenkins-home/metersphere/config cp -f metersphere-ce-online-installer-${RELEASE}.tar.gz oss://resource-fit2cloud-com/metersphere/metersphere/releases/download/${RELEASE}/ --update
+                                
+                                curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere-standalone/releases
                             '''
                         }
                     }
@@ -419,13 +421,6 @@ pipeline {
             }
             steps {
                 dir('installer') {
-                    withCredentials([string(credentialsId: 'gitrelease', variable: 'TOKEN'), string(credentialsId: 'HTTPS_PROXY', variable: 'HTTPS_PROXY')]) {
-                        withEnv(["TOKEN=$TOKEN", "HTTPS_PROXY=$HTTPS_PROXY"]) {
-                            sh script: '''
-                                curl -XPOST -H "Authorization:token $TOKEN" --data "{\\"tag_name\\": \\"${RELEASE}\\", \\"target_commitish\\": \\"${BRANCH_NAME}\\", \\"name\\": \\"${RELEASE}\\", \\"body\\": \\"\\", \\"draft\\": false, \\"prerelease\\": true}" https://api.github.com/repos/metersphere/metersphere-standalone/releases
-                            '''
-                        }
-                    }
                     echo "UPLOADING"
                     withCredentials([usernamePassword(credentialsId: 'OSSKEY', passwordVariable: 'SK', usernameVariable: 'AK')]) {
                         sh("java -jar /opt/uploadToOss.jar $AK $SK fit2cloud2-offline-installer metersphere/release/metersphere-ce-offline-installer-${RELEASE}.tar.gz ./metersphere-ce-offline-installer-${RELEASE}.tar.gz")
