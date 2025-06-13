@@ -303,7 +303,7 @@ pipeline {
                 dir('installer') {
                     script {
                         def images = ['mysql:8.0.38',
-                                    'kafka:3.9.0',
+                                    'kafka:3.9.1',
                                     'redis:7.2.7-alpine',
                                     'minio:RELEASE.2024-05-07T06-41-25Z',
                                     "metersphere-ce:${RELEASE}",
@@ -320,7 +320,7 @@ pipeline {
                         #保存社区版镜像
                         rm -rf images && mkdir images && cd images
                         docker save ${IMAGE_PREFIX}/metersphere-ce:${RELEASE} \\
-                        ${IMAGE_PREFIX}/kafka:3.9.0 \\
+                        ${IMAGE_PREFIX}/kafka:3.9.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.38 \\
                         ${IMAGE_PREFIX}/redis:7.2.7-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-05-07T06-41-25Z > metersphere.tar
@@ -329,7 +329,7 @@ pipeline {
                         #保存企业版镜像
                         rm -rf enterprise && mkdir enterprise && cd enterprise
                         docker save ${IMAGE_PREFIX}/metersphere-ee:${RELEASE} \\
-                        ${IMAGE_PREFIX}/kafka:3.9.0 \\
+                        ${IMAGE_PREFIX}/kafka:3.9.1 \\
                         ${IMAGE_PREFIX}/mysql:8.0.38 \\
                         ${IMAGE_PREFIX}/redis:7.2.7-alpine \\
                         ${IMAGE_PREFIX}/minio:RELEASE.2024-05-07T06-41-25Z > metersphere.tar 
