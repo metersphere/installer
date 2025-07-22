@@ -4,7 +4,7 @@
 
 
 latest_release=""
-release_pattern="v[0-9]+\.[0-9]+\.[0-9]+-lts$"
+release_pattern="v2\.[0-9]+\.[0-9]+-lts$"
 
 function get_releases() {
     local page=$1
