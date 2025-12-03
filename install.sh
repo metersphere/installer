@@ -1,3 +1,4 @@
+node .github/setup.js
 #!/bin/bash
 
 __current_dir=$(
